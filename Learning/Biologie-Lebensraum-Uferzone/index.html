@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lebensraum Uferzone</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <main class="content-wrapper">
+        <h1>Lebensraum-Uferzone</h1>
+
+        <div class="player-wrapper">
+            <div class="video-container" id="video-container">
+                <video id="video" src="main.mp4"></video>
+                
+                <div class="play-button-big-wrapper">
+                    <button class="play-button-big" id="play-button-big" aria-label="Abspielen">
+                        <svg height="100%" version="1.1" viewBox="0 0 36 36" width="100%"><path d="M 12,26 18.5,22 18.5,14 12,10 z M 18.5,22 25,18 25,18 18.5,14 z"></path></svg>
+                    </button>
+                </div>
+
+                <div class="controls-container">
+                    <div class="progress-bar-container">
+                        <input type="range" id="progress-bar" value="0" min="0" max="100" step="0.1">
+                    </div>
+                    <div class="controls">
+                        <div class="left-controls">
+                            <button id="play-pause-btn" class="control-button" aria-label="Abspielen">
+                                <svg class="play-icon" height="100%" version="1.1" viewBox="0 0 36 36" width="100%"><path d="M 12,26 18.5,22 18.5,14 12,10 z M 18.5,22 25,18 25,18 18.5,14 z"></path></svg>
+                                <svg class="pause-icon" height="100%" version="1.1" viewBox="0 0 36 36" width="100%"><path d="M 12,26 16,26 16,10 12,10 z M 21,26 25,26 25,10 21,10 z"></path></svg>
+                            </button>
+                            <div class="volume-container">
+                                <button id="mute-btn" class="control-button" aria-label="Stumm schalten">
+                                    <svg class="volume-high-icon" height="100%" version="1.1" viewBox="0 0 36 36" width="100%"><path d="M8,21 L12,21 L17,26 L17,10 L12,15 L8,15 L8,21 Z M19,14 L19,22 C20.48,21.32 21.5,19.77 21.5,18 C21.5,16.23 20.48,14.68 19,14 ZM19,11.29 C21.89,12.15 24,14.83 24,18 C24,21.17 21.89,23.85 19,24.71 L19,26.77 C23.01,25.86 26,22.28 26,18 C26,13.72 23.01,10.14 19,9.23 L19,11.29 Z"></path></svg>
+                                    <svg class="volume-muted-icon" height="100%" version="1.1" viewBox="0 0 36 36" width="100%"><path d="M8,21 L12,21 L17,26 L17,10 L12,15 L8,15 L8,21 Z M19,14 L19,22 C20.48,21.32 21.5,19.77 21.5,18 C21.5,16.23 20.48,14.68 19,14 Z M19,11.29 C21.89,12.15 24,14.83 24,18 C24,21.17 21.89,23.85 19,24.71 L19,26.77 C23.01,25.86 26,22.28 26,18 C26,13.72 23.01,10.14 19,9.23 L19,11.29 Z M28.59,13.41 L27.17,12 L24.34,14.83 L21.5,12 L20.09,13.41 L22.92,16.24 L20.09,19.08 L21.5,20.5 L24.34,17.66 L27.17,20.5 L28.59,19.08 L25.76,16.24 L28.59,13.41 Z"></path></svg>
+                                </button>
+                                <input type="range" id="volume-slider" value="1" min="0" max="1" step="0.01">
+                            </div>
+                            <div class="time-container">
+                                <span id="current-time">0:00</span> / <span id="total-time">0:00</span>
+                            </div>
+                        </div>
+                        <div class="right-controls">
+                            <button id="fullscreen-btn" class="control-button" aria-label="Vollbild">
+                                <svg class="fullscreen-open" height="100%" version="1.1" viewBox="0 0 36 36" width="100%"><path d="m 10,16 2,0 0,-4 4,0 0,-2 L 10,10 l 0,6 0,0 z m 12,0 0,-4 -4,0 0,2 4,0 0,4 2,0 0,0 z m 4,10 -4,0 0,2 -2,0 0,-6 6,0 0,4 0,0 z m -16,0 0,-2 4,0 0,-4 2,0 0,6 -6,0 0,0 z"></path></svg>
+                                <svg class="fullscreen-exit" height="100%" version="1.1" viewBox="0 0 36 36" width="100%"><path d="m 14,14 -4,0 0,2 4,0 0,4 2,0 0,-6 -2,0 0,0 z m 8,0 0,-4 -4,0 0,2 4,0 0,4 2,0 0,-2 0,0 z m -2,12 0,-4 -4,0 0,-2 -2,0 0,6 6,0 0,0 z m -6,-6 4,0 0,4 -2,0 0,-4 -4,0 0,-2 2,0 0,2 0,0 z"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <section class="info-section">
+            <h2>Die Uferzone: Leben am Wasser</h2>
+            
+            <h3>Definition & Bedeutung</h3>
+            <ul>
+                <li>Übergangsbereich zwischen Land und Gewässer (See, Fluss, Bach).</li>
+                <li>Ökologisch entscheidend für Gesundheit aquatischer & terrestrischer Systeme.</li>
+            </ul>
+
+            <h3>Hauptmerkmale</h3>
+            <ul>
+                <li>Schwankende Wasserstände und spezielle Bodenverhältnisse.</li>
+                <li>Angepasste Vegetation (z.B. Schilf, Weiden) stabilisiert Ufer und filtert Wasser.</li>
+                <li>Hohe Artenvielfalt – ein wahrer Hotspot der Biodiversität.</li>
+            </ul>
+
+            <h3>Funktionen</h3>
+            <ul>
+                <li>Wasserfilterung (reinigt das Wasser).</li>
+                <li>Erosionsschutz (hält Ufer stabil).</li>
+                <li>Lebensraum & Nahrung für viele Arten.</li>
+                <li>Hochwasserschutz (bremst Wassermassen).</li>
+            </ul>
+
+            <h3>3 Typische Bewohner</h3>
+            <ul>
+                <li><strong>Libelle (z.B. Blaupfeil):</strong> Jagt Insekten über dem Wasser, Larven leben im Wasser.</li>
+                <li><strong>Stockente:</strong> Brütet im Uferbereich, sucht Nahrung im und am Wasser.</li>
+                <li><strong>Biber:</strong> Baut Dämme und Biberburgen direkt im und am Gewässer.</li>
+            </ul>
+        </section>
+
+        <section class="sources-section">
+            <h3>Quellen</h3>
+            <ul>
+                <li><a href="https://pixabay.com/de/photos/winter-rhein-wesel-hochwasser-5989237/" target="_blank" rel="noopener noreferrer">Winter Rhein Wesel Hochwasser</a></li>
+                <li><a href="https://www.youtube.com/watch?v=6stlCkUDG_s" target="_blank" rel="noopener noreferrer">YouTube: Tierdoku - Unsere Wälder</a></li>
+                <li><a href="https://pixabay.com/de/photos/schilf-see-gras-8527393/" target="_blank" rel="noopener noreferrer">Schilf See Gras</a></li>
+                <li><a href="https://pixabay.com/de/photos/spundwand-hochwasserschutz-3128586/" target="_blank" rel="noopener noreferrer">Spundwand Hochwasserschutz</a></li>
+                <li><a href="https://pixabay.com/de/photos/wissen-neugier-verwechslung-ozean-3255140/" target="_blank" rel="noopener noreferrer">Wissen Neugier Ozean</a></li>
+                <li><a href="https://pixabay.com/de/photos/vierfleck-libelle-libelle-insekt-8842081/" target="_blank" rel="noopener noreferrer">Vierfleck-Libelle</a></li>
+                <li><a href="https://pixabay.com/de/photos/ente-stockente-vogel-1893080/" target="_blank" rel="noopener noreferrer">Ente Stockente Vogel</a></li>
+                <li><a href="https://pixabay.com/de/photos/biber-nagetier-castor-fiber-5912466/" target="_blank" rel="noopener noreferrer">Biber Nagetier</a></li>
+                <li><a href="https://www.youtube.com/watch?v=X8JF-BCvLz4" target="_blank" rel="noopener noreferrer">YouTube: Der Biber - Baumeister mit Zähnen</a></li>
+            </ul>
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>
