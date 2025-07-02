@@ -1,3 +1,116 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:baa8ec15ac7b17d690bc3ba5b8a1a3dec20d9256198ed79b3f6d24f9164475c5
-size 4982
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Leichter Web Builder</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Später für Icons, z.B. Font Awesome (vereinfacht hier) -->
+</head>
+<body class="theme-light"> <!-- Start mit Light Theme -->
+    <div id="editor-container">
+        <header id="toolbar">
+            <div class="toolbar-group">
+                <button id="btn-new-project" title="Neues Projekt">📄 Neu</button>
+                <button id="btn-save-project" title="Projekt speichern (JSON)">💾 Speichern</button>
+                <label for="load-project-input" class="toolbar-button-label" title="Projekt laden (JSON)">📂 Laden
+                    <input type="file" id="load-project-input" accept=".json" style="display: none;">
+                </label>
+            </div>
+            <div class="toolbar-group">
+                <input type="search" id="search-elements" placeholder="Elemente suchen...">
+            </div>
+            <div class="toolbar-group" id="responsive-controls">
+                <button id="btn-view-desktop" class="active" title="Desktop-Ansicht">💻</button>
+                <button id="btn-view-tablet" title="Tablet-Ansicht">📱</button>
+                <button id="btn-view-mobile" title="Mobile-Ansicht">📱</button>
+            </div>
+            <div class="toolbar-group">
+                <button id="btn-preview-tab" title="Vorschau in neuem Tab">👁️ Vorschau</button>
+                <button id="btn-export-html" title="Als HTML exportieren">🌐 HTML</button>
+                <button id="btn-export-php" title="Als PHP exportieren (mit Formular)">🐘 PHP</button>
+            </div>
+            <div class="toolbar-group">
+                <button id="btn-undo" title="Rückgängig" disabled>↩️</button>
+                <button id="btn-redo" title="Wiederholen" disabled>↪️</button>
+            </div>
+            <div class="toolbar-group">
+                 <button id="btn-toggle-theme" title="Theme wechseln">🌙</button>
+                 <button id="btn-page-settings" title="Seiteneinstellungen">⚙️</button>
+            </div>
+        </header>
+
+        <main id="main-area">
+            <aside id="element-palette">
+                <h3>Elemente</h3>
+                <div id="palette-categories">
+                    <!-- Kategorien und Elemente werden hier per JS geladen -->
+                </div>
+            </aside>
+
+            <section id="canvas-area">
+                <div id="iframe-wrapper">
+                    <iframe id="canvas-iframe" src="iframe-content.html"></iframe>
+                </div>
+            </section>
+
+            <aside id="properties-inspector">
+                <h3>Eigenschaften</h3>
+                <div id="inspector-content">
+                    <p>Wähle ein Element aus, um seine Eigenschaften zu bearbeiten.</p>
+                </div>
+            </aside>
+        </main>
+    </div>
+
+    <!-- Modal für Seiteneinstellungen -->
+    <div id="page-settings-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Seiteneinstellungen</h2>
+            <div>
+                <label for="page-title">Seitentitel:</label>
+                <input type="text" id="page-title" name="page-title">
+            </div>
+            <div>
+                <label for="page-meta-description">Meta-Description:</label>
+                <textarea id="page-meta-description" name="page-meta-description" rows="3"></textarea>
+            </div>
+            <div>
+                <label for="page-google-font">Google Font:</label>
+                <select id="page-google-font">
+                    <option value="">Keine</option>
+                    <option value="Roboto">Roboto</option>
+                    <option value="Open Sans">Open Sans</option>
+                    <option value="Lato">Lato</option>
+                    <option value="Montserrat">Montserrat</option>
+                    <option value="Oswald">Oswald</option>
+                </select>
+            </div>
+            <div>
+                <label for="custom-css">Eigenes CSS:</label>
+                <textarea id="custom-css" rows="5" placeholder="z.B. body { background-color: #f0f0f0; }"></textarea>
+            </div>
+            <button id="btn-save-page-settings">Speichern</button>
+        </div>
+    </div>
+
+    <!-- Vorlagen Auswahl (sehr einfach gehalten) -->
+    <div id="template-selection-modal" class="modal" style="display:none;">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Vorlage wählen (überschreibt aktuellen Inhalt)</h2>
+            <select id="template-select">
+                <option value="blank">Leeres Projekt</option>
+                <option value="landing_page_simple">Einfache Landing Page</option>
+                <option value="portfolio_basic">Basis Portfolio</option>
+            </select>
+            <button id="btn-load-template">Vorlage laden</button>
+        </div>
+    </div>
+
+
+    <script src="elements.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

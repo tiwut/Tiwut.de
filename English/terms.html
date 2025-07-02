@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms and Conditions - Tiwut</title>
+    <script defer src="https://unpkg.com/swup@4"></script>
+    <script defer src="script.js" type="module"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="custom-context-menu"><ul><li><button type="button" data-action="copy">Copy</button></li><li><button type="button" data-action="cut">Cut</button></li><li><button type="button" data-action="paste">Paste</button></li></ul></div>
+    <div class="video-background"><div class="video-overlay"></div></div>
+    <header class="main-header fade-in">
+         <nav>
+             <ul>
+                <li><a href="index.html" data-nav-index="0">Home</a></li>
+                <li><a href="about.html" data-nav-index="1">About us</a></li>
+                <li><a href="services.html" data-nav-index="2">Services</a></li>
+                <li><a href="download.html" data-nav-index="3">Download</a></li>
+                <li><a href="my_projects.html" data-nav-index="4">My Projects</a></li>
+                <li><a href="office.html" data-nav-index="5">Office</a></li>
+                <li><a href="chat_list.html" data-nav-index="6">Chat</a></li>
+                 <li class="logged-out" style="display: none;"><a href="login.html" data-nav-index="7">Login</a></li>
+                 <li class="logged-out" style="display: none;"><a href="register.html" data-nav-index="8">Register</a></li>
+                 <li class="logged-in logged-in-menu" style="display: none;">
+                    <button id="account-menu-trigger">Account</button>
+                    <div id="account-dropdown">
+                        <ul>
+                            <li><a href="#" data-no-swup>Profile (TBD)</a></li>
+                            <li><a href="#" data-no-swup>Settings (TBD)</a></li>
+                            <li><hr></li>
+                            <li><button id="logout-button-dropdown">Logout</button></li>
+                        </ul>
+                    </div>
+                </li>
+                <li><a href="contact.html" data-nav-index="9">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div id="swup" class="transition-slide">
+        <main>
+             <section class="info-section animate-on-scroll">
+                <h2>Terms and Conditions</h2>
+                <div style="text-align: left; max-width: 800px; margin: 20px auto; color: #ccc; line-height: 1.7;">
+                    <p>Last updated: 04/2025</p>
+                    <p>Please read these terms and conditions carefully before using Our Service.</p>
+
+                    <h3>Interpretation and Definitions</h3>
+                    <p>Words capitalized have meanings defined under the following conditions...</p>
+
+                    <h3>Acknowledgment</h3>
+                    <p>These are the Terms and Conditions governing the use of this Service...</p>
+                    <p>By accessing or using the Service You agree to be bound by these Terms and Conditions. If You disagree with any part of these Terms and Conditions then You may not access the Service.</p>
+                    <p>You represent that you are over the age of 13. Tiwut does not permit those under 13 to use the Service.</p>
+
+                    <h3>User Accounts</h3>
+                    <p>When You create an account with Us, You must provide Us information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of Your account on Our Service.</p>
+                    <p>You are responsible for safeguarding the password that You use to access the Service...</p>
+
+                    <h3>Content</h3>
+                    <p>Our Service allows You to post Content (e.g., in the chat). You are responsible for the Content that You post to the Service, including its legality, reliability, and appropriateness.</p>
+                    <p>You agree not to post Content that is unlawful, offensive, upsetting, intended to disgust, threatening, libelous, defamatory, obscene or otherwise objectionable. Examples of such objectionable Content include, but are not limited to, the following:</p>
+                    <ul>
+                        <li>Unlawful or promoting unlawful activity.</li>
+                        <li>Defamatory, discriminatory, or mean-spirited content...</li>
+                        <li>Spam, machine – or randomly – generated, constituting unauthorized or unsolicited advertising...</li>
+                        <li>Containing or installing any viruses, worms, malware, trojan horses...</li>
+                        <li>Infringing on any proprietary rights of any party...</li>
+                        <li>Impersonating any person or entity...</li>
+                        <li>Violating the privacy of any third person.</li>
+                    </ul>
+                     <p>We reserve the right, but not the obligation, to, in our sole discretion, determine whether or not any Content is appropriate and complies with these Terms, refuse or remove this Content...</p>
+
+                    <h3>Termination</h3>
+                    <p>We may terminate or suspend Your Account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if You breach these Terms and Conditions.</p>
+
+                    <h3>"AS IS" and "AS AVAILABLE" Disclaimer</h3>
+                    <p>The Service is provided to You "AS IS" and "AS AVAILABLE"...</p>
+
+                    <h3>Governing Law</h3>
+                    <p>The laws of Germany, excluding its conflicts of law rules, shall govern this Terms and Your use of the Service...</p>
+
+                     <h3>Changes to These Terms and Conditions</h3>
+                    <p>We reserve the right, at Our sole discretion, to modify or replace these Terms at any time...</p>
+
+                    <h3>Contact Us</h3>
+                    <p>If you have any questions about these Terms and Conditions, You can contact us: http://tiwut.de/chat_list.html</p>
+                </div>
+
+                <p style="text-align: center; margin-top: 30px;">
+                    <button onclick="window.history.back(); return false;" class="cta-button">Back</button>
+                </p>
+
+            </section>
+        </main>
+    </div>
+    <footer class="main-footer fade-in"><p>&copy; 2025 Tiwut. All rights reserved.</p></footer>
+</body>
+</html>

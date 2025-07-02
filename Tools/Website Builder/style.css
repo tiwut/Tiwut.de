@@ -1,3 +1,297 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:6c3a875fc48af47d166cdee7a971710f7401302bda8f3d9b08c89fcab64e254f
-size 6491
+body {
+    font-family: sans-serif;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    /* transition: background-color 0.3s, color 0.3s; background-color transition entfernt */
+    transition: color 0.3s;
+    position: relative; /* Für das ::before Pseudo-Element */
+    /* Die direkte background-color wird entfernt, da ::before den Hintergrund übernimmt */
+}
+
+/* Pseudo-Element für den geblurrten Hintergrund */
+body::before {
+    content: '';
+    position: fixed; /* Bleibt beim Scrollen des Inhalts (falls Body scrollbar wäre) fest */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('main.avif');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    filter: blur(0px); /* Stärke des Blurs anpassen, z.B. 5px oder 10px */
+    z-index: -1; /* Hinter den Inhalt legen */
+    /* Optional: Skalieren, um Artefakte an den Kanten durch Blur zu minimieren */
+    transform: scale(1.05);
+}
+
+/* Theme Variablen */
+:root {
+    /* --bg-color wird weiterhin für einige Elemente im Inneren verwendet, aber nicht mehr für body direkt */
+    --bg-color-opaque: #f0f0f0; /* Ursprüngliche Farbe, falls für undurchsichtige Elemente benötigt */
+    --text-color: #333;
+    --editor-bg: rgba(240, 240, 240, 0.85); /* Leicht transparent, Basisfarbe wie --bg-color-opaque */
+    --toolbar-bg: rgba(51, 51, 51, 0.9);
+    --toolbar-text: white;
+    --button-bg: rgba(85, 85, 85, 0.9);
+    --button-text: white;
+    --canvas-bg: rgba(249, 249, 249, 0.8);
+    --inspector-bg: rgba(232, 232, 232, 0.85);
+    --border-color: #ccc;
+    --modal-bg: rgba(0,0,0,0.4); /* War schon transparent */
+    --modal-content-bg: rgba(254, 254, 254, 0.95);
+    --selected-outline: DodgerBlue;
+}
+
+body.theme-dark {
+    --bg-color-opaque: #2c2c2c; /* Ursprüngliche Farbe für Dark Theme */
+    --text-color: #f1f1f1;
+    --editor-bg: rgba(44, 44, 44, 0.85); /* Leicht transparent, Basisfarbe wie --bg-color-opaque (dark) */
+    --toolbar-bg: rgba(34, 34, 34, 0.9);
+    --toolbar-text: #f1f1f1;
+    --button-bg: rgba(68, 68, 68, 0.9);
+    --button-text: #f1f1f1;
+    --canvas-bg: rgba(51, 51, 51, 0.8);
+    --inspector-bg: rgba(63, 63, 63, 0.85);
+    --border-color: #555;
+    --modal-bg: rgba(0,0,0,0.7); /* War schon transparent */
+    --modal-content-bg: rgba(72, 72, 72, 0.95);
+}
+
+body {
+    /* background-color: var(--bg-color); Entfernt, da ::before übernimmt */
+    color: var(--text-color);
+}
+
+#editor-container {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    /* Wichtig: Damit der Inhalt über dem ::before Pseudo-Element des Bodys liegt */
+    position: relative;
+    z-index: 1;
+    /* Der Container selbst ist transparent, damit das geblurrte Bild durchscheint.
+       Die einzelnen Sektionen (Toolbar, Palette etc.) haben ihre eigenen (ggf. semi-transparenten) Hintergründe. */
+    background-color: transparent;
+}
+
+#toolbar {
+    background-color: var(--toolbar-bg);
+    color: var(--toolbar-text);
+    padding: 8px 10px;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap; /* Für kleinere Bildschirme */
+    gap: 10px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    z-index: 100;
+}
+
+.toolbar-group {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+#toolbar button, .toolbar-button-label {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.9em;
+    transition: background-color 0.2s;
+}
+#toolbar button:hover:not(:disabled), .toolbar-button-label:hover {
+    background-color: #777; /* Eventuell anpassen für bessere Sichtbarkeit über transparenten Buttons */
+}
+#toolbar button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+#toolbar button.active {
+    background-color: var(--selected-outline);
+}
+
+#toolbar input[type="search"] {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-color-opaque); /* Undurchsichtiger Hintergrund für bessere Lesbarkeit */
+    color: var(--text-color);
+}
+
+#main-area {
+    display: flex;
+    flex-grow: 1;
+    overflow: hidden; /* Wichtig für internes Scrolling */
+}
+
+#element-palette {
+    width: 220px;
+    background-color: var(--editor-bg);
+    padding: 15px;
+    overflow-y: auto;
+    border-right: 1px solid var(--border-color);
+}
+#element-palette h3 { margin-top: 0;}
+
+#canvas-area {
+    flex-grow: 1;
+    background-color: var(--canvas-bg);
+    display: flex; /* Zentriert den iframe wrapper */
+    justify-content: center;
+    align-items: flex-start; /* iframe oben ausrichten */
+    padding: 20px;
+    overflow: auto; /* Falls iframe größer als Bereich */
+}
+
+#iframe-wrapper {
+    width: 100%; /* Standard Desktop */
+    max-width: 1200px; /* Begrenzung für Desktop */
+    height: calc(100% - 0px); /* Etwas Platz lassen */
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    overflow: hidden; /* Scrollen innerhalb des iframes */
+    transition: width 0.3s ease-in-out;
+}
+#iframe-wrapper.tablet-view { width: 768px; }
+#iframe-wrapper.mobile-view { width: 375px; }
+
+
+#canvas-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    background-color: white; /* Hintergrund des iframe-Inhalts bleibt typischerweise weiß (oder was der User einstellt) */
+}
+
+
+#properties-inspector {
+    width: 280px;
+    background-color: var(--inspector-bg);
+    padding: 15px;
+    overflow-y: auto;
+    border-left: 1px solid var(--border-color);
+}
+#properties-inspector h3 { margin-top: 0;}
+
+/* Stile für Elemente in der Palette */
+.palette-element {
+    background-color: var(--modal-content-bg); /* Angepasst an Theme, nutzt Modal-Hintergrund */
+    color: var(--text-color);
+    border: 1px solid var(--border-color);
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    cursor: grab;
+    border-radius: 4px;
+    user-select: none;
+    font-size: 0.9em;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.palette-element:hover {
+    border-color: var(--selected-outline);
+    background-color: color-mix(in srgb, var(--modal-content-bg) 90%, var(--selected-outline) 10%);
+}
+.palette-element .icon { font-size: 1.1em; }
+
+.category-title {
+    font-weight: bold;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    color: var(--text-color);
+    opacity: 0.8;
+    font-size: 0.85em;
+    text-transform: uppercase;
+}
+
+#inspector-content label {
+    display: block;
+    margin-top: 12px;
+    margin-bottom: 4px;
+    font-size: 0.85em;
+    font-weight: bold;
+}
+#inspector-content input[type="text"],
+#inspector-content input[type="number"],
+#inspector-content input[type="color"],
+#inspector-content input[type="url"],
+#inspector-content textarea,
+#inspector-content select {
+    width: calc(100% - 16px);
+    padding: 8px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    box-sizing: border-box;
+    background-color: var(--bg-color-opaque); /* Undurchsichtiger Hintergrund für bessere Lesbarkeit */
+    color: var(--text-color);
+    font-size: 0.9em;
+}
+#inspector-content input[type="checkbox"] {
+    margin-right: 5px;
+}
+
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: var(--modal-bg); /* Semi-transparenter Überzug */
+    backdrop-filter: blur(2px); /* Blur für den Bereich HINTER dem Modal (also den Editor-Container) */
+}
+.modal-content {
+    background-color: var(--modal-content-bg); /* Semi-transparenter Modal-Inhalt */
+    color: var(--text-color);
+    margin: 10% auto;
+    padding: 20px;
+    border: 1px solid var(--border-color);
+    width: 80%;
+    max-width: 500px;
+    border-radius: 5px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+.modal-content label { display: block; margin-top: 10px; }
+.modal-content input, .modal-content textarea, .modal-content select {
+    width: 95%;
+    padding: 8px;
+    margin-top: 5px;
+    border: 1px solid var(--border-color);
+    border-radius: 3px;
+    background-color: var(--bg-color-opaque); /* Undurchsichtiger Hintergrund für bessere Lesbarkeit */
+    color: var(--text-color);
+}
+.modal-content button {
+    background-color: var(--selected-outline);
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 3px;
+    cursor: pointer;
+    margin-top: 15px;
+}
+.close-button {
+    color: var(--text-color);
+    opacity: 0.7;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+.close-button:hover,
+.close-button:focus {
+    opacity: 1;
+    text-decoration: none;
+    cursor: pointer;
+}

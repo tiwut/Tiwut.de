@@ -1,3 +1,48 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:d81e029c0b6a44cdc7966ce0f97f37827a6059045c27851056fcdcbb58801a4c
-size 1456
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Free 3D Model Hub</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- JSZip library for creating ZIP files -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+</head>
+<body>
+    <header>
+        <h1>3D Model Treasury</h1>
+        <div class="controls">
+            <input type="text" id="search-bar" placeholder="Search models...">
+            <select id="format-filter">
+                <option value="all">All Formats</option>
+                <option value="STL">STL</option>
+                <option value="STEP">STEP</option>
+                <option value="OBJ">OBJ</option>
+                <option value="AMF">AMF</option>
+                <option value="3MF">3MF</option>
+            </select>
+        </div>
+    </header>
+
+    <main id="model-grid">
+        <!-- Models will be inserted here by JavaScript -->
+    </main>
+
+    <!-- Modal for the Image Preview -->
+    <div id="image-viewer-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-button" title="Close">&times;</span>
+            <h3 id="modal-image-title">Image Preview</h3>
+            <div class="image-viewer-container">
+                <img id="modal-image" src="" alt="Enlarged model preview">
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Tiwut.de All models are free to download.</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

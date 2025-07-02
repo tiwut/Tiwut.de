@@ -1,0 +1,5 @@
+Vase:STL,obj|Vase_normal.jpg
+Roboter_Arm:STEP,3MF,OBJ
+Zahnrad_Set:STL,AMF,STEP,OBJ
+Einfacher_Wuerfel:OBJ
+Laptop_Stand:STL,3MF

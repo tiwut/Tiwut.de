@@ -1,3 +1,534 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:8b58d559cfdbdf76f8c12e403151460ccd60ee313cb8d848206feb6df9a704db
-size 21118
+<!DOCTYPE html>
+<!-- lang-Attribut wird dynamisch via JS gesetzt -->
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Titel wird dynamisch via JS gesetzt -->
+    <title>App Store</title>
+    <style>
+        :root {
+            --primary-accent-color: #FFA500; /* Orange */
+            --primary-accent-hover-color: #FFC107; /* Lighter Orange for hover */
+            --background-color: #212529; /* Very dark gray, almost black - used for some components */
+            --card-bg: #343a40; /* Dark gray for cards */
+            --text-color: #f8f9fa; /* Very light gray / white for text */
+            --secondary-text-color: #adb5bd; /* Slightly darker gray for secondary text */
+            --shadow-color: rgba(0, 0, 0, 0.3); /* Darker shadow for dark mode */
+            --border-color: var(--primary-accent-color); /* Orange for borders */
+            --input-bg-color: #495057; /* Dark background for input */
+            --input-border-color: #6c757d;
+
+            --icon-size: 56px;
+            --card-border-radius: 12px;
+            --border-width: 2px;
+            --blur-amount: 2px; /* Control background blur amount */
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 0;
+            background-color: transparent;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image: url('main.avif');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            filter: blur(var(--blur-amount));
+            z-index: -1;
+            transform: scale(1.05);
+        }
+
+
+        header {
+            width: 100%;
+            max-width: 800px;
+            margin-bottom: 30px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: rgba(33, 37, 41, 0.75); /* Increased opacity for readability */
+            padding: 25px;
+            border-radius: var(--card-border-radius);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.25);
+        }
+
+        h1 {
+            font-size: 2.8em;
+            color: var(--primary-accent-color);
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            text-shadow: 0 0 10px rgba(255, 165, 0, 0.3);
+            margin-bottom: 25px;
+            margin-top: 0;
+        }
+
+        .header-controls {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 20px;
+            width: 100%;
+            margin-bottom: 25px;
+        }
+        
+        .main-page-button {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-accent-color);
+            color: var(--background-color);
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+        .main-page-button:hover {
+            background-color: var(--primary-accent-hover-color);
+            transform: translateY(-2px);
+        }
+
+        #lang-switcher {
+            padding: 10px;
+            border-radius: 8px;
+            border: 1px solid var(--input-border-color);
+            background-color: var(--input-bg-color);
+            color: var(--text-color);
+            font-family: inherit;
+            font-size: 1em;
+            cursor: pointer;
+        }
+        #lang-switcher:focus {
+            outline: none;
+            border-color: var(--primary-accent-color);
+            box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.25);
+        }
+
+        .search-container {
+            width: 100%;
+            max-width: 500px;
+            position: relative;
+        }
+
+        #search-input {
+            width: 100%;
+            padding: 12px 15px;
+            font-size: 1em;
+            border-radius: var(--card-border-radius);
+            border: var(--border-width) solid var(--input-border-color);
+            background-color: var(--input-bg-color);
+            color: var(--text-color);
+            box-sizing: border-box;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        #search-input:focus {
+            outline: none;
+            border-color: var(--primary-accent-color);
+            box-shadow: 0 0 0 3px rgba(255, 165, 0, 0.25);
+        }
+
+        #search-input::placeholder { color: var(--secondary-text-color); }
+
+        .app-store-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+            gap: 30px;
+            width: 100%;
+            max-width: 1300px;
+            padding: 0;
+        }
+
+        .app-entry {
+            background-color: var(--card-bg);
+            border-radius: var(--card-border-radius);
+            border: var(--border-width) solid var(--border-color);
+            box-shadow: 0 5px 20px var(--shadow-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, border-color 0.3s ease, opacity 0.3s ease, height 0.3s ease, padding-top 0.3s ease, padding-bottom 0.3s ease, margin-bottom 0.3s ease, border-width 0.3s ease;
+            opacity: 0;
+            transform: scale(0.9) translateY(20px);
+            overflow: hidden;
+        }
+
+        .app-entry.visible {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+
+        .app-entry.hidden-by-search {
+            opacity: 0 !important;
+            transform: scale(0.8) !important;
+            height: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            margin-bottom: calc(-1 * var(--border-width));
+            border-width: 0;
+            overflow: hidden;
+        }
+
+        .app-entry:hover:not(.hidden-by-search) {
+            transform: translateY(-10px) scale(1.05);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border-color: var(--primary-accent-hover-color);
+        }
+
+        .app-entry a {
+            text-decoration: none;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 25px 20px;
+            height: 100%;
+            box-sizing: border-box;
+        }
+
+        .app-entry.hidden-by-search a { pointer-events: none; }
+
+        .app-icon {
+            width: var(--icon-size);
+            height: var(--icon-size);
+            margin-bottom: 18px;
+            border-radius: 10px;
+            object-fit: contain;
+            background-color: rgba(255, 255, 255, 0.05);
+            padding: 6px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .app-icon.fallback-icon {
+            background-color: var(--secondary-text-color);
+            padding: 0;
+        }
+        .app-icon.fallback-icon svg text { fill: var(--card-bg); }
+        .app-name {
+            font-size: 1.05em;
+            font-weight: 500;
+            text-align: center;
+            word-break: break-word;
+            line-height: 1.4;
+            color: var(--text-color);
+        }
+        .loader-container, .message-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            width: 100%;
+            min-height: 200px;
+            grid-column: 1 / -1;
+        }
+        .loader {
+            border: 5px solid var(--card-bg);
+            border-top: 5px solid var(--primary-accent-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .message-box {
+            padding: 20px;
+            font-size: 1.1em;
+            background-color: var(--card-bg);
+            border: var(--border-width) solid var(--border-color);
+            border-radius: var(--card-border-radius);
+            text-align: center;
+        }
+        .error-message { color: #ff6b6b; border-color: #ff6b6b; }
+        .info-message { color: var(--secondary-text-color); }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1 data-lang-key="appStoreTitle">App Store</h1>
+        <div class="header-controls">
+            <a href="https://tiwut.de" target="_blank" rel="noopener noreferrer" class="main-page-button" data-lang-key="mainPageButton">Main Page</a>
+            <select id="lang-switcher">
+                <option value="en">English</option>
+                <option value="de">Deutsch</option>
+                <option value="es">Español</option>
+            </select>
+        </div>
+        <div class="search-container">
+            <input type="text" id="search-input" data-lang-key-placeholder="searchPlaceholder">
+        </div>
+    </header>
+
+    <div id="app-store-grid" class="app-store-grid">
+        <!-- Content is generated by JavaScript -->
+    </div>
+
+    <script>
+        // --- MULTILANGUAGE SETUP ---
+        const translations = {
+            en: {
+                pageTitle: "App Store",
+                htmlLang: "en",
+                appStoreTitle: "App Store",
+                searchPlaceholder: "Search apps...",
+                mainPageButton: "Main Page",
+                noResults: "No apps match your search.",
+                noAppsInStore: "No apps found in the store.",
+                errorInvalidUrl: "Error for {name}: Invalid URL.",
+                errorLoading: "Could not load apps list.",
+                logoAltText: "Logo of {name}",
+                linkTitle: "Open {name}"
+            },
+            de: {
+                pageTitle: "App Store",
+                htmlLang: "de",
+                appStoreTitle: "App Store",
+                searchPlaceholder: "Apps suchen...",
+                mainPageButton: "Hauptseite",
+                noResults: "Keine Apps entsprechen Ihrer Suche.",
+                noAppsInStore: "Keine Apps im Store gefunden.",
+                errorInvalidUrl: "Fehler für {name}: Ungültige URL.",
+                errorLoading: "Die App-Liste konnte nicht geladen werden.",
+                logoAltText: "Logo von {name}",
+                linkTitle: "{name} öffnen"
+            },
+            es: {
+                pageTitle: "Tienda de Aplicaciones",
+                htmlLang: "es",
+                appStoreTitle: "Tienda de Aplicaciones",
+                searchPlaceholder: "Buscar aplicaciones...",
+                mainPageButton: "Página Principal",
+                noResults: "Ninguna aplicación coincide con tu búsqueda.",
+                noAppsInStore: "No se encontraron aplicaciones en la tienda.",
+                errorInvalidUrl: "Error para {name}: URL no válida.",
+                errorLoading: "No se pudo cargar la lista de aplicaciones.",
+                logoAltText: "Logo de {name}",
+                linkTitle: "Abrir {name}"
+            }
+        };
+
+        function getInitialLanguage() {
+            const savedLang = localStorage.getItem('userLanguage');
+            if (savedLang && translations[savedLang]) {
+                return savedLang;
+            }
+            const browserLang = navigator.language.split('-')[0]; // 'en-US' -> 'en'
+            return translations[browserLang] ? browserLang : 'en'; // Default to English
+        }
+
+        let currentLanguage = getInitialLanguage();
+
+        function applyStaticTranslations() {
+            const T = translations[currentLanguage];
+            document.documentElement.lang = T.htmlLang;
+            document.title = T.pageTitle;
+
+            document.querySelectorAll('[data-lang-key]').forEach(el => {
+                const key = el.dataset.langKey;
+                if (T[key]) el.textContent = T[key];
+            });
+
+            document.querySelectorAll('[data-lang-key-placeholder]').forEach(el => {
+                const key = el.dataset.langKeyPlaceholder;
+                if (T[key]) el.placeholder = T[key];
+            });
+        }
+
+        // --- APP LOADING LOGIC ---
+        let allAppElements = [];
+        let noResultsMessageElement = null;
+
+        function createNoResultsMessage() {
+            const container = document.createElement('div');
+            container.className = 'message-container';
+            container.id = 'no-results-message';
+            container.style.display = 'none';
+
+            const messageBox = document.createElement('p');
+            messageBox.className = 'message-box info-message';
+            messageBox.textContent = translations[currentLanguage].noResults;
+            container.appendChild(messageBox);
+            return container;
+        }
+
+        async function loadApps() {
+            const gridContainer = document.getElementById('app-store-grid');
+            applyStaticTranslations(); // Apply translations to static parts of the page
+
+            // Show loader
+            gridContainer.innerHTML = `
+                <div class="loader-container">
+                    <div class="loader"></div>
+                </div>`;
+            
+            // Create and append "No results" message (initially hidden)
+            noResultsMessageElement = createNoResultsMessage();
+            gridContainer.appendChild(noResultsMessageElement);
+
+            try {
+                const response = await fetch('apps.txt');
+                if (!response.ok) {
+                    throw new Error(translations[currentLanguage].errorLoading);
+                }
+                const text = await response.text();
+                const lines = text.split('\n').filter(line => line.trim() !== '');
+                
+                // Remove loader before adding content
+                const loader = gridContainer.querySelector('.loader-container');
+                if(loader) loader.remove();
+
+                if (lines.length === 0) {
+                    const infoContainer = document.createElement('div');
+                    infoContainer.className = 'message-container';
+                    const infoBox = document.createElement('p');
+                    infoBox.className = 'message-box info-message';
+                    infoBox.textContent = translations[currentLanguage].noAppsInStore;
+                    infoContainer.appendChild(infoBox);
+                    gridContainer.appendChild(infoContainer);
+                    return;
+                }
+
+                allAppElements = []; // Reset app elements array
+
+                lines.forEach((line, index) => {
+                    const parts = line.split(',');
+                    if (parts.length >= 2) {
+                        const name = parts[0].trim();
+                        const url = parts.slice(1).join(',').trim();
+
+                        if (name && url) {
+                            try {
+                                const urlObject = new URL(url);
+                                const faviconUrl = `https://www.google.com/s2/favicons?sz=128&domain_url=${encodeURIComponent(urlObject.origin)}`;
+
+                                const appEntryDiv = document.createElement('div');
+                                appEntryDiv.className = 'app-entry';
+                                appEntryDiv.style.transitionDelay = `${index * 0.07}s`;
+                                appEntryDiv.dataset.appName = name.toLowerCase();
+
+                                const link = document.createElement('a');
+                                link.href = url;
+                                link.target = '_blank';
+                                link.rel = 'noopener noreferrer';
+                                link.title = translations[currentLanguage].linkTitle.replace('{name}', name);
+
+                                const img = document.createElement('img');
+                                img.className = 'app-icon';
+                                img.src = faviconUrl;
+                                img.alt = translations[currentLanguage].logoAltText.replace('{name}', name);
+                                img.loading = 'lazy';
+                                img.onerror = function() {
+                                    this.onerror = null; // Prevent infinite loops
+                                    const cardBg = getComputedStyle(document.documentElement).getPropertyValue('--card-bg').trim();
+                                    const secondaryText = getComputedStyle(document.documentElement).getPropertyValue('--secondary-text-color').trim();
+                                    this.src = `data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="15" ry="15" fill="${secondaryText}"/><text x="50%" y="50%" dominant-baseline="middle" text-anchor="middle" font-size="50" font-family="sans-serif" fill="${cardBg}">🌐</text></svg>`;
+                                    this.classList.add('fallback-icon');
+                                };
+
+                                const nameDiv = document.createElement('div');
+                                nameDiv.className = 'app-name';
+                                nameDiv.textContent = name;
+
+                                link.appendChild(img);
+                                link.appendChild(nameDiv);
+                                appEntryDiv.appendChild(link);
+                                gridContainer.insertBefore(appEntryDiv, noResultsMessageElement);
+                                allAppElements.push(appEntryDiv);
+
+                                requestAnimationFrame(() => {
+                                    setTimeout(() => {
+                                        appEntryDiv.classList.add('visible');
+                                    }, 20);
+                                });
+
+                            } catch (e) {
+                                console.warn(`Invalid URL for "${name}": ${url}`, e);
+                                const errorContainer = document.createElement('div');
+                                errorContainer.className = 'message-container';
+                                const errorBox = document.createElement('p');
+                                errorBox.className = 'message-box error-message';
+                                errorBox.textContent = translations[currentLanguage].errorInvalidUrl.replace('{name}', name);
+                                errorContainer.appendChild(errorBox);
+                                gridContainer.insertBefore(errorContainer, noResultsMessageElement);
+                            }
+                        }
+                    } else {
+                        console.warn(`Invalid format in apps.txt: ${line}`);
+                    }
+                });
+                
+                // After loading, re-apply filter if there's text in search box
+                filterApps();
+
+            } catch (error) {
+                console.error('Error loading apps:', error);
+                const errorContainer = document.createElement('div');
+                errorContainer.className = 'message-container';
+                const errorBox = document.createElement('p');
+                errorBox.className = 'message-box error-message';
+                errorBox.textContent = error.message;
+
+                const loader = gridContainer.querySelector('.loader-container');
+                if(loader) loader.remove();
+                gridContainer.appendChild(errorContainer);
+            }
+        }
+
+        function filterApps() {
+            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
+            let visibleCount = 0;
+
+            allAppElements.forEach(appElement => {
+                const appName = appElement.dataset.appName;
+                if (appName.includes(searchTerm)) {
+                    appElement.classList.remove('hidden-by-search');
+                    visibleCount++;
+                } else {
+                    appElement.classList.add('hidden-by-search');
+                }
+            });
+
+            if (noResultsMessageElement) {
+                noResultsMessageElement.style.display = (visibleCount === 0 && searchTerm !== '') ? 'flex' : 'none';
+            }
+        }
+
+        // --- INITIALIZATION ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const langSwitcher = document.getElementById('lang-switcher');
+            const searchInput = document.getElementById('search-input');
+
+            // Set switcher to current language
+            langSwitcher.value = currentLanguage;
+
+            // Add event listener for language change
+            langSwitcher.addEventListener('change', (event) => {
+                currentLanguage = event.target.value;
+                localStorage.setItem('userLanguage', currentLanguage);
+                loadApps(); // Reload apps and apply all translations
+            });
+
+            // Add event listener for search
+            searchInput.addEventListener('input', filterApps);
+            
+            // Initial load
+            loadApps();
+        });
+    </script>
+
+</body>
+</html>

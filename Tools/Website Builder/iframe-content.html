@@ -1,3 +1,38 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:c5d23f1967a9ffa31e5ead8383ab956f5f39a95796bf79bddebe5d9f26953a50
-size 1063
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vorschau</title>
+    <style id="global-custom-styles">
+        /* Benutzerdefiniertes CSS wird hier eingefügt */
+    </style>
+    <style id="google-font-style">
+        /* Google Font Link wird hier eingefügt */
+    </style>
+    <style>
+        body { margin: 0; padding: 10px; font-family: sans-serif; }
+        /* Basis-Styling für Elemente im Iframe, um Selektion etc. zu ermöglichen */
+        [data-canvas-id] {
+            position: relative; /* Für spätere Overlays oder Handles */
+            min-height: 20px; /* Damit leere Elemente klickbar sind */
+            border: 1px dashed transparent; /* Standardmäßig unsichtbar */
+        }
+        [data-canvas-id].selected-element-iframe {
+            outline: 2px solidDodgerBlue;
+            box-shadow: 0 0 0 2pxDodgerBlue inset;
+        }
+        .drop-target-highlight {
+            outline: 2px dashed green !important;
+            background-color: rgba(0, 255, 0, 0.1) !important;
+        }
+        /* Hilfs-Styling für Spalten etc. */
+        .row-flex { display: flex; gap: 10px; padding: 5px 0; }
+        .col-flex { flex: 1; border: 1px dashed #ccc; padding: 10px; min-height: 50px;}
+    </style>
+</head>
+<body id="page-body">
+    <!-- Inhalt wird hier per JS aus dem Editor eingefügt -->
+    <p>Ziehe Elemente aus der Palette hierher.</p>
+</body>
+</html>

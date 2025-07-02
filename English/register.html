@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Tiwut</title>
+    <script defer src="https://unpkg.com/swup@4"></script>
+    <script defer src="script.js" type="module"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="custom-context-menu"><ul><li><button type="button" data-action="copy">Copy</button></li><li><button type="button" data-action="cut">Cut</button></li><li><button type="button" data-action="paste">Paste</button></li></ul></div>
+    <div class="video-background"><div class="video-overlay"></div></div>
+    <header class="main-header fade-in">
+        <nav>
+            <ul>
+                <li><a href="index.html" data-nav-index="0">Home</a></li>
+                <li><a href="about.html" data-nav-index="1">About us</a></li>
+                <li><a href="services.html" data-nav-index="2">Services</a></li>
+                <li><a href="download.html" data-nav-index="3">Download</a></li>
+                <li><a href="my_projects.html" data-nav-index="4">My Projects</a></li>
+                <li><a href="office.html" data-nav-index="5">Office</a></li>
+                <li><a href="chat_list.html" data-nav-index="6">Chat</a></li>
+                <li><a href="https://tiwut.de/Tools/index.html" data-nav-index="7">Tools</a></li>
+                <li><a href="https://tiwut.de/NEWS/index.html" data-nav-index="8">News</a></li>
+                 <li class="logged-out" style="display: none;"><a href="login.html" data-nav-index="9">Login</a></li>
+                 <li class="logged-out" style="display: none;"><a href="register.html" data-nav-index="10">Register</a></li>
+                 <li class="logged-in logged-in-menu" style="display: none;">
+                    <button id="account-menu-trigger">Account</button>
+                    <div id="account-dropdown">
+                        <ul>
+                            <li><a href="#" data-no-swup>Profile (TBD)</a></li>
+                            <li><a href="#" data-no-swup>Settings (TBD)</a></li>
+                            <li><hr></li>
+                            <li><button id="logout-button-dropdown">Logout</button></li>
+                        </ul>
+                    </div>
+                </li>
+                <li><a href="contact.html" data-nav-index="9">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+    <div id="swup" class="transition-slide">
+        <main>
+             <section class="auth-form-section animate-on-scroll">
+                <h2>Register</h2>
+                <div id="register-status" class="status-message"></div>
+                <form id="register-form" class="auth-form">
+                     <div>
+                        <label for="displayName">Display Name:</label>
+                        <input type="text" id="displayName" name="displayName" required maxlength="50">
+                    </div>
+                    <div>
+                        <label for="username">Username:</label>
+                        <input type="text" id="username" name="username" required pattern="^[a-zA-Z0-9_]{3,20}$" title="3-20 characters (letters, numbers, underscore)" autocomplete="username">
+                    </div>
+                    <div>
+                        <label for="password">Password (min. 6 characters):</label>
+                        <input type="password" id="password" name="password" required minlength="6" autocomplete="new-password">
+                    </div>
+                     <div>
+                        <label for="passwordConfirm">Confirm Password:</label>
+                        <input type="password" id="passwordConfirm" name="passwordConfirm" required minlength="6" autocomplete="new-password">
+                    </div>
+                     <div class="terms-container">
+                        <input type="checkbox" id="terms" name="terms" required>
+                        <label for="terms">I accept the <a href="terms.html" target="_blank" data-no-swup>Terms and Conditions</a></label>
+                    </div>
+                    <button type="submit" class="cta-button" disabled>Register</button>
+                </form>
+                 <p class="form-link">Already have an account? <a href="login.html" data-nav-index="7">Login here</a></p>
+            </section>
+        </main>
+    </div>
+    <footer class="main-footer fade-in"><p>&copy; 2025 Tiwut. All rights reserved.</p></footer>
+</body>
+</html>

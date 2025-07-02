@@ -1,3 +1,178 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:ad25dc5ea609d48fe08d26be901aa03e9b0dbda4b705d12de7c2f62dde82754e
-size 6315
+/* Grundlegende Resets und Schriftarten */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: #fff;
+    background-image: url('main.avif');
+    background-size: cover;
+    background-position: center center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    overflow-x: hidden;
+    /* Cursor verstecken und definieren */
+    cursor: none; 
+}
+
+/* === NEU: Custom Cursor Styles === */
+#cursor-dot, #cursor-circle {
+    position: fixed;
+    top: 0;
+    left: 0;
+    pointer-events: none; /* WICHTIG: Erlaubt Klicks auf Elemente darunter */
+    z-index: 9999;
+    border-radius: 50%;
+}
+
+#cursor-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #5ac8fa;
+    transform: translate(-50%, -50%);
+}
+
+#cursor-circle {
+    width: 40px;
+    height: 40px;
+    border: 2px solid rgba(90, 200, 250, 0.7);
+    transform: translate(-50%, -50%);
+    transition: transform 0.2s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.2s ease;
+}
+
+/* Cursor-Interaktionseffekt */
+body.cursor-interactive #cursor-circle {
+    transform: translate(-50%, -50%) scale(1.5);
+    opacity: 0.5;
+}
+
+/* Hauptcontainer für die Zentrierung */
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+/* Der "Glassmorphism" Container */
+.search-container {
+    width: 100%;
+    max-width: 700px;
+    padding: 40px;
+    background: rgba(25, 25, 30, 0.5);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    backdrop-filter: blur(15px) saturate(1.2);
+    -webkit-backdrop-filter: blur(15px) saturate(1.2);
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    animation: fadeInScale 1s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    letter-spacing: -1px;
+    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+}
+
+#searchInput {
+    width: 100%;
+    padding: 18px 25px;
+    font-size: 1.1rem;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    outline: none;
+    transition: all 0.3s ease;
+}
+
+#searchInput:focus {
+    background: rgba(0, 0, 0, 0.4);
+    border-color: rgba(90, 200, 250, 0.8);
+    box-shadow: 0 0 20px rgba(90, 200, 250, 0.3);
+}
+
+/* Ergebnisse */
+#results { margin-top: 30px; text-align: left; }
+
+.result-item {
+    background: rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    animation: slideUpFadeIn 0.6s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+    opacity: 0;
+}
+
+.result-item a {
+    color: #82c9ff;
+    text-decoration: none;
+    font-size: 1.2rem;
+    font-weight: 600;
+    transition: color 0.2s ease;
+}
+
+.result-item p { margin-top: 8px; color: rgba(255, 255, 255, 0.8); line-height: 1.6; }
+
+/* === NEU: Tag-Styling === */
+.result-tags {
+    margin-top: 15px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.result-tags span {
+    background: rgba(90, 200, 250, 0.15);
+    color: #82c9ff;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.feedback-message { color: rgba(255, 255, 255, 0.7); padding: 20px; }
+
+/* UI-Buttons */
+#lang-switcher, .main-page-link {
+    position: absolute;
+    top: 20px;
+    z-index: 10;
+}
+
+#lang-switcher { right: 20px; display: flex; gap: 10px; }
+.main-page-link { left: 20px; } /* NEU */
+
+#lang-switcher button, .main-page-link {
+    background: rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #fff;
+    padding: 8px 15px;
+    border-radius: 8px;
+    cursor: none; /* Wichtig, da wir unseren eigenen Cursor haben */
+    font-weight: 600;
+    transition: all 0.2s ease;
+    text-decoration: none; /* Für den Link */
+}
+
+#lang-switcher button:hover, .main-page-link:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+#lang-switcher button.active {
+    background: #5ac8fa;
+    color: #000;
+    border-color: #5ac8fa;
+}
+
+/* Animationen */
+@keyframes fadeInScale { from { opacity: 0; transform: scale(0.9); } to { opacity: 1; transform: scale(1); } }
+@keyframes slideUpFadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }

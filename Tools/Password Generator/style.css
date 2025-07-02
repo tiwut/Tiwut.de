@@ -1,3 +1,157 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:386972fc85046042d23b8dc79f735862660bcfe0897426ddc6e81afe459ccece
-size 2693
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    /* background-color: #f4f7f6; */ /* Entfernt, da das Bild den Hintergrund übernimmt */
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+    /* padding: 20px; */ /* Entfernt, um einen vollflächigen Hintergrund zu ermöglichen */
+    box-sizing: border-box;
+    position: relative; /* Erforderlich für die Positionierung des Pseudo-Elements */
+    overflow: hidden; /* Verhindert Scrollbalken durch den skalierten, unscharfen Hintergrund */
+}
+
+body::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('main.avif');
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center center;
+    filter: blur(0px); /* Stärke des Unschärfeeffekts anpassen (z.B. 5px, 8px, 10px) */
+    /* Optional: Leicht skalieren, um Artefakte an den Rändern durch den Unschärfeeffekt zu vermeiden */
+    transform: scale(1.03); /* Etwas vergrößern, um unscharfe Kanten abzudecken */
+    z-index: -1; /* Stellt sicher, dass der Hintergrund hinter dem Inhalt liegt */
+}
+
+.container {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 500px;
+    /* Der Container liegt aufgrund von z-index: -1 des body::before darüber.
+       Eine explizite Positionierung ist hier nicht zwingend notwendig,
+       kann aber für komplexere Layouts sinnvoll sein.
+    */
+}
+
+h1 {
+    text-align: center;
+    color: #2c3e50;
+    margin-bottom: 25px;
+}
+
+.result-container {
+    display: flex;
+    align-items: center;
+    margin-bottom: 20px;
+    background-color: #ecf0f1;
+    border-radius: 5px;
+    padding: 5px;
+}
+
+#passwordOutput {
+    flex-grow: 1;
+    padding: 10px 15px;
+    font-size: 1.1em;
+    border: none;
+    background-color: transparent;
+    outline: none;
+    color: #2c3e50;
+}
+
+#passwordOutput::placeholder {
+    color: #7f8c8d;
+}
+
+#copyButton {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#copyButton:hover {
+    background-color: #2980b9;
+}
+
+#copyButton img {
+    width: 20px;
+    height: 20px;
+    filter: invert(1); /* Makes SVG white if it's black */
+}
+
+
+.options {
+    margin-bottom: 25px;
+}
+
+.option {
+    display: flex;
+    align-items: center;
+    margin-bottom: 15px;
+    padding: 10px;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+}
+
+.option label {
+    margin-left: 10px;
+    flex-grow: 1;
+    cursor: pointer;
+}
+
+.option input[type="checkbox"] {
+    transform: scale(1.2);
+    margin-right: 5px;
+    cursor: pointer;
+}
+
+.option input[type="number"] {
+    width: 60px;
+    padding: 8px;
+    border: 1px solid #bdc3c7;
+    border-radius: 4px;
+    font-size: 1em;
+    text-align: center;
+}
+
+.generate-btn {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    background-color: #2ecc71;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2em;
+    font-weight: bold;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.generate-btn:hover {
+    background-color: #27ae60;
+}
+
+.message {
+    text-align: center;
+    margin-top: 15px;
+    font-size: 0.9em;
+    height: 20px; /* Reserve space to prevent layout shift */
+    color: #27ae60;
+}

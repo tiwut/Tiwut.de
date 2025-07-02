@@ -1,3 +1,356 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:073243c75184e2d125d9b5fbc6d59d3397ec4bb48b48d9eee855d3f9657044b3
-size 8205
+:root {
+    --primary-color: #3498db;
+    --secondary-color: #2ecc71;
+    --tertiary-color: #e67e22; /* For ZIP button */
+    /* --background-color: #f4f6f8; -- Removed as body background will be an image */
+    --card-background: #ffffff;
+    --text-color: #333;
+    --border-color: #e0e0e0;
+    --shadow-color: rgba(0,0,0,0.1);
+    --hover-shadow-color: rgba(0,0,0,0.15);
+    --disabled-color: #bdc3c7;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    /* background-color: var(--background-color); */ /* Removed */
+    color: var(--text-color);
+    line-height: 1.6;
+    position: relative; /* For ::before pseudo-element stacking context */
+    /* overflow-x: hidden; /* Optional: To prevent horizontal scroll if blur creates slight overflow */
+}
+
+body::before {
+    content: '';
+    position: fixed; /* Fixed position to cover the entire viewport */
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('main.avif');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(0px); /* Apply blur to the background image. Adjust 8px as needed. */
+    z-index: -1; /* Place the pseudo-element behind the body's content */
+}
+
+
+header {
+    background: linear-gradient(135deg, var(--primary-color) 0%, #5dade2 100%);
+    color: white;
+    padding: 1.5em 2em;
+    text-align: center;
+    box-shadow: 0 2px 5px var(--shadow-color);
+    position: sticky;
+    top: 0;
+    z-index: 100; /* Ensures header is above the blurred background */
+}
+
+header h1 {
+    margin: 0 0 0.5em 0;
+    font-size: 2.5em;
+    font-weight: 600;
+}
+
+.controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1em;
+    margin-top: 1em;
+    flex-wrap: wrap;
+}
+
+.controls input[type="text"],
+.controls select {
+    padding: 0.8em 1em;
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    font-size: 1em;
+    min-width: 220px;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.controls input[type="text"]:focus,
+.controls select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.3);
+}
+
+.controls input[type="text"] {
+    flex-grow: 1;
+    max-width: 450px;
+}
+
+#model-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.8em;
+    padding: 2em;
+    max-width: 1300px;
+    margin: 2em auto;
+    position: relative; /* Ensure cards are in the stacking context above ::before */
+    z-index: 1;
+}
+
+.model-card {
+    background-color: var(--card-background);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 4px 8px var(--shadow-color);
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+.model-card:hover {
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 8px 16px var(--hover-shadow-color);
+}
+
+.model-card img { /* Thumbnail */
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    border-bottom: 1px solid var(--border-color);
+    transition: opacity 0.3s;
+}
+.model-card:hover img {
+    opacity: 0.9;
+}
+
+.model-card-content {
+    padding: 1.2em;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.model-card h3 {
+    margin-top: 0;
+    margin-bottom: 0.6em;
+    font-size: 1.5em;
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.model-actions {
+    margin-top: auto;
+    padding-top: 1em;
+    display: flex;
+    flex-direction: column;
+    gap: 0.8em;
+}
+
+.image-preview-button { /* Renamed from preview-3d-button */
+    background-color: var(--primary-color);
+    color: white;
+    padding: 0.7em 1.2em;
+    text-decoration: none;
+    border-radius: 20px;
+    font-size: 0.95em;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+.image-preview-button:hover:not([disabled]) {
+    background-color: #2980b9;
+    transform: scale(1.03);
+}
+.image-preview-button:disabled { /* Should not happen if main.avif is always present */
+    background-color: var(--disabled-color);
+    color: #7f8c8d;
+    cursor: not-allowed;
+}
+
+.download-zip-button {
+    background-color: var(--tertiary-color);
+    color: white;
+    padding: 0.7em 1.2em;
+    text-decoration: none;
+    border-radius: 20px;
+    font-size: 0.95em;
+    text-align: center;
+    cursor: pointer;
+    border: none;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    width: 100%;
+    box-sizing: border-box;
+}
+.download-zip-button:hover:not([disabled]) {
+    background-color: #d35400;
+    transform: scale(1.03);
+}
+.download-zip-button:disabled {
+    background-color: var(--disabled-color);
+    color: #7f8c8d;
+    cursor: not-allowed;
+}
+.download-zip-button .spinner {
+    display: inline-block;
+    width: 1em;
+    height: 1em;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 50%;
+    border-top-color: white;
+    animation: spin 1s ease-in-out infinite;
+    margin-left: 8px;
+    vertical-align: middle;
+}
+@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+
+.download-buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6em;
+    justify-content: center;
+}
+
+.download-buttons a {
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 0.6em 1em;
+    text-decoration: none;
+    border-radius: 20px;
+    font-size: 0.9em;
+    text-align: center;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    flex-grow: 1;
+    min-width: 60px;
+}
+.download-buttons a:hover {
+    background-color: #27ae60;
+    transform: scale(1.05);
+}
+
+.no-models {
+    grid-column: 1 / -1;
+    text-align: center;
+    font-size: 1.3em;
+    color: #777;
+    padding: 3em;
+    background-color: var(--card-background); /* Keep card background for this message */
+    border-radius: 8px;
+}
+
+/* Modal Styles for Image Preview */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000; /* Ensures modal is above everything, including header */
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.8);
+    backdrop-filter: blur(5px); /* This blurs what's BEHIND the modal overlay */
+    padding: 20px;
+    box-sizing: border-box;
+    animation: fadeInModal 0.3s ease-out;
+}
+@keyframes fadeInModal { from { opacity: 0; } to { opacity: 1; } }
+
+.modal-content { /* For Image Preview Modal */
+    background-color: var(--card-background);
+    margin: 2% auto;
+    padding: 20px;
+    border: none;
+    width: auto; /* Adapts to image width */
+    max-width: 90%; /* Max width of modal content */
+    max-height: 90vh; /* Max height of modal content */
+    border-radius: 10px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    position: relative;
+    animation: slideInModal 0.4s ease-out;
+    display: flex;
+    flex-direction: column;
+    z-index: 1001; /* Ensure modal content is above modal overlay */
+}
+@keyframes slideInModal { from { transform: translateY(-30px) scale(0.95); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+
+.close-button {
+    color: #888;
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 32px;
+    font-weight: bold;
+    transition: color 0.2s, transform 0.2s;
+    z-index: 10; /* Relative to modal-content */
+}
+.close-button:hover, .close-button:focus {
+    color: var(--text-color);
+    text-decoration: none;
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
+#modal-image-title { /* Specific for image modal */
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+    font-size: 1.6em;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5em;
+    text-align: center;
+}
+
+.image-viewer-container {
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+#modal-image {
+    max-width: 100%;
+    max-height: calc(85vh - 80px); /* Adjust based on modal padding and title height */
+    display: block;
+    border-radius: 5px;
+    object-fit: contain; /* Scales image down to fit, preserving aspect ratio */
+}
+
+footer {
+    text-align: center;
+    padding: 2em;
+    background-color: #2c3e50; /* Solid background for footer */
+    color: #ecf0f1;
+    margin-top: 3em;
+    font-size: 0.9em;
+    position: relative; /* Ensure footer is above the blurred background */
+    z-index: 1;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    header h1 { font-size: 2em; }
+    .controls { flex-direction: column; }
+    .controls input[type="text"], .controls select { min-width: unset; width: 90%; box-sizing: border-box; }
+    #model-grid { padding: 1em; gap: 1em; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); }
+    .modal-content { max-width: 95%; padding: 15px;}
+    #modal-image-title { font-size: 1.4em; margin-bottom: 10px;}
+    #modal-image { max-height: calc(80vh - 70px); }
+}
+
+@media (max-width: 480px) {
+    #model-grid { grid-template-columns: 1fr; }
+    .model-card img { height: 200px; }
+    .model-card h3 { font-size: 1.3em; }
+    .controls input[type="text"], .controls select { width: 100%; }
+    .image-preview-button, .download-zip-button, .download-buttons a { font-size: 0.9em; padding: 0.7em 1em; }
+    .modal-content { padding: 10px; }
+    #modal-image-title { font-size: 1.2em;}
+    #modal-image { max-height: calc(75vh - 60px); }
+}

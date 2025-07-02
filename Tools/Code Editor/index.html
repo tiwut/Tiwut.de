@@ -1,3 +1,93 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1e6f5523a568a13b29a8db692e262b962a66d3d9265e2f9beca25095519adc5d
-size 5619
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web Code Editor</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+</head>
+<body class="theme-dark">
+
+    <div class="main-container">
+        <!-- Activity Bar -->
+        <div class="activity-bar">
+            <div class="icon active" data-view-id="files" title="Explorer"><i class="fas fa-copy"></i></div>
+            <div class="icon" data-view-id="search" title="Search"><i class="fas fa-search"></i></div>
+            <div class="icon" data-view-id="settings" title="Settings"><i class="fas fa-cog"></i></div>
+        </div>
+
+        <!-- Side Bar mit allen Ansichten -->
+        <div class="sidebar">
+            <div id="view-files" class="view-panel">
+                <div class="sidebar-header">
+                    <h3 data-i18n-key="fileExplorer">File Explorer</h3>
+                    <div class="sidebar-header-actions">
+                        <button id="new-file-btn" data-i18n-key-title="newFile"><i class="fas fa-file-plus"></i></button>
+                        <button id="open-folder-btn" data-i18n-key-title="openFolder"><i class="fas fa-folder-open"></i></button>
+                    </div>
+                </div>
+                <ul class="file-explorer-list"></ul>
+            </div>
+            <div id="view-search" class="view-panel hidden">
+                <div class="sidebar-header">
+                    <h3 data-i18n-key="search">Search</h3>
+                </div>
+                <div class="search-panel">
+                    <input type="text" id="search-input" data-i18n-key-placeholder="find" placeholder="Find">
+                    <input type="text" id="replace-input" data-i18n-key-placeholder="replace" placeholder="Replace">
+                    <div class="search-actions">
+                        <button id="replace-btn" data-i18n-key-title="replace"><i class="fas fa-exchange-alt"></i></button>
+                        <button id="replace-all-btn" data-i18n-key-title="replaceAll"><i class="fas fa-file-signature"></i></button>
+                    </div>
+                </div>
+            </div>
+            <div id="view-settings" class="view-panel hidden">
+                 <div class="sidebar-header">
+                    <h3 data-i18n-key="settings">Settings</h3>
+                </div>
+                <div class="settings-panel">
+                    <div class="setting-item"><label for="settings-language-selector" data-i18n-key="language">Language</label><select id="settings-language-selector"></select></div>
+                    <div class="setting-item"><label for="settings-theme-selector" data-i18n-key="theme">Theme</label><select id="settings-theme-selector"></select></div>
+                    <div class="setting-item"><label for="settings-fontsize-input" data-i18n-key="fontSize">Font Size</label><input type="number" id="settings-fontsize-input" value="14" min="8" max="32"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Editor & Status Bar Section -->
+        <div class="editor-section">
+            <div id="editor-container"></div>
+            <div class="status-bar">
+                <div class="status-left">
+                    <a href="https://tiwut.de" target="_blank" class="main-page-button"><i class="fas fa-rocket"></i><span data-i18n-key="mainPageButton">Main Page</span></a>
+                    <div id="save-file-btn" class="status-item clickable" data-i18n-key-title="saveFile"><i class="fas fa-save"></i><span data-i18n-key="saveFile">Save File</span></div>
+                    <div id="export-zip-btn" class="status-item clickable" data-i18n-key-title="exportZip"><i class="fas fa-file-archive"></i><span data-i18n-key="exportZip">Export as ZIP</span></div>
+                </div>
+                <div class="status-right">
+                    <div class="status-item"><i class="fas fa-palette"></i><select id="theme-selector" data-i18n-key-title="theme"></select></div>
+                    <div class="status-item"><i class="fas fa-globe"></i><select id="language-selector" data-i18n-key-title="language"></select></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal Dialog für neue Dateien -->
+    <div id="new-file-modal" class="modal-overlay hidden">
+        <div class="modal-content">
+            <h3 data-i18n-key="createNewFile">Create New File</h3>
+            <div class="form-group"><label for="new-filename-input" data-i18n-key="filename">Filename</label><input type="text" id="new-filename-input" placeholder="e.g., about"></div>
+            <div class="form-group"><label for="new-file-preset-select" data-i18n-key="filePreset">Preset / Extension</label><select id="new-file-preset-select"></select></div>
+            <div class="form-group hidden" id="custom-extension-group"><label for="new-file-custom-ext" data-i18n-key="customExtension">Custom Extension</label><input type="text" id="new-file-custom-ext" placeholder="e.g., .md, .txt"></div>
+            <p id="new-file-error" class="error-message"></p>
+            <div class="modal-actions">
+                <button id="create-file-btn" class="modal-btn-primary" data-i18n-key="create">Create</button>
+                <button id="cancel-new-file-btn" data-i18n-key="cancel">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/monaco-editor/0.34.1/min/vs/loader.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

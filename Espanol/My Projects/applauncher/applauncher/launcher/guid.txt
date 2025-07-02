@@ -1,0 +1,1 @@
+open "...\applauncher\launcher\_internal\Shortcut" and paste your -> Shortcut :)

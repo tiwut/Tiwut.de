@@ -1,3 +1,58 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:7d1abb4137a55b602f4cf23bfe6f929d0b354fe655a9fd02e28a405a20091c2c
-size 385
+# Apache Konfiguration für Synology Web Station
+
+# Aktiviere die Rewrite Engine
+RewriteEngine On
+
+# Optional: Symlinks folgen (oft notwendig für mod_rewrite)
+# Wenn du Probleme hast, versuche "Options +SymLinksIfOwnerMatch" stattdessen,
+# oder entferne diese Zeile testweise, falls deine Synology-Konfiguration es nicht benötigt.
+Options +FollowSymLinks
+
+# ----------------------------------------------------------------------
+# HTTPS ERZWINGEN
+# ----------------------------------------------------------------------
+# Stelle sicher, dass die Anfrage nicht bereits über HTTPS läuft
+RewriteCond %{HTTPS} off
+# Oder: Prüfe, ob der Standard-HTTP-Port verwendet wird (falls hinter einem Reverse Proxy)
+# RewriteCond %{HTTP:X-Forwarded-Proto} !https [NC]
+# RewriteCond %{SERVER_PORT} 80
+
+# Leite alle HTTP-Anfragen auf HTTPS um
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ----------------------------------------------------------------------
+# .HTML ENDUNG ENTFERNEN
+# ----------------------------------------------------------------------
+
+# 1. EXTERN: Umleiten von Anfragen, die explizit .html enthalten, auf die Version ohne .html
+# Beispiel: domain.com/seite.html -> domain.com/seite
+RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
+RewriteRule ^ /%1 [L,R=301,NE]
+
+# 2. INTERN: Umschreiben von Anfragen ohne .html auf die tatsächliche .html-Datei
+# Dies geschieht serverseitig, der Benutzer sieht die .html-Endung nicht.
+# Beispiel: Benutzer ruft domain.com/seite auf -> Server liefert intern domain.com/seite.html
+
+# Stelle sicher, dass es sich nicht um ein existierendes Verzeichnis handelt
+RewriteCond %{REQUEST_FILENAME} !-d
+# Stelle sicher, dass es sich nicht um eine existierende Datei handelt (ohne .html)
+RewriteCond %{REQUEST_FILENAME} !-f
+# Stelle sicher, dass die .html-Version der Datei existiert
+RewriteCond %{REQUEST_FILENAME}.html -f
+# Schreibe die Anfrage intern auf die .html-Datei um
+RewriteRule ^(.*)$ $1.html [L]
+
+# Optional: Wenn du einen Trailing Slash am Ende von "Verzeichnis-ähnlichen" URLs erzwingen möchtest (z.B. /kontakt/ statt /kontakt)
+# Diese Regel ist für Dateien ohne .html-Endung gedacht, die wie Verzeichnisse behandelt werden sollen.
+# RewriteCond %{REQUEST_FILENAME} !-f
+# RewriteCond %{REQUEST_FILENAME} !-d
+# RewriteCond %{REQUEST_URI} !(.*)/$
+# RewriteCond %{REQUEST_FILENAME}\.html -f
+# RewriteRule ^(.*)$ $1/ [L,R=301]
+
+# ----------------------------------------------------------------------
+# Fehlerseiten (optional, aber empfohlen)
+# ----------------------------------------------------------------------
+# ErrorDocument 404 /404.html
+# ErrorDocument 403 /403.html
+# ErrorDocument 500 /500.html

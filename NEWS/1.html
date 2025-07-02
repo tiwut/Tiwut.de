@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<!-- Der lang-Attribut wird dynamisch von JS gesetzt -->
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Der Titel wird dynamisch von JS gesetzt -->
+    <title>NEWS</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="news-container">
+        <header class="main-header">
+            <h1 data-translate-key="title">NEWS</h1>
+            <div class="header-controls">
+                <a href="https://tiwut.de" target="_blank" rel="noopener noreferrer" class="main-page-button" data-translate-key="mainPage">Hauptseite</a>
+                <select id="langSelector" aria-label="Sprache auswählen">
+                    <option value="de">Deutsch</option>
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                </select>
+            </div>
+        </header>
+
+        <div class="media-viewer">
+            <div class="media-display" id="mediaDisplay">
+                <!-- Medien werden hier per JavaScript eingefügt -->
+                <p class="loading-message" data-translate-key="loadingMessage">Lade Nachrichten...</p>
+            </div>
+            <!-- Aria-Labels werden dynamisch von JS gesetzt -->
+            <button class="nav-button prev" id="prevButton" aria-label="Vorherige">‹</button>
+            <button class="nav-button next" id="nextButton" aria-label="Nächste">›</button>
+        </div>
+        <p class="current-item-info" id="currentItemInfo"></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

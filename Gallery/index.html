@@ -1,3 +1,217 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:1a323d2d34ed96d012338c34e6e2676c1cc1d9da20d742c2c898a53921047515
-size 10744
+<!DOCTYPE html>
+<html lang="en"> <!-- Standard-Sprache auf Englisch setzen -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fotogalerie</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    
+    <!-- === KOMPLETTES CSS DIREKT HIER EINGEBETTET === -->
+    <style>
+        :root {
+            --bg-color: #1a1a1a; --card-color: #2a2a2a; --text-color: #e0e0e0;
+            --primary-orange: #ff7b00; --shadow-color: rgba(0, 0, 0, 0.5);
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Poppins', sans-serif; background-color: var(--bg-color); color: var(--text-color); }
+        header {
+            background: linear-gradient(135deg, #2a2a2a, #1a1a1a); padding: 25px 40px; text-align: center;
+            position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid #333;
+        }
+        .search-container { margin-top: 20px; }
+        #searchInput {
+            width: 100%; max-width: 600px; padding: 15px 25px; border: 2px solid #444; border-radius: 30px;
+            font-size: 1em; background-color: var(--card-color); color: var(--text-color);
+            outline: none; transition: all 0.3s ease;
+        }
+        #searchInput:focus { border-color: var(--primary-orange); box-shadow: 0 0 15px rgba(255, 123, 0, 0.5); }
+        main { padding: 40px; }
+        .gallery { column-width: 320px; column-gap: 20px; }
+        #loading-indicator, #no-images-message { text-align: center; font-size: 1.2em; margin-top: 50px; color: #888; }
+        #no-images-message code { background-color: #444; padding: 2px 5px; border-radius: 3px; }
+        .gallery-item {
+            background-color: var(--card-color); border-radius: 10px; overflow: hidden;
+            box-shadow: 0 5px 15px var(--shadow-color); margin-bottom: 20px; break-inside: avoid;
+            position: relative; transition: transform 0.3s ease, box-shadow 0.3s ease;
+            opacity: 0; transform: translateY(30px); animation: fadeInUp 0.6s ease forwards;
+        }
+        .gallery-item:hover { transform: translateY(-8px) scale(1.03); box-shadow: 0 10px 25px var(--shadow-color); }
+        @keyframes fadeInUp { to { opacity: 1; transform: translateY(0); } }
+        .gallery-item a { display: block; overflow: hidden; }
+        .gallery-item img { width: 100%; height: auto; display: block; transition: transform 0.5s ease; }
+        .gallery-item:hover img { transform: scale(1.1); }
+        .filename-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+            padding: 30px 15px 15px 15px; opacity: 0; transform: translateY(10px);
+            transition: opacity 0.3s ease, transform 0.3s ease;
+            color: #fff; font-size: 0.9em; font-weight: 300; text-align: center; word-break: break-all;
+        }
+        .gallery-item:hover .filename-overlay { opacity: 1; transform: translateY(0); }
+        .header-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px; }
+        h1 {
+            flex-grow: 1; text-align: left; font-weight: 600; font-size: 2.5em;
+            letter-spacing: 2px; text-shadow: 2px 2px 5px var(--shadow-color);
+        }
+        .header-controls { display: flex; align-items: center; gap: 20px; }
+        .main-page-button {
+            background-color: var(--primary-orange); color: #fff; padding: 10px 20px; border-radius: 25px;
+            text-decoration: none; font-weight: 600; transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+        .main-page-button:hover { background-color: #ff9838; transform: translateY(-2px); }
+        .language-switcher { display: flex; background-color: var(--card-color); border-radius: 25px; padding: 5px; border: 1px solid #444; }
+        .language-switcher button {
+            background-color: transparent; border: none; color: var(--text-color); padding: 8px 15px;
+            border-radius: 20px; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        .language-switcher button.active { background-color: var(--primary-orange); color: #fff; }
+        .language-switcher button:not(.active):hover { background-color: #4f4f4f; }
+        @media (max-width: 600px) {
+            .header-content { flex-direction: column; gap: 15px; }
+            h1 { text-align: center; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="header-content">
+            <h1 id="gallery-title">Meine Galerie</h1>
+            <div class="header-controls">
+                <a href="https://tiwut.de/" target="_blank" class="main-page-button" id="main-page-btn">Main Page</a>
+                <div class="language-switcher">
+                    <button data-lang="en">EN</button>
+                    <button data-lang="de">DE</button>
+                    <button data-lang="es">ES</button>
+                </div>
+            </div>
+        </div>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="Durchsuche alle Bilder...">
+        </div>
+    </header>
+
+    <main>
+        <div class="gallery" id="gallery"></div>
+        <div id="loading-indicator">
+            <p id="loading-text">Lade Bilder...</p>
+        </div>
+        <p id="no-images-message" style="display: none;"></p>
+    </main>
+    
+    <!-- 1. Lade die externe Bildliste -->
+    <script src="file-list.js"></script>
+
+    <!-- 2. Führe die komplette Anwendungslogik direkt hier aus -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // 1. ÜBERSETZUNGEN SPEICHERN
+            const translations = {
+                en: {
+                    title: "My Gallery", searchPlaceholder: "Search all images...", loading: "Loading images...",
+                    noImages: "No images found. Please create the image list using <code>generator.html</code>.", mainPage: "Main Page"
+                },
+                de: {
+                    title: "Meine Galerie", searchPlaceholder: "Durchsuche alle Bilder...", loading: "Lade Bilder...",
+                    noImages: "Keine Bilder gefunden. Bitte erstelle die Bildliste mit der <code>generator.html</code> Datei.", mainPage: "Hauptseite"
+                },
+                es: {
+                    title: "Mi Galería", searchPlaceholder: "Buscar en todas las imágenes...", loading: "Cargando imágenes...",
+                    noImages: "No se encontraron imágenes. Por favor, crea la lista de imágenes usando <code>generator.html</code>.", mainPage: "Página Principal"
+                }
+            };
+
+            // 2. ELEMENTE AUSWÄHLEN
+            const gallery = document.getElementById('gallery');
+            const searchInput = document.getElementById('searchInput');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const loadingText = document.getElementById('loading-text');
+            const noImagesMessage = document.getElementById('no-images-message');
+            const galleryTitle = document.getElementById('gallery-title');
+            const mainPageBtn = document.getElementById('main-page-btn');
+            const langButtons = document.querySelectorAll('.language-switcher button');
+            
+            // 3. FUNKTION ZUM SETZEN DER SPRACHE
+            function setLanguage(langCode) {
+                const lang = translations[langCode] ? langCode : 'en';
+                const t = translations[lang];
+
+                document.documentElement.lang = lang;
+                document.title = t.title;
+                galleryTitle.textContent = t.title;
+                searchInput.placeholder = t.searchPlaceholder;
+                loadingText.textContent = t.loading;
+                noImagesMessage.innerHTML = t.noImages;
+                mainPageBtn.textContent = t.mainPage;
+
+                langButtons.forEach(button => {
+                    button.classList.toggle('active', button.dataset.lang === lang);
+                });
+
+                localStorage.setItem('preferredLanguage', lang);
+            }
+
+            // 4. SPRACHE BEIM START AUTOMATISCH ERKENNEN
+            function initializeLanguage() {
+                const savedLang = localStorage.getItem('preferredLanguage');
+                const browserLang = navigator.language.split('-')[0];
+                if (savedLang && translations[savedLang]) { setLanguage(savedLang); }
+                else if (translations[browserLang]) { setLanguage(browserLang); }
+                else { setLanguage('en'); }
+            }
+
+            // 5. EVENT LISTENER FÜR MANUELLE SPRACHWAHL
+            langButtons.forEach(button => {
+                button.addEventListener('click', () => setLanguage(button.dataset.lang));
+            });
+
+            // 6. GALERIE AUFBAUEN
+            function buildGallery() {
+                if (typeof imagePaths === 'undefined' || imagePaths.length === 0) {
+                    loadingIndicator.style.display = 'none';
+                    noImagesMessage.style.display = 'block';
+                    return;
+                }
+
+                gallery.innerHTML = '';
+                imagePaths.forEach((path, index) => {
+                    const filename = path.split('/').pop();
+                    const item = document.createElement('div');
+                    item.className = 'gallery-item';
+                    item.dataset.searchdata = path.toLowerCase();
+                    item.style.animationDelay = `${index * 60}ms`;
+                    item.innerHTML = `
+                        <a href="${path}" target="_blank" title="${filename}">
+                            <img src="${path}" alt="${filename}" loading="lazy">
+                        </a>
+                        <div class="filename-overlay">${filename}</div>`;
+                    gallery.appendChild(item);
+                });
+
+                loadingIndicator.style.display = 'none';
+            }
+
+            // 7. SUCHE EINRICHTEN
+            function setupSearch() {
+                searchInput.addEventListener('input', () => {
+                    const searchTerm = searchInput.value.toLowerCase().trim();
+                    document.querySelectorAll('.gallery-item').forEach(item => {
+                        item.style.display = item.dataset.searchdata.includes(searchTerm) ? '' : 'none';
+                    });
+                });
+            }
+
+            // ALLES INITIALISIEREN
+            initializeLanguage();
+            buildGallery();
+            setupSearch();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Subway Runner - Tiwut</title>
+    <script defer src="https://unpkg.com/swup@4"></script>
+    <script defer src="script.js" type="module"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="custom-context-menu"><ul><li><button type="button" data-action="copy">Copy</button></li><li><button type="button" data-action="cut">Cut</button></li><li><button type="button" data-action="paste">Paste</button></li></ul></div>
+    <div class="video-background"><div class="video-overlay"></div></div>
+    <header class="main-header fade-in">
+        <nav>
+            <div class="dropdown-nav">
+                <button class="dropbtn" aria-label="Menu">
+                    <span class="menu-logo-bg">
+                        <img src="icon.ico" alt="Logo" class="menu-logo">
+                    </span>
+                    <span class="menu-arrow">&#9662;</span>
+                </button>
+                <div class="dropdown-content">
+                    <a href="index.html" data-nav-index="0">Home</a>
+                    <a href="about.html" data-nav-index="1">Über uns</a>
+                    <a href="services.html" data-nav-index="2">Dienstleistungen</a>
+                    <a href="download.html" data-nav-index="3">Herunterladen</a>
+                    <a href="my_projects.html" data-nav-index="4">Meine Projekte</a>
+                    <a href="office.html" data-nav-index="5">Büro</a>
+                    <a href="chat_list.html" data-nav-index="6">Chat</a>
+                    <a href="https://tiwut.de/Tools/index.html" data-nav-index="7">Werkzeuge</a>
+                    <a href="https://tiwut.de/NEWS/index.html" data-nav-index="8">Nachrichten</a>
+                    <a href="contact.html" data-nav-index="9">Kontakt</a>
+                    <a href="login.html" class="logged-out" style="display: none;" data-nav-index="9">Anmelden</a>
+                    <a href="register.html" class="logged-out" style="display: none;" data-nav-index="10">Registrieren</a>
+                    <div class="logged-in logged-in-menu" style="display: none; position: relative;">
+                        <button id="account-menu-trigger" aria-haspopup="true" aria-expanded="false">Konto &#9662;</button>
+                        <div id="account-dropdown">
+                            <ul>
+                                <li><a href="#" data-no-swup>Profil (TBD)</a></li>
+                                <li><a href="#" data-no-swup>Einstellungen (TBD)</a></li>
+                                <li><hr></li>
+                                <li><button id="logout-button-dropdown">Abmelden</button></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div id="swup" class="transition-slide">
+        <main>
+            <section class="info-section animate-on-scroll">
+                <h2>Subway Runner</h2>
+                <!-- *** Änderung hier *** -->
+                <div class="project-image-container">
+                    <img src="My Projects/Subway Runner.jpg" alt="Subway Runner Screenshot">
+                </div>
+                <!-- *** Ende der Änderung *** -->
+                <p>
+                    Erlebe den Nervenkitzel eines Endless-Runner-Spiels, inspiriert von beliebten Mobile-Titeln.
+                    Weiche Hindernissen aus, sammle Münzen und schalte neue Charaktere frei, während du durch U-Bahn-Schächte rast.
+                    Mit einfachen Steuerungen und süchtig machendem Gameplay ist Subway Runner perfekt für schnelle Spielesitzungen.
+                </p>
+                <div class="download-buttons-container">
+                    <a href="My Projects/Subway Runner.exe" download class="cta-button download-btn">Herunterladen .exe</a>
+                    <a href="My Projects/Subway Runner.zip" download class="cta-button download-btn">Herunterladen .zip</a>
+                </div>
+            </section>
+        </main>
+    </div>
+    <footer class="main-footer fade-in"><p>&copy; 2025 Tiwut. Alle Rechte vorbehalten.</p></footer>
+    <style>
+        /* Dropdown Navigation Styles */
+        .dropdown-nav {
+            position: relative;
+            display: inline-block;
+        }
+        .dropbtn {
+            background: rgba(30,34,44,0.92);
+            color: white;
+            padding: 10px 22px 10px 14px;
+            font-size: 18px;
+            border: none;
+            cursor: pointer;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 12px rgba(30,34,44,0.18);
+            transition: background 0.3s, box-shadow 0.3s, transform 0.2s;
+            position: relative;
+            z-index: 102;
+        }
+        .dropbtn:hover, .dropbtn:focus {
+            background: rgba(40,44,54,1);
+            box-shadow: 0 4px 24px rgba(30,34,44,0.28);
+            transform: translateY(-2px) scale(1.03);
+        }
+        .menu-logo-bg {
+            background: #222;
+            border-radius: 8px;
+            padding: 3px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 1px 4px rgba(0,0,0,0.18);
+        }
+        .menu-logo {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            object-fit: contain;
+            background: #222;
+            display: block;
+        }
+        .menu-arrow {
+            font-size: 18px;
+            margin-left: 2px;
+            transition: transform 0.3s cubic-bezier(.4,2,.6,1);
+        }
+        .dropbtn[aria-expanded="true"] .menu-arrow,
+        .dropdown-nav:hover .menu-arrow {
+            transform: rotate(180deg);
+        }
+        .dropdown-content {
+            display: block;
+            opacity: 0;
+            pointer-events: none;
+            position: absolute;
+            right: 0;
+            left: auto;
+            top: 110%;
+            background: rgba(24, 26, 34, 0.98);
+            min-width: 260px;
+            box-shadow: 0 8px 32px 0 rgba(30,34,44,0.28);
+            z-index: 101;
+            margin-top: 8px;
+            border-radius: 18px;
+            backdrop-filter: blur(18px) saturate(1.2);
+            overflow: hidden;
+            transform: translateY(20px) scale(0.98);
+            transition: 
+                opacity 0.35s cubic-bezier(.4,2,.6,1),
+                transform 0.35s cubic-bezier(.4,2,.6,1);
+        }
+        .dropdown-nav:hover .dropdown-content,
+        .dropdown-nav:focus-within .dropdown-content {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0) scale(1);
+        }
+        .dropdown-content a, .dropdown-content .logged-in-menu > button {
+            color: #f3f3f3;
+            padding: 14px 32px 14px 38px;
+            text-decoration: none;
+            display: block;
+            background: none;
+            border: none;
+            text-align: center;
+            font-size: 1.08em;
+            opacity: 0;
+            animation: dropdownFadeIn 0.5s forwards;
+            animation-delay: calc(var(--i, 0) * 60ms);
+            transition: background 0.2s, color 0.2s;
+            cursor: pointer;
+        }
+        .dropdown-content a:nth-child(1) { --i: 1; }
+        .dropdown-content a:nth-child(2) { --i: 2; }
+        .dropdown-content a:nth-child(3) { --i: 3; }
+        .dropdown-content a:nth-child(4) { --i: 4; }
+        .dropdown-content a:nth-child(5) { --i: 5; }
+        .dropdown-content a:nth-child(6) { --i: 6; }
+        .dropdown-content a:nth-child(7) { --i: 7; }
+        .dropdown-content a:nth-child(8) { --i: 8; }
+        .dropdown-content a:nth-child(9) { --i: 9; }
+        .dropdown-content a:nth-child(10) { --i: 10; }
+        .dropdown-content a:nth-child(11) { --i: 11; }
+        .dropdown-content a:nth-child(12) { --i: 12; }
+        .dropdown-content .logged-in-menu { --i: 13; }
+        .dropdown-content a:hover, .dropdown-content .logged-in-menu > button:hover {
+            background-color: rgba(52,152,219,0.13);
+            color: #4fc3f7;
+        }
+        @keyframes dropdownFadeIn {
+            from { opacity: 0; transform: translateY(12px);}
+            to { opacity: 1; transform: translateY(0);}
+        }
+        /* Account Dropdown (modern, dark, integrated) */
+        .logged-in-menu {
+            position: relative;
+            width: 100%;
+        }
+        #account-menu-trigger {
+            width: 100%;
+            background: none;
+            border: none;
+            color: #f3f3f3;
+            padding: 14px 32px 14px 38px;
+            text-align: center;
+            font-size: 1.08em;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-radius: 0;
+            transition: background 0.2s, color 0.2s;
+        }
+        #account-menu-trigger:hover, #account-menu-trigger[aria-expanded="true"] {
+            background-color: rgba(52,152,219,0.13);
+            color: #4fc3f7;
+        }
+        #account-dropdown {
+            background: rgba(30,34,44,0.98);
+            border-radius: 14px;
+            box-shadow: 0 4px 18px rgba(30,34,44,0.18);
+            margin-top: 0;
+            padding: 8px 0;
+            min-width: 180px;
+            position: static;
+            display: none;
+            z-index: 105;
+            backdrop-filter: blur(10px);
+            animation: dropdownFadeIn 0.4s;
+        }
+        .logged-in-menu.open #account-dropdown {
+            display: block;
+        }
+        #account-dropdown ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        #account-dropdown li {
+            padding: 0;
+        }
+        #account-dropdown a, #account-dropdown button {
+            background: none;
+            border: none;
+            color: #f3f3f3;
+            padding: 12px 24px 12px 32px;
+            width: 100%;
+            text-align: center;
+            font-size: 1em;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        #account-dropdown a:hover, #account-dropdown button:hover {
+            background: rgba(52,152,219,0.13);
+            color: #4fc3f7;
+        }
+        /* Entferne Blur-Top-Leiste und alte Nav-Styles */
+        .main-header,
+        .main-header.fade-in {
+            background: none !important;
+            backdrop-filter: none !important;
+            box-shadow: none !important;
+            border: none !important;
+        }
+        nav > ul, .top-blur-bar, .nav-blur, .main-header .nav-blur {
+            display: none !important;
+        }
+    </style>
+    <script>
+        // Dropdown Account-Menu Toggle (funktioniert auch auf Touch)
+        document.addEventListener('DOMContentLoaded', function() {
+            const accountTrigger = document.getElementById('account-menu-trigger');
+            const loggedInMenu = document.querySelector('.logged-in-menu');
+            if(accountTrigger && loggedInMenu) {
+                accountTrigger.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    loggedInMenu.classList.toggle('open');
+                    accountTrigger.setAttribute('aria-expanded', loggedInMenu.classList.contains('open'));
+                });
+                document.addEventListener('click', function(e) {
+                    if (!loggedInMenu.contains(e.target)) {
+                        loggedInMenu.classList.remove('open');
+                        accountTrigger.setAttribute('aria-expanded', 'false');
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>

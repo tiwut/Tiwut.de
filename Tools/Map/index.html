@@ -1,3 +1,415 @@
-version https://git-lfs.github.com/spec/v1
-oid sha256:4a4619f035f7ae7d51f2e54d733d9468c35dbf77f72748864c8df154ecd196de
-size 11995
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Moderne Interaktive Karte & Navi</title>
+
+    <!-- Leaflet CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossorigin=""/>
+
+    <!-- Leaflet Routing Machine CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
+
+    <!-- Leaflet Control Geocoder CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.css" />
+
+    <!-- Leaflet.Locate CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.css" />
+
+
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* Verhindert Scrollbalken durch UI-Elemente */
+        }
+
+        body {
+            position: relative; /* Erforderlich für z-index des ::before Pseudo-Elements */
+        }
+
+        body::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('main.avif'); /* Ihr Hintergrundbild */
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            filter: blur(5px); /* Stärke des Blurs anpassen */
+            z-index: -1; /* Hinter den Inhalt des Body legen */
+        }
+
+        #map {
+            height: 100%;
+            width: 100%;
+            background-color: transparent; /* Map-Hintergrund transparent machen, um den geblurrten Body-Hintergrund zu sehen */
+        }
+
+        /* Modernisierung der Leaflet UI Elemente */
+        .leaflet-control-container .leaflet-control {
+            box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+            border-radius: 5px;
+            border: none;
+        }
+        .leaflet-control-zoom a {
+            color: #333;
+            background-color: #fff;
+        }
+        .leaflet-control-zoom a:hover {
+            background-color: #f4f4f4;
+        }
+
+        /* Anpassung für Leaflet Routing Machine */
+        .leaflet-routing-container {
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            max-height: 70vh; /* Verhindert, dass es zu hoch wird */
+            overflow-y: auto;
+        }
+        .leaflet-routing-alternatives-container {
+            background-color: rgba(245, 245, 245, 0.95);
+        }
+        .leaflet-routing-alt:hover {
+            background-color: #e9e9e9;
+        }
+        .leaflet-routing-error {
+            padding: 10px;
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+            border-radius: 4px;
+        }
+
+        /* Styling für Leaflet.Locate Button */
+        .leaflet-control-locate a {
+            font-size: 1.4em;
+            color: #333;
+            background-color: #fff;
+            border-radius: 5px !important; /* Wichtig, um Leaflet Standard zu überschreiben */
+        }
+        .leaflet-control-locate.active a {
+            color: #2074b6; /* Farbe, wenn aktiv */
+        }
+         .leaflet-control-locate.active.following a {
+            color: #007bff; /* Dunkleres Blau im Following-Modus */
+        }
+
+
+        /* Suchleiste (Leaflet Control Geocoder) */
+        .leaflet-control-geocoder {
+            border-radius: 5px;
+        }
+        .leaflet-control-geocoder-form input {
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            padding: 8px 12px;
+            font-size: 14px;
+            transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .leaflet-control-geocoder-form input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,.25);
+            outline: none;
+        }
+
+        /* Buttons für Live Tracking Steuerung */
+        #tracking-controls {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000; /* Stellt sicher, dass es über der Karte und dem geblurrten Hintergrund liegt */
+            background-color: rgba(255, 255, 255, 0.9);
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            display: flex;
+            gap: 10px;
+        }
+        #tracking-controls button {
+            padding: 8px 15px;
+            font-size: 14px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        #tracking-controls button:hover {
+            background-color: #0056b3;
+        }
+        #tracking-controls button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+
+    </style>
+</head>
+<body>
+
+    <div id="map"></div>
+    <div id="tracking-controls">
+        <button id="startTrackingBtn">Live-Tracking Start</button>
+        <button id="stopTrackingBtn" disabled>Live-Tracking Stop</button>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+            integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+            crossorigin=""></script>
+
+    <!-- Leaflet Routing Machine JS -->
+    <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
+
+    <!-- Leaflet Control Geocoder JS -->
+    <script src="https://unpkg.com/leaflet-control-geocoder/dist/Control.Geocoder.js"></script>
+
+    <!-- Leaflet.Locate JS -->
+    <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol@0.79.0/dist/L.Control.Locate.min.js"></script>
+
+
+    <script>
+        // 1. Karteninitialisierung
+        const map = L.map('map', {
+            // Standard-Zoom-Steuerung deaktivieren, da Leaflet.Locate seine eigene hinzufügt
+            // oder wir platzieren sie bewusst um.
+            // zoomControl: false
+        }).setView([51.1657, 10.4515], 6); // Deutschland zentriert
+
+        // OpenStreetMap Tile Layer (modernere Optik eventuell mit MapTiler oder CartoDB, erfordert aber API Keys)
+        // Hier eine OSM Variante, die etwas neutraler wirkt:
+        L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+            subdomains: 'abcd',
+            maxZoom: 20
+        }).addTo(map);
+        // Alternative: Standard OSM
+        // L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        //     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        // }).addTo(map);
+
+
+        // 2. Standortbestimmung mit Leaflet.Locate (GPS / IP)
+        const lc = L.control.locate({
+            position: 'topleft',
+            strings: {
+                title: "Meinen Standort anzeigen",
+                popup: (options) => `Du bist im Umkreis von ${options.distance} ${options.unit} von diesem Punkt`,
+                outsideMapBoundsMsg: "Du scheinst dich außerhalb der Kartengrenzen zu befinden."
+            },
+            flyTo: true, // Sanft zum Standort hinfliegen
+            keepCurrentZoomLevel: false,
+            locateOptions: {
+                enableHighAccuracy: true, // Versucht, GPS zu verwenden
+                watch: false, // Standardmäßig nicht im Watch-Modus (für Live-Tracking separat)
+                maxZoom: 17
+            },
+            onLocationError: function(err) {
+                alert("Standort konnte nicht abgerufen werden: " + err.message + "\nStelle sicher, dass du die Standortermittlung im Browser erlaubt hast.");
+                console.error(err);
+            }
+        }).addTo(map);
+
+        // Event-Listener für Standort-Updates von Leaflet.Locate
+        let userMarker = null;
+        let userPath = null;
+        let userPathCoords = [];
+        let isLiveTracking = false;
+
+        map.on('locationfound', function(e) {
+            console.log("Standort gefunden:", e);
+            // Benutzerdefinierter Marker (optional, da Leaflet.Locate eigenen Marker hat)
+            // if (!userMarker) {
+            //     userMarker = L.marker(e.latlng, { icon: L.divIcon({className: 'my-custom-user-marker'}) }).addTo(map);
+            // } else {
+            //     userMarker.setLatLng(e.latlng);
+            // }
+            // map.setView(e.latlng, Math.max(map.getZoom(), 16)); // Zoom und Zentrierung
+
+            if (isLiveTracking) {
+                userPathCoords.push(e.latlng);
+                if (!userPath) {
+                    userPath = L.polyline(userPathCoords, { color: 'red', weight: 5, opacity: 0.7 }).addTo(map);
+                } else {
+                    userPath.setLatLngs(userPathCoords);
+                }
+                // Optional: Karte dem Nutzer folgen lassen, wenn Tracking aktiv ist und kein Routen-Following
+                if (lc._isFollowing() && routingControl && !routingControl._route) {
+                     map.panTo(e.latlng);
+                }
+            }
+        });
+
+
+        // 3. Routenplaner (Leaflet Routing Machine)
+        const routingControl = L.Routing.control({
+            waypoints: [],
+            routeWhileDragging: true,
+            language: 'de',
+            showAlternatives: true,
+            geocoder: L.Control.Geocoder.nominatim({
+                geocodingQueryParams: { countrycodes: 'de,at,ch' } // Optional: Suche auf DE, AT, CH einschränken
+            }),
+            geocoderPlaceholder: function(i, numberWaypoints) {
+                return i === 0 ? 'Startpunkt' : (i === numberWaypoints - 1 ? 'Zielpunkt' : `Wegpunkt ${i + 1}`);
+            },
+            createMarker: function(i, waypoint, n) {
+                return L.marker(waypoint.latLng, {
+                    draggable: true,
+                    icon: L.icon({ // Einfaches Custom Icon
+                        iconUrl: `https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png`,
+                        iconRetinaUrl: `https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png`,
+                        shadowUrl: `https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png`,
+                        iconSize: [25, 41], iconAnchor: [12, 41], popupAnchor: [1, -34], shadowSize: [41, 41]
+                    })
+                }).bindPopup(`<b>${i === 0 ? 'Start' : (i === n -1 ? 'Ziel' : 'Wegpunkt')}</b><br>${waypoint.name || waypoint.latLng.toString()}`);
+            },
+            // Erweiterung für "Navi"-Feeling: Route folgen
+            // Dies ist eine sehr einfache Implementierung.
+            // Leaflet Routing Machine hat keine eingebaute "Navi"-Funktion, die den Nutzer
+            // automatisch entlang der Route führt und Anweisungen hervorhebt.
+            // Für eine bessere Erfahrung bräuchte man komplexere Logik.
+            show: true, // Damit die Instruktionen direkt sichtbar sind
+            summaryTemplate: '<div class="leaflet-routing-summary"><h2>{name}</h2><p>Distanz: {distance}, Dauer: {time}</p></div>',
+
+            // API für OSRM anpassen, falls nötig (z.B. für andere Profile: 'bicycle', 'foot')
+            // router: L.Routing.osrmv1({
+            //     serviceUrl: 'https://routing.openstreetmap.de/routed-car/route/v1', // Alternativer öffentlicher OSRM Server
+            //     profile: 'driving', // 'driving', 'bike', 'foot'
+            // }),
+        }).addTo(map);
+
+        // Start-/Endpunkte per Klick setzen
+        function createPopupButtons(latlng, container) {
+            const startBtn = L.DomUtil.create('button', 'leaflet-popup-button', container);
+            startBtn.innerHTML = 'Start hier';
+            L.DomEvent.on(startBtn, 'click', () => {
+                routingControl.spliceWaypoints(0, 1, latlng);
+                map.closePopup();
+            });
+
+            const destBtn = L.DomUtil.create('button', 'leaflet-popup-button', container);
+            destBtn.innerHTML = 'Ziel hier';
+            L.DomEvent.on(destBtn, 'click', () => {
+                routingControl.spliceWaypoints(routingControl.getWaypoints().length - 1, 1, latlng);
+                map.closePopup();
+            });
+        }
+        map.on('click', function(e) {
+            if (routingControl.getWaypoints().some(wp => !wp.latLng)) { // Wenn noch kein Start/Ziel gesetzt
+                 const container = L.DomUtil.create('div', 'leaflet-popup-button-container');
+                 createPopupButtons(e.latlng, container);
+                 L.popup().setContent(container).setLatLng(e.latlng).openOn(map);
+            }
+        });
+
+        // "Navi"-Aspekt: Wenn eine Route existiert und der Nutzer getrackt wird
+        // Diese Funktion ist rudimentär. Echte Navi-Apps machen viel mehr.
+        map.on('locationfound', function(e) {
+            if (routingControl && routingControl._route && lc._isFollowing()) {
+                // Hier könnte man Logik einbauen, um zu prüfen, wie nah der Nutzer an der Route ist,
+                // die nächste Anweisung hervorheben, etc.
+                // Leaflet Routing Machine hat keine direkte API dafür, man müsste die Route (LineString)
+                // und die Position des Nutzers analysieren.
+                // Für den Anfang lassen wir die Karte dem Nutzer folgen, wenn Leaflet.Locate im "following" Modus ist.
+                // console.log("Nutzer bewegt sich, Route aktiv.");
+
+                // Optional: Zentriere die Karte auf den Nutzer, wenn eine Route aktiv ist und er verfolgt wird
+                // Aber nur, wenn der Nutzer nicht gerade die Karte verschiebt (schwer zu erkennen)
+                // map.panTo(e.latlng);
+            }
+        });
+
+        // 4. Standalone Suchleiste (Leaflet Control Geocoder)
+        L.Control.geocoder({
+            defaultMarkGeocode: false, // Wir wollen nicht unbedingt einen Marker setzen, nur zoomen
+            placeholder: 'Ort suchen...',
+            position: 'topright',
+            geocoder: L.Control.Geocoder.nominatim({
+                geocodingQueryParams: { countrycodes: 'de,at,ch' }
+            })
+        })
+        .on('markgeocode', function(e) {
+            map.fitBounds(e.geocode.bbox);
+        })
+        .addTo(map);
+
+        // 5. Live-Tracking Steuerung
+        const startTrackingBtn = document.getElementById('startTrackingBtn');
+        const stopTrackingBtn = document.getElementById('stopTrackingBtn');
+
+        startTrackingBtn.addEventListener('click', () => {
+            if (!isLiveTracking) {
+                isLiveTracking = true;
+                userPathCoords = []; // Pfad zurücksetzen
+                if(userPath) map.removeLayer(userPath); // Alten Pfad entfernen
+                userPath = null;
+
+                lc.start(); // Startet Standortabfrage (einmalig oder watch, je nach config)
+                // Explizit in den Watch & Following Modus für kontinuierliches Tracking gehen
+                lc.options.locateOptions.watch = true;
+                // lc._isFollowing = true; // Internes Flag für Following setzen (nicht offizielle API, kann sich ändern)
+                // lc._justClicked = true; // Damit es direkt in den Following Modus geht
+                // lc._onClick(); // Simuliert Klick auf Locate Button
+                // Besser: lc.start() sollte bei watch:true bereits den Following-Modus aktivieren, wenn der Button gedrückt wird.
+                // Wenn lc.start() nicht automatisch in den Following-Modus geht, könnte man den Button-Klick simulieren,
+                // aber es ist sauberer, wenn die Library das selbst managed. Für das reine Daten-Tracking ist es ggf. nicht nötig,
+                // dass der Locate-Control-Button selbst den "active following" Zustand anzeigt, solange die Daten fließen.
+                // Das manuelle Setzen von lc._isFollowing etc. ist riskant.
+                // Eine sicherere Methode, um das Following-Verhalten zu erzwingen, falls lc.start() es nicht tut:
+                if (!lc._active) { // Wenn locate control nicht schon aktiv ist
+                    lc._onClick(); // Simuliert einen Klick auf den Locate Button, um ihn zu aktivieren
+                } else if (!lc._isFollowing()) { // Wenn aktiv, aber nicht following
+                     lc._onClick(); // Erneuter Klick wechselt oft in den following mode
+                }
+
+
+                startTrackingBtn.disabled = true;
+                stopTrackingBtn.disabled = false;
+                console.log("Live-Tracking gestartet.");
+            }
+        });
+
+        stopTrackingBtn.addEventListener('click', () => {
+            if (isLiveTracking) {
+                isLiveTracking = false;
+                lc.stop(); // Stoppt die Standortabfrage
+                lc.options.locateOptions.watch = false;
+
+                startTrackingBtn.disabled = false;
+                stopTrackingBtn.disabled = true;
+                console.log("Live-Tracking gestoppt.");
+                // Optional: Gezeichneten Pfad nach Stop beibehalten oder löschen
+                // if (userPath) { map.removeLayer(userPath); userPath = null; }
+                // userPathCoords = [];
+            }
+        });
+
+        // Beim Deaktivieren des Locate Controls (z.B. Klick auf den Button) auch unser Tracking stoppen
+        map.on('locationoff', function() {
+            if (isLiveTracking) {
+                isLiveTracking = false;
+                // lc.options.locateOptions.watch = false; // watch wird bereits durch lc.stop() intern zurückgesetzt
+                startTrackingBtn.disabled = false;
+                stopTrackingBtn.disabled = true;
+                console.log("Live-Tracking durch Locate Control gestoppt.");
+            }
+        });
+
+        console.log("Moderne Karte initialisiert.");
+    </script>
+
+</body>
+</html>

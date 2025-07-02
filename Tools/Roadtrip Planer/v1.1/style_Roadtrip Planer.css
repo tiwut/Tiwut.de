@@ -1,0 +1,432 @@
+/* Basic Reset & Global Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    line-height: 1.6;
+    color: #333;
+    /* background-color: #f4f4f4; Removed, handled by ::before */
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    position: relative; /* For ::before pseudo-element positioning */
+    overflow-x: hidden; /* Prevent scrollbar from blur extending slightly */
+}
+
+body::before {
+    content: '';
+    position: fixed; /* Cover the entire viewport */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('main.png');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    filter: blur(1px); /* Adjust blur amount as needed */
+    z-index: -1; /* Place it behind all other content */
+}
+
+header {
+    /* background-color: #35424a; */
+    background-color: rgba(53, 66, 74, 0.75); /* Semi-transparent */
+    color: #ffffff;
+    padding: 1rem 0;
+    text-align: center;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    position: relative; /* Ensure it's above ::before */
+    z-index: 10; /* Ensure header is above blurred background */
+}
+
+header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+}
+
+main {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: row; /* Default for desktop */
+    overflow: hidden; /* Prevent scrollbars on main due to map/panel */
+    position: relative; /* Ensure content is above ::before */
+    z-index: 5; /* Ensure main content is above blurred background */
+}
+
+.controls-panel {
+    width: 380px;
+    padding: 20px;
+    /* background-color: #fff; */
+    background-color: rgba(255, 255, 255, 0.85); /* Semi-transparent */
+    overflow-y: auto;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    /* position: relative; z-index: 1; already covered by main's z-index */
+}
+
+.map-panel {
+    flex-grow: 1;
+    height: calc(100vh - 60px - 40px);
+    /* No background color needed here, map will cover or body::before shows */
+}
+
+#map {
+    width: 100%;
+    height: 100%;
+    background-color: #e0e0e0; /* Fallback for map tiles */
+    cursor: crosshair;
+}
+
+/* Input & Buttons */
+/* Entfernt:
+.input-group {
+    margin-bottom: 5px;
+    display: flex;
+}
+
+.input-group input[type="text"] {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px 0 0 4px;
+    font-size: 0.9rem;
+}
+
+.input-group button {
+    border-radius: 0 4px 4px 0;
+}
+*/
+
+.actions-group button, /* Kombiniert mit .input-group button, da dieser entfernt wurde */
+.button-like-label {
+    padding: 10px 15px;
+    background-color: #5cb85c;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+    text-align: center;
+}
+
+.actions-group button,
+.button-like-label {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.button-like-label {
+    background-color: #007bff;
+}
+.button-like-label:hover {
+    background-color: #0056b3;
+}
+
+.actions-group button:hover { /* Allgemeiner Hover für Buttons in der Gruppe */
+    background-color: #4cae4c;
+}
+.actions-group button#exportPdfBtn {
+    background-color: #d9534f;
+}
+.actions-group button#exportPdfBtn:hover {
+    background-color: #c9302c;
+}
+.actions-group button#showLocationBtn {
+    background-color: #f0ad4e;
+}
+.actions-group button#showLocationBtn:hover {
+    background-color: #ec971f;
+}
+
+.map-click-hint {
+    font-size: 0.8em;
+    color: #333; /* Darker text for better readability on potentially lighter part of blurred bg */
+    margin-bottom: 15px;
+    line-height: 1.3;
+    margin-top: 5px; /* Kleiner Abstand nach oben, da Input-Feld weg ist */
+}
+
+/* Waypoint List */
+#waypointList {
+    list-style: none;
+    padding: 0;
+    margin-bottom: 15px;
+    flex-grow: 1;
+    overflow-y: auto;
+    min-height: 100px;
+    border: 1px solid #ccc; /* Slightly darker border */
+    border-radius: 4px;
+    padding: 5px;
+}
+
+#waypointList li {
+    background-color: rgba(249, 249, 249, 0.9); /* Slightly transparent list items */
+    padding: 8px 10px;
+    border: 1px solid #ddd; /* Slightly darker border */
+    margin-bottom: 5px;
+    border-radius: 4px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+}
+
+#waypointList li:last-child {
+    margin-bottom: 0;
+}
+
+.waypoint-name-container {
+    flex-grow: 1;
+    margin-right: 8px;
+    overflow: hidden;
+}
+
+.waypoint-name {
+    cursor: pointer;
+    padding: 3px 5px;
+    border-radius: 3px;
+    display: inline-block;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.waypoint-name:hover {
+    background-color: rgba(233, 233, 233, 0.9); /* Slightly transparent hover */
+}
+
+.waypoint-name-input {
+    padding: 2px 4px;
+    font-size: 0.9rem;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    width: calc(100% - 0px);
+    box-sizing: border-box;
+    background-color: rgba(255, 255, 255, 0.95); /* Ensure input field is readable */
+}
+
+.waypoint-controls {
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.waypoint-controls button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1.1rem;
+    padding: 0 5px;
+    line-height: 1;
+    margin-left: 4px;
+    color: #333; /* Ensure icons are visible */
+}
+.waypoint-controls button:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.waypoint-controls .delete-waypoint {
+    color: #d9534f;
+}
+.waypoint-controls .delete-waypoint:hover:not(:disabled) {
+    color: #c9302c;
+}
+
+.waypoint-controls .move-waypoint {
+    color: #007bff;
+}
+.waypoint-controls .move-waypoint:hover:not(:disabled) {
+    color: #0056b3;
+}
+
+/* Unit Selector */
+.unit-selector-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    padding: 8px;
+    background-color: rgba(249, 249, 249, 0.85); /* Slightly transparent */
+    border: 1px solid #ddd; /* Slightly darker border */
+    border-radius: 4px;
+}
+
+.unit-selector-group label {
+    margin-right: 10px;
+    font-size: 0.9rem;
+    font-weight: bold;
+}
+
+.unit-selector-group select {
+    padding: 6px 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    flex-grow: 1;
+    background-color: rgba(255, 255, 255, 0.95); /* Ensure select is readable */
+}
+
+/* Route Info */
+#routeInfo {
+    margin-top: auto;
+    padding-top: 15px;
+    border-top: 1px solid #ddd; /* Slightly darker border */
+}
+#routeInfo p {
+    font-size: 0.9rem;
+    margin-bottom: 5px;
+}
+#routeInfo span {
+    font-weight: bold;
+}
+
+
+footer {
+    /* background-color: #35424a; */
+    background-color: rgba(53, 66, 74, 0.75); /* Semi-transparent */
+    color: #ffffff;
+    text-align: center;
+    padding: 0.5rem 0;
+    font-size: 0.8rem;
+    position: relative; /* Ensure it's above ::before */
+    z-index: 10; /* Ensure footer is above blurred background */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    main {
+        flex-direction: column;
+    }
+
+    .controls-panel {
+        width: 100%;
+        max-height: 45vh;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .map-panel {
+        height: calc(55vh - 60px - 30px); /* Adjusted assuming header is 60px, footer ~30px (check actual footer height) */
+    }
+
+    header h1 {
+        font-size: 1.5rem;
+    }
+}
+
+/* Leaflet Customizations */
+.leaflet-routing-container {
+    max-height: 150px;
+    overflow-y: auto;
+    background-color: rgba(255, 255, 255, 0.8); /* Make routing plan slightly transparent */
+}
+.leaflet-routing-container .leaflet-routing-alt {
+    background-color: rgba(245, 245, 245, 0.85); /* Slightly transparent alternatives */
+}
+.leaflet-routing-container .leaflet-routing-alt:hover {
+    background-color: rgba(230, 230, 230, 0.9);
+}
+
+.leaflet-control-layers {
+    background-color: rgba(255, 255, 255, 0.85); /* Semi-transparent layer control */
+    border-radius: 5px;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+}
+.leaflet-control-layers-toggle {
+    /* Default style is fine */
+}
+.leaflet-control-layers-base label {
+    color: #333; /* Ensure text is readable */
+}
+.leaflet-control-layers-selector {
+    /* Default style is fine */
+}
+
+.leaflet-control-geocoder {
+    /* Default style often fine, but can be customized if needed */
+}
+.leaflet-control-geocoder-form input {
+    background-color: rgba(255, 255, 255, 0.9); /* Ensure input is readable */
+}
+
+
+/* Styling für das Karten-Klick-Popup */
+.map-click-popup-content {
+    text-align: center;
+    font-size: 0.9rem;
+}
+
+.map-click-popup-content p {
+    margin-bottom: 10px;
+    word-wrap: break-word;
+}
+
+.map-click-popup-content strong {
+    display: block;
+    margin-bottom: 2px;
+}
+
+.map-click-popup-content button.popup-add-button {
+    padding: 6px 12px;
+    background-color: #28a745;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.85em;
+    margin-top: 8px;
+    display: block;
+    width: 100%;
+}
+.map-click-popup-content button.popup-add-button:hover {
+    background-color: #218838;
+}
+
+.leaflet-popup-content-wrapper {
+    border-radius: 5px;
+    background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent popup background */
+    box-shadow: 0 3px 14px rgba(0,0,0,0.4);
+}
+
+.leaflet-popup-content {
+    margin: 10px !important;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    min-width: 180px;
+    max-width: 250px;
+    color: #333; /* Ensure text is readable */
+}
+
+.leaflet-popup-close-button {
+    padding: 6px 6px 0 0 !important;
+    color: #555; /* Make close button slightly more visible */
+}
+.leaflet-popup-close-button:hover {
+    color: #222;
+}
+
+/* Pulsierender Marker für Kartenklick */
+.leaflet-pulsing-icon {
+  background-color: rgba(0, 123, 255, 0.7);
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  box-shadow: 0 0 0 0 rgba(0, 123, 255, 0.7);
+  animation: pulse 1.5s infinite cubic-bezier(0.66, 0, 0, 1);
+  border: 2px solid white;
+  margin-left: -10px;
+  margin-top: -10px;
+}
+
+@keyframes pulse {
+  to {
+    box-shadow: 0 0 0 20px rgba(0, 123, 255, 0);
+  }
+}
