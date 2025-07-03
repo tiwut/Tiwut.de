@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEWS</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Exo+2:wght@400;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="news-container">
+        <header class="main-header">
+            <h1 data-translate-key="title">NEWS</h1>
+            <div class="header-controls">
+                <a href="https://tiwut.de" rel="noopener noreferrer" class="main-page-button" data-translate-key="mainPage">Hauptseite</a>
+                <select id="langSelector" aria-label="Sprache auswählen">
+                    <option value="de">Deutsch</option>
+                    <option value="en">English</option>
+                    <option value="es">Español</option>
+                </select>
+            </div>
+        </header>
+
+        <div class="media-viewer">
+            <div class="media-display" id="mediaDisplay">
+                <p class="loading-message" data-translate-key="loadingMessage">Lade Nachrichten...</p>
+            </div>
+            <button class="nav-button prev" id="prevButton" aria-label="Vorherige">‹</button>
+            <button class="nav-button next" id="nextButton" aria-label="Nächste">›</button>
+        </div>
+        <p class="current-item-info" id="currentItemInfo"></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

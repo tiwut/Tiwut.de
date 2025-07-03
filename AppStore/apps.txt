@@ -1,0 +1,161 @@
+EpicGames,https://store.epicgames.com/de/download
+Discord,https://discord.com/download
+Google Chrome,https://www.google.com/intl/de_de/chrome/
+WhatsApp,https://www.whatsapp.com/download
+Steam,https://store.steampowered.com/about/
+Microsoft Edge,https://www.microsoft.com/de-de/edge/download
+Adobe Acrobat Reader,https://get.adobe.com/de/reader/
+Spotify,https://www.spotify.com/de/download/
+Visual Studio Code,https://code.visualstudio.com/download
+VMware,https://www.vmware.com/products/desktop-hypervisor/workstation-and-fusion
+VirtualBox,https://www.virtualbox.org/wiki/Downloads
+AnyDesk,https://anydesk.com/de/downloads
+TeamViewer,https://www.teamviewer.com/de/download/
+Minecraft,https://www.minecraft.net/en-us/download
+Google Earth,https://www.google.com/intl/de/earth/about/versions/
+PyCharm,https://www.jetbrains.com/de-de/pycharm/download/
+Android Studio,https://developer.android.com/studio
+iTunes,https://www.apple.com/de/itunes/
+Swift,https://www.swift.org/install/
+Razer Synapse & Razer Chroma,https://www.razer.com/de-de/synapse-4?srsltid=AfmBOop811UeotmespOz7wKyRm915khhabXpufc-tfRBI2gH-Diw1_N8
+AMD Adrenalin Edition,https://www.amd.com/de/products/software/adrenalin.html
+NVIDIA App,https://www.nvidia.com/de-de/software/nvidia-app/
+Intel Download Center,https://www.intel.com/content/www/us/en/download-center/home.html
+Elgato,https://www.elgato.com/de/de/s/downloads
+Opera,https://www.opera.com/de
+Mozilla Firefox,https://www.mozilla.org/de/firefox/new/
+GoPro Quik,https://gopro.com/de/de/shop/quik-app-video-photo-editor?srsltid=AfmBOoqSxP3JsFyKWH9gCaGyoGpqocRKA9nO6aXpvRi_eoZRAkFD-TgU
+Zoom,https://zoom.us/de/download
+Rufus,https://rufus.ie/
+GitHub Desktop,https://desktop.github.com/download/
+GitHub Mobile,https://github.com/mobile
+Amazon Mobile,https://www.amazon.de/b?ie=UTF8&node=4951330031
+Unity,https://unity.com/de/download
+CryEngine,https://www.cryengine.com/
+FROSTBITE,https://www.ea.com/frostbite
+Godot,https://godotengine.org/download/
+Armoury Crate & Aura Creator,https://www.asus.com/supportonly/armoury%20crate/helpdesk_download/
+Armoury Crate,https://armoury-crate.com/
+MSI Center,https://de.msi.com/Landing/MSI-Center
+MSI AFTERBURNER,https://www.msi.com/Landing/afterburner/graphics-cards
+GIGABYTE Control Center,https://www.gigabyte.com/Consumer/Software/GIGABYTE-Control-Center/global/
+Visual Studio 2022,https://visualstudio.microsoft.com/de/downloads/
+IO CENTER,https://www.bequiet.com/de/software
+CORSAIR iCUE,https://www.corsair.com/de/de/s/downloads?srsltid=AfmBOor7mNvwp2yrhmglD0a2pEDdOFgfFMig9Mo-woInLyWLcIXUk4S6
+DiskGenius,https://www.diskgenius.com/de/download.php
+Revo Uninstaller Free,https://www.revouninstaller.com/de/products/revo-uninstaller-free/
+GOG GALAXY,https://www.gog.com/galaxy
+BlueStacks,https://www.bluestacks.com/de/index.html?utm_source=Google&utm_medium=CPC&utm_campaign=aw-ded-de-bluestacks-brand&utm_source=google&utm_campaign=12450781802&utm_medium=ad&utm_content=691796546126&utm_term=bluestacks%20download&gad_source=1&gad_campaignid=12450781802&gbraid=0AAAAADuKp7pFjfjCgMJurJgv_mPSek6DO&gclid=CjwKCAjwz_bABhAGEiwAm-P8Ye5YjjWBKil5qaz-GpwbQVjyEH-TNQ4xtUg6fHYbYsWMTTsjsOZulRoCjM4QAvD_BwE
+Synology Download-Zentrum,https://www.synology.com/de-de/support/download
+Tailscale,https://tailscale.com/download
+Zerotier,https://www.zerotier.com/download/
+Tor Browser,https://www.torproject.org/download/
+HappyMod,https://m.happymod.com/
+Roblox,https://www.roblox.com/de/download
+Raspberry Pi Imager,https://www.raspberrypi.com/software/
+balenaEtcher,https://etcher.balena.io/
+Tools für die Windows-Entwicklung,https://developer.microsoft.com/de-de/windows/downloads/
+.NET For Windows,https://dotnet.microsoft.com/en-us/download
+Windows 11-Installationsassistent,https://www.microsoft.com/de-de/software-download/windows11
+Windows 10-Installationsmedium erstellen,https://www.microsoft.com/de-de/software-download/windows10
+CurseForge,https://www.curseforge.com/download/app
+Python,https://www.python.org/downloads/
+Entwickeln von C- und C++-Anwendungen,https://visualstudio.microsoft.com/de/vs/features/cplusplus/
+Java Development (Oracle),https://www.oracle.com/de/java/technologies/downloads/
+Java,https://www.java.com/de/download/
+Drive for Desktop,https://support.google.com/a/users/answer/13022292?hl=de
+WPS Office,https://de.wps.com/download/
+Windhawk,https://windhawk.net/
+Mylivewallpapers,https://mylivewallpapers.com/how-to-set-live-wallpaper-for-your-desktop-using-mlwapp/
+Live Wallpapers for Me (Apple),https://apps.apple.com/de/app/live-wallpapers-for-me/id1069361548?l=en-GB
+TikTok,https://www.tiktok.com/download
+Synology Photos,https://www.synology.com/en-global/dsm/feature/photos
+Synology Drive,https://www.synology.com/en-global/dsm/feature/drive
+Synology Chat,https://www.synology.com/en-global/dsm/feature/chat
+Synology MailPlus,https://www.synology.com/en-global/dsm/feature/mailplus
+WEB.DE Mail,https://produkte.web.de/apps/#.hp_mobile.int.nav.apps
+GMX Mail,https://www.gmx.net/produkte/apps/#.hp_mobile.int.nav.apps
+Epap,https://www.epap.app/
+Duolingo,https://de.duolingo.com/mobile
+FxSound,https://www.fxsound.com/download
+Hivenet,https://www.hivenet.com/downloads
+Proton VPN,https://protonvpn.com/download
+MEGA Mobil-App,https://mega.io/de/mobile
+MEGA Desktop-App,https://mega.io/de/desktop
+pCloud Drive,https://www.pcloud.com/de/download-free-online-cloud-file-storage.html
+TeraBox,https://www.terabox.com/terabox-cloud-storage-for-pc-free-download
+Proton Drive,https://proton.me/de/drive/download
+Dropbox,https://www.dropbox.com/de/install
+Degoo Cloud Storage,https://degoo.com/
+Tuya,https://www.tuya.com/product/app-management/all-in-one-app
+BUFF,https://www.buff.game/download/?PartnerId=3762&utm_source=google&utm_medium=cpc&utm_campaign=21670175921&utm_content=Buff_AW_Cj0KCQjw8vvABhCcARIsAOCfwwoa0GN_PWlhoS_4N3Ms13g8ShQG0CoEHT3HhusG1NFo4P5o_2wG4CUaAokkEALw_wcB&utm_term=&gad_source=1&gad_campaignid=21663659277&gbraid=0AAAAACvhtkBmNQ9eRNX7p9F81w98i2VnD&gclid=Cj0KCQjw8vvABhCcARIsAOCfwwoa0GN_PWlhoS_4N3Ms13g8ShQG0CoEHT3HhusG1NFo4P5o_2wG4CUaAokkEALw_wcB
+Brawl Stars,https://supercell.com/en/games/brawlstars/
+Clash Royale,https://supercell.com/en/games/clashroyale/
+Boom Beach,https://supercell.com/en/games/boombeach/
+Clash of Clans,https://supercell.com/en/games/clashofclans/
+Hay Day,https://supercell.com/en/games/hayday/
+DELTA FORCE,https://www.playdeltaforce.com/de/
+Instabridge,https://www2.instabridge.com/
+VALORANT,https://playvalorant.com/de-de/platform-selection/?gad_source=1&gad_campaignid=21357999547&gbraid=0AAAAADidvFwtVVnFXsb7EHABsZHs_ojrY&gclid=Cj0KCQjw8vvABhCcARIsAOCfwwp3bgFwzWg97gw0HwT7r0U1F3y5ftnhbrXXyDsB6OWDeZQZyAD0JZEaAob9EALw_wcB&gclsrc=aw.ds
+Warthunder,https://warthunder.com/de/play4free/?r=sem_211413079_13940155639_167276751272_kwd-3466481289&placement=&gad_source=1&gad_campaignid=211413079&gbraid=0AAAAADpy6fO7w3E0zasteRfHEKCEs6G3K&gclid=Cj0KCQjw8vvABhCcARIsAOCfwwqcfW4H4atxaGgLGfvxJgouV7fcoOGE_WuHqOvzY0DpSblcPA5ErCAaArUOEALw_wcB#/
+Callofduty Warzone,https://www.callofduty.com/de/warzone
+Battle.net,https://download.battle.net/
+Xbox App,https://www.xbox.com/de-DE/apps/xbox-app-on-pc
+Xbox App (on-mobile),https://www.xbox.com/de-DE/apps/xbox-app-on-mobile
+Nova Launcher,https://novalauncher.com/
+NOTEIN,https://www.notein.ai/de
+Notion Mobile,https://www.notion.com/de/mobile
+Notion Desktop,https://www.notion.com/de/desktop
+Obsidian,https://obsidian.md/download
+VLC media player,https://images.videolan.org/vlc/index.de.html
+ChatGPT,https://openai.com/chatgpt/download/
+Apache OpenOffice,https://www.openoffice.org/de/download/
+Dolby Atmos,https://games.dolby.com/atmos/
+Instagram,https://www.instagram.com/
+Facebook,https://www.facebook.com/
+Telegram,https://telegram.org/
+Netflix,https://www.netflix.com/
+YouTube,https://www.youtube.com/
+Google Maps,https://www.google.com/maps
+Gmail,https://mail.google.com/
+Signal,https://signal.org/download/
+Snapchat,https://www.snapchat.com/
+Pinterest,https://www.pinterest.com/
+LinkedIn,https://mobile.linkedin.com/
+Twitter (X),https://x.com/settings/download
+SoundCloud,https://soundcloud.com/
+Uber,https://www.uber.com/
+Airbnb,https://www.airbnb.com/
+Shazam,https://www.shazam.com/
+Canva,https://www.canva.com/download/
+CapCut,https://www.capcut.com/
+Temu,https://www.temu.com/
+SHEIN,https://shein.com/
+Candy Crush Saga,https://www.king.com/de/game/candycrush/
+PUBG Mobile,https://www.pubgmobile.com/de/home.shtml
+Garena Free Fire,https://ff.garena.com/en
+Booking.com,https://www.booking.com/
+Trivago,https://www.trivago.de/
+Waze,https://www.waze.com/
+Evernote,https://evernote.com/download
+Todoist,https://www.todoist.com/
+Trello,https://trello.com/
+Asana,https://asana.com/download
+Slack,https://slack.com/downloads
+Audible,https://www.audible.com/
+Kindle App,https://www.amazon.com/gp/browse.html?node=16571048011&ref=kcp_fd_hz
+Google News,https://news.google.com/
+Pocket,https://getpocket.com/home
+MyFitnessPal,https://www.myfitnesspal.com/
+Headspace,https://www.headspace.com/
+Calm,https://www.calm.com/
+Nike Training Club,https://www.nike.com/de/ntc-app
+Adidas Running by Runtastic,https://www.runtastic.com/
+Strava,https://www.strava.com/
+Komoot,https://www.komoot.com/
+AllTrails,https://www.alltrails.com/
+Vivino,https://www.vivino.com/
+Untappd,https://untappd.com/
+LastPass,https://www.lastpass.com/
+1Password,https://1password.com/
+Bitwarden,https://bitwarden.com/

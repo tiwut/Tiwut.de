@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Tiwut Chat</title>
+    <script defer src="script.js" type="module"></script>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="icon.ico" type="image/x-icon">
+</head>
+<body>
+    <div class="status-bar-mock"></div>
+
+    <div id="language-overlay" style="display: none;">
+        <div id="language-modal">
+            <h2 data-translate="selectLanguage">Select your language</h2>
+            <div class="lang-buttons">
+                <button id="lang-en">English</button>
+                <button id="lang-de">Deutsch</button>
+                <button id="lang-es">Español</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-page-container">
+        <main>
+            <section class="auth-form-section">
+                <img src="icon.ico" alt="Logo" class="auth-logo">
+                <h2 data-translate="loginTitle"></h2>
+                <div id="login-status" class="status-message"></div>
+                <form id="login-form" class="auth-form">
+                    <div>
+                        <label for="username" data-translate="usernameLabel"></label>
+                        <input type="text" id="username" name="username" required autocomplete="username">
+                    </div>
+                    <div>
+                        <label for="password" data-translate="passwordLabel"></label>
+                        <input type="password" id="password" name="password" required autocomplete="current-password">
+                    </div>
+                    <button type="submit" class="cta-button" data-translate="login"></button>
+                </form>
+                <p class="form-link">
+                    <span data-translate="noAccountPrompt"></span>
+                    <a href="register.html" data-translate="registerHere"></a>
+                </p>
+            </section>
+        </main>
+    </div>
+</body>
+</html>

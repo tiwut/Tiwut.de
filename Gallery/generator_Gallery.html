@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <title>Bildlisten-Generator</title>
+    <style>
+        body { font-family: sans-serif; max-width: 800px; margin: 40px auto; line-height: 1.6; }
+        h1, h2 { color: #333; }
+        button { font-size: 1.2em; padding: 10px 20px; cursor: pointer; border-radius: 5px; border: 1px solid #ccc; }
+        textarea { width: 100%; height: 300px; margin-top: 10px; font-family: monospace; white-space: pre; }
+        .instructions { background-color: #f0f0f0; padding: 15px; border-radius: 5px; }
+        .success { background-color: #e6ffed; padding: 15px; border-radius: 5px; border-left: 5px solid #4caf50; }
+        code { background-color: #eee; padding: 2px 5px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>Bildlisten-Generator</h1>
+    <div class="instructions">
+        <p><b>Anleitung:</b></p>
+        <ol>
+            <li>Klicke auf den Button und wähle den <b>Hauptordner deiner Galerie</b> aus (z.B. <code>meine-galerie</code>).</li>
+            <li>Das Skript durchsucht alle Ordner und Unterordner nach Bildern.</li>
+            <li>Kopiere den generierten Inhalt aus dem Textfeld.</li>
+            <li>Füge ihn in die Datei <code>file-list.js</code> ein und ersetze den alten Inhalt.</li>
+            <li>Öffne danach die <code>index.html</code>, um deine Galerie zu sehen.</li>
+        </ol>
+    </div>
+
+    <hr>
+    
+    <button id="selectFolderBtn">1. Hauptordner auswählen & Liste generieren</button>
+    
+    <div id="resultArea" style="display:none;">
+        <h2>2. Ergebnis kopieren und in <code>file-list.js</code> einfügen:</h2>
+        <div class="success">
+            <b>Erfolg!</b> <span id="imageCount">0</span> Bilder gefunden. Jetzt den Text unten kopieren.
+        </div>
+        <textarea id="output" readonly></textarea>
+    </div>
+
+    <script>
+        document.getElementById('selectFolderBtn').addEventListener('click', async () => {
+            try {
+                const dirHandle = await window.showDirectoryPicker();
+                const imagePaths = [];
+               
+                const excludedFiles = ['index.html', 'generator.html', 'style.css', 'script.js', 'file-list.js'];
+
+                async function processDirectory(directoryHandle, currentPath) {
+                    for await (const entry of directoryHandle.values()) {
+                        const newPath = currentPath ? `${currentPath}/${entry.name}` : entry.name;
+                        
+                        if (entry.kind === 'file') {
+                           
+                            if (/\.(jpe?g|png|webp)$/i.test(entry.name) && !excludedFiles.includes(entry.name)) {
+                                imagePaths.push(newPath);
+                            }
+                        } else if (entry.kind === 'directory') {
+                            await processDirectory(entry, newPath);
+                        }
+                    }
+                }
+
+                
+                await processDirectory(dirHandle, '');
+                
+                imagePaths.sort();
+
+                const outputText = `const imagePaths = [\n${imagePaths.map(p => `    "${p.replace(/\\/g, '/')}"`).join(',\n')}\n];`;
+                
+                document.getElementById('output').value = outputText;
+                document.getElementById('imageCount').textContent = imagePaths.length;
+                document.getElementById('resultArea').style.display = 'block';
+
+            } catch (error) {
+                if (error.name !== 'AbortError') {
+                    console.error('Fehler:', error);
+                    alert('Ein Fehler ist aufgetreten. Stelle sicher, dass du einen modernen Browser (Chrome, Edge) verwendest.');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

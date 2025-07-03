@@ -1,0 +1,4 @@
+media/main.mp4
+media/NovaRogue_coming soon.mp4
+media/new domain.png
+media/MacOS_DualBoot.png

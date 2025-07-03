@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English If-Clause Trainer</title>
+    <style>
+        :root {
+            --primary-color: #ff8c00;
+            --secondary-color: #4a4a4a;
+            --bg-color: #1e1e1e;
+            --container-bg-color: #2c2c2c;
+            --text-color: #f1f1f1;
+            --border-color: #444444;
+            --correct-color: #28a745;
+            --incorrect-color: #dc3545;
+            --border-radius: 8px;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            background-color: var(--container-bg-color);
+            padding: 20px 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+
+        header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        #language-selector button {
+            background: none;
+            border: 1px solid var(--secondary-color);
+            color: var(--text-color);
+            padding: 5px 10px;
+            margin-left: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+            transition: background-color 0.2s;
+        }
+
+        #language-selector button.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        
+        #language-selector button:hover:not(.active) {
+            background-color: var(--secondary-color);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin: 0;
+            font-size: 1.8em;
+        }
+
+        #quiz-menu button {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+            cursor: pointer;
+            border: none;
+            background-color: var(--primary-color);
+            color: white;
+            border-radius: var(--border-radius);
+            transition: background-color 0.3s;
+        }
+
+        #quiz-menu button:hover {
+            background-color: #d97700;
+        }
+
+        #quiz-container {
+            display: none;
+        }
+        
+        #progress-container {
+            width: 100%;
+            background-color: var(--border-color);
+            border-radius: var(--border-radius);
+            margin-bottom: 20px;
+            overflow: hidden;
+        }
+
+        #progress-bar {
+            height: 10px;
+            width: 0%;
+            background-color: var(--primary-color);
+            border-radius: var(--border-radius);
+            transition: width 0.3s ease-in-out;
+        }
+
+        #question-text {
+            font-size: 1.4em;
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        #options-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .option-btn {
+            padding: 15px;
+            font-size: 1em;
+            cursor: pointer;
+            border: 1px solid var(--secondary-color);
+            background-color: var(--container-bg-color);
+            color: var(--text-color);
+            border-radius: var(--border-radius);
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            background-color: var(--secondary-color);
+            border-color: #666;
+        }
+        
+        .option-btn.correct {
+            background-color: var(--correct-color);
+            color: white;
+            border-color: var(--correct-color);
+        }
+
+        .option-btn.incorrect {
+            background-color: var(--incorrect-color);
+            color: white;
+            border-color: var(--incorrect-color);
+        }
+        
+        .option-btn:disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+
+        #feedback-text {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-top: 20px;
+            height: 30px;
+        }
+
+        #next-btn, #back-to-menu-btn {
+            padding: 12px 25px;
+            font-size: 1em;
+            cursor: pointer;
+            border: none;
+            background-color: var(--secondary-color);
+            color: white;
+            border-radius: var(--border-radius);
+            margin-top: 15px;
+            display: none;
+        }
+        
+        #next-btn:hover, #back-to-menu-btn:hover {
+            background-color: #5a5a5a;
+        }
+
+        #score-container {
+            font-size: 1.2em;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .container { padding: 15px; }
+            h1 { font-size: 1.5em; }
+            #options-container { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1 id="main-title">If-Clause Trainer</h1>
+            <div id="language-selector">
+                <button id="lang-de" class="active">DE</button>
+                <button id="lang-en">EN</button>
+                <button id="lang-es">ES</button>
+            </div>
+        </header>
+
+        <main>
+            <div id="quiz-menu">
+                <h2 id="menu-title">Wähle einen Übungstyp</h2>
+                <button id="start-type1">If-Satz Typ 1 (Real Condition)</button>
+                <button id="start-type2">If-Satz Typ 2 (Unreal Condition)</button>
+                <button id="start-type3">If-Satz Typ 3 (Past Unreal Condition)</button>
+                <button id="start-mixed">Gemischte Aufgaben</button>
+            </div>
+
+            <div id="quiz-container">
+                <div id="score-container">
+                    <span id="score-label">Punktzahl</span>: <span id="score">0</span> / <span id="total-questions">0</span>
+                </div>
+                <div id="progress-container">
+                    <div id="progress-bar"></div>
+                </div>
+                <p id="question-text"></p>
+                <div id="options-container"></div>
+                <p id="feedback-text"></p>
+                <button id="next-btn"></button>
+                <button id="back-to-menu-btn"></button>
+            </div>
+        </main>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+
+        const questions = [
+            { type: 1, question: "If it rains, we ________ inside.", options: ["will stay", "would stay", "stayed", "had stayed"], answer: "will stay" },
+            { type: 1, question: "She will pass the exam if she ________ hard.", options: ["studies", "studied", "will study", "would study"], answer: "studies" },
+            { type: 1, question: "If I see John, I ________ him the news.", options: ["will tell", "would tell", "told", "am telling"], answer: "will tell" },
+            { type: 1, question: "The table will collapse if you ________ on it.", options: ["stand", "stood", "will stand", "would stand"], answer: "stand" },
+            { type: 1, question: "If my brother ________ an alarm, he will oversleep.", options: ["doesn't set", "didn't set", "won't set", "wouldn't set"], answer: "doesn't set" },
+            { type: 1, question: "I ________ you a postcard if I have time.", options: ["will send", "would send", "sent", "am sending"], answer: "will send" },
+            { type: 1, question: "If they ________ early, they will catch the bus.", options: ["leave", "left", "will leave", "had left"], answer: "leave" },
+            { type: 1, question: "What will you do if the flight ________?", options: ["is cancelled", "was cancelled", "would be cancelled", "will be cancelled"], answer: "is cancelled" },
+            { type: 1, question: "If you ________ water to 100 degrees, it boils.", options: ["heat", "heated", "will heat", "would heat"], answer: "heat" },
+            { type: 1, question: "He will be late for work if the train ________.", options: ["is delayed", "was delayed", "would be delayed", "will be delayed"], answer: "is delayed" },
+            { type: 1, question: "We ________ to the beach tomorrow if the weather is good.", options: ["will go", "go", "went", "would go"], answer: "will go"},
+            { type: 2, question: "If I were you, I ________ that job.", options: ["would take", "will take", "took", "had taken"], answer: "would take" },
+            { type: 2, question: "He would travel the world if he ________ more money.", options: ["had", "has", "would have", "will have"], answer: "had" },
+            { type: 2, question: "If they ________ closer, we would visit them more often.", options: ["lived", "live", "would live", "had lived"], answer: "lived" },
+            { type: 2, question: "What ________ you do if you won the lottery?", options: ["would", "will", "did", "do"], answer: "would" },
+            { type: 2, question: "If I ________ the answer, I would tell you.", options: ["knew", "know", "had known", "would know"], answer: "knew" },
+            { type: 2, question: "She ________ happier if she had a different job.", options: ["would be", "will be", "is", "were"], answer: "would be" },
+            { type: 2, question: "If we ________ a car, we could drive to the mountains.", options: ["had", "have", "would have", "will have"], answer: "had" },
+            { type: 2, question: "I would learn Spanish if I ________ more time.", options: ["had", "have", "will have", "would have"], answer: "had" },
+            { type: 2, question: "If he ________ taller, he could be a basketball player.", options: ["were", "was", "is", "would be"], answer: "were" },
+            { type: 2, question: "If you ________ a superpower, what would it be?", options: ["had", "have", "would have", "could have"], answer: "had" },
+            { type: 2, question: "I ________ that if I were in your position.", options: ["wouldn't do", "won't do", "didn't do", "don't do"], answer: "wouldn't do" },
+            { type: 3, question: "If she had studied, she ________ the exam.", options: ["would have passed", "would pass", "will pass", "passed"], answer: "would have passed" },
+            { type: 3, question: "We wouldn't have been late if we ________ a taxi.", options: ["had taken", "took", "would take", "have taken"], answer: "had taken" },
+            { type: 3, question: "If I had known you were coming, I ________ a cake.", options: ["would have baked", "would bake", "baked", "will bake"], answer: "would have baked" },
+            { type: 3, question: "He ________ the accident if he had been more careful.", options: ["could have avoided", "could avoid", "avoided", "will avoid"], answer: "could have avoided" },
+            { type: 3, question: "If you ________ me, this wouldn't have happened.", options: ["had told", "told", "would have told", "tell"], answer: "had told" },
+            { type: 3, question: "I ________ you if you had called me.", options: ["would have helped", "would help", "helped", "will help"], answer: "would have helped" },
+            { type: 3, question: "If they had left earlier, they ________ the train.", options: ["would have caught", "would catch", "caught", "will catch"], answer: "would have caught" },
+            { type: 3, question: "The project ________ a success if the team had worked together.", options: ["would have been", "would be", "was", "will be"], answer: "would have been" },
+            { type: 3, question: "If I ________ about the meeting, I would have been there.", options: ["had known", "knew", "would know", "know"], answer: "had known" },
+            { type: 3, question: "She wouldn't have been so tired if she ________ to bed earlier.", options: ["had gone", "went", "would go", "goes"], answer: "had gone" },
+            { type: 3, question: "What would you have done if you ________ your wallet?", options: ["had lost", "lost", "would lose", "lose"], answer: "had lost" }
+        ];
+
+        const translations = {
+            de: {
+                mainTitle: "If-Clause Trainer",
+                menuTitle: "Wähle einen Übungstyp",
+                startType1: "If-Satz Typ 1 (Reale Bedingung)",
+                startType2: "If-Satz Typ 2 (Irreale Bedingung)",
+                startType3: "If-Satz Typ 3 (Irreale Bedingung der Vergangenheit)",
+                startMixed: "Gemischte Aufgaben",
+                scoreLabel: "Punktzahl",
+                feedbackCorrect: "Richtig!",
+                feedbackIncorrect: "Falsch!",
+                nextBtn: "Nächste Frage",
+                endMessage: "Quiz beendet! Deine finale Punktzahl ist",
+                backToMenuBtn: "Zurück zum Menü"
+            },
+            en: {
+                mainTitle: "If-Clause Trainer",
+                menuTitle: "Choose an exercise type",
+                startType1: "If-Clause Type 1 (Real Condition)",
+                startType2: "If-Clause Type 2 (Unreal Condition)",
+                startType3: "If-Clause Type 3 (Past Unreal Condition)",
+                startMixed: "Mixed Exercises",
+                scoreLabel: "Score",
+                feedbackCorrect: "Correct!",
+                feedbackIncorrect: "Incorrect!",
+                nextBtn: "Next Question",
+                endMessage: "Quiz finished! Your final score is",
+                backToMenuBtn: "Back to Menu"
+            },
+            es: {
+                mainTitle: "Entrenador de If-Clauses",
+                menuTitle: "Elige un tipo de ejercicio",
+                startType1: "Condicional Tipo 1 (Condición Real)",
+                startType2: "Condicional Tipo 2 (Condición Irreal)",
+                startType3: "Condicional Tipo 3 (Condición Irreal del Pasado)",
+                startMixed: "Ejercicios Mixtos",
+                scoreLabel: "Puntuación",
+                feedbackCorrect: "¡Correcto!",
+                feedbackIncorrect: "¡Incorrecto!",
+                nextBtn: "Siguiente Pregunta",
+                endMessage: "¡Cuestionario terminado! Tu puntuación final es",
+                backToMenuBtn: "Volver al Menú"
+            }
+        };
+
+        const mainTitleEl = document.getElementById('main-title');
+        const menuTitleEl = document.getElementById('menu-title');
+        const startType1Btn = document.getElementById('start-type1');
+        const startType2Btn = document.getElementById('start-type2');
+        const startType3Btn = document.getElementById('start-type3');
+        const startMixedBtn = document.getElementById('start-mixed');
+        const quizMenu = document.getElementById('quiz-menu');
+        const quizContainer = document.getElementById('quiz-container');
+        const scoreLabelEl = document.getElementById('score-label');
+        const scoreEl = document.getElementById('score');
+        const totalQuestionsEl = document.getElementById('total-questions');
+        const progressBar = document.getElementById('progress-bar');
+        const questionTextEl = document.getElementById('question-text');
+        const optionsContainer = document.getElementById('options-container');
+        const feedbackTextEl = document.getElementById('feedback-text');
+        const nextBtn = document.getElementById('next-btn');
+        const backToMenuBtn = document.getElementById('back-to-menu-btn');
+        const langButtons = document.querySelectorAll('#language-selector button');
+
+        let currentQuestions = [];
+        let currentQuestionIndex = 0;
+        let score = 0;
+        let currentLang = 'de';
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            const t = translations[lang];
+
+            mainTitleEl.textContent = t.mainTitle;
+            menuTitleEl.textContent = t.menuTitle;
+            startType1Btn.textContent = t.startType1;
+            startType2Btn.textContent = t.startType2;
+            startType3Btn.textContent = t.startType3;
+            startMixedBtn.textContent = t.startMixed;
+            scoreLabelEl.textContent = t.scoreLabel;
+            nextBtn.textContent = t.nextBtn;
+            backToMenuBtn.textContent = t.backToMenuBtn;
+
+            langButtons.forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.id === `lang-${lang}`) {
+                    btn.classList.add('active');
+                }
+            });
+            document.documentElement.lang = lang;
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        function startQuiz(type) {
+            if (type === 'mixed') {
+                currentQuestions = shuffleArray([...questions]);
+            } else {
+                currentQuestions = shuffleArray(questions.filter(q => q.type === type));
+            }
+            
+            currentQuestionIndex = 0;
+            score = 0;
+            scoreEl.textContent = 0;
+            totalQuestionsEl.textContent = currentQuestions.length;
+            
+            quizMenu.style.display = 'none';
+            quizContainer.style.display = 'block';
+            nextBtn.style.display = 'none';
+            backToMenuBtn.style.display = 'none';
+            
+            showQuestion();
+        }
+
+        function showQuestion() {
+            resetState();
+            if (currentQuestionIndex >= currentQuestions.length) {
+                showEndScreen();
+                return;
+            }
+            
+            const question = currentQuestions[currentQuestionIndex];
+            questionTextEl.textContent = question.question;
+            
+            const shuffledOptions = shuffleArray([...question.options]);
+
+            shuffledOptions.forEach(option => {
+                const button = document.createElement('button');
+                button.innerText = option;
+                button.classList.add('option-btn');
+                button.addEventListener('click', () => selectAnswer(button, option, question.answer));
+                optionsContainer.appendChild(button);
+            });
+            
+            updateProgress();
+        }
+        
+        function updateProgress() {
+            const progressPercentage = (currentQuestionIndex / currentQuestions.length) * 100;
+            progressBar.style.width = `${progressPercentage}%`;
+            scoreEl.textContent = score;
+        }
+
+        function resetState() {
+            feedbackTextEl.textContent = '';
+            nextBtn.style.display = 'none';
+            while (optionsContainer.firstChild) {
+                optionsContainer.removeChild(optionsContainer.firstChild);
+            }
+        }
+
+        function selectAnswer(button, selectedOption, correctAnswer) {
+            Array.from(optionsContainer.children).forEach(btn => {
+                btn.disabled = true;
+                if (btn.innerText === correctAnswer) {
+                    btn.classList.add('correct');
+                }
+            });
+
+            if (selectedOption === correctAnswer) {
+                score++;
+                feedbackTextEl.textContent = translations[currentLang].feedbackCorrect;
+                feedbackTextEl.style.color = 'var(--correct-color)';
+            } else {
+                feedbackTextEl.textContent = translations[currentLang].feedbackIncorrect;
+                feedbackTextEl.style.color = 'var(--incorrect-color)';
+                button.classList.add('incorrect');
+            }
+            
+            scoreEl.textContent = score;
+            nextBtn.style.display = 'inline-block';
+        }
+
+        function showNextQuestion() {
+            currentQuestionIndex++;
+            showQuestion();
+        }
+        
+        function showEndScreen() {
+            resetState();
+            questionTextEl.textContent = `${translations[currentLang].endMessage} ${score} / ${currentQuestions.length}`;
+            progressBar.style.width = '100%';
+            backToMenuBtn.style.display = 'inline-block';
+        }
+        
+        function goBackToMenu() {
+            quizContainer.style.display = 'none';
+            quizMenu.style.display = 'block';
+        }
+
+        startType1Btn.addEventListener('click', () => startQuiz(1));
+        startType2Btn.addEventListener('click', () => startQuiz(2));
+        startType3Btn.addEventListener('click', () => startQuiz(3));
+        startMixedBtn.addEventListener('click', () => startQuiz('mixed'));
+
+        nextBtn.addEventListener('click', showNextQuestion);
+        backToMenuBtn.addEventListener('click', goBackToMenu);
+        
+        langButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const lang = button.id.split('-')[1];
+                setLanguage(lang);
+            });
+        });
+
+        setLanguage('de');
+    });
+    </script>
+</body>
+</html>

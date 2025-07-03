@@ -1,0 +1,170 @@
+[
+  {
+    "url": "https://tiwut.de/",
+    "title": {
+      "de": "Willkommen bei Tiwut",
+      "en": "Welcome to Tiwut",
+      "es": "Bienvenido a Tiwut"
+    },
+    "content": {
+      "de": "Die Startseite von tiwut.de. Hier finden Sie eine Übersicht über alle Bereiche wie Tools, Guides und den App Store.",
+      "en": "The homepage of tiwut.de. Here you can find an overview of all sections like Tools, Guides, and the App Store.",
+      "es": "La página de inicio de tiwut.de. Aquí puede encontrar un resumen de todas las secciones como Herramientas, Guías y la Tienda de Aplicaciones."
+    },
+    "tags": ["Homepage", "Startseite", "Home", "Tiwut", "Main", "Inicio"]
+  },
+  {
+    "url": "https://tiwut.de/Tools/",
+    "title": {
+      "de": "Werkzeug-Finder",
+      "en": "Tool Finder",
+      "es": "Buscador de Herramientas"
+    },
+    "content": {
+      "de": "Werkzeugfinder: Werkzeuge schnell und effizient suchen.",
+      "en": "Tool finder: Search for tools quickly and efficiently.",
+      "es": "Buscador de herramientas: busque herramientas de forma rápida y eficiente."
+    },
+    "tags": ["Tool", "Tools", "Apps", "Web", "New"]
+  },
+  {
+    "url": "https://tiwut.de/Tiwut-Chat/",
+    "title": {
+      "de": "Tiwut Chat",
+      "en": "Tiwut Chat",
+      "es": "Tiwut Chat"
+    },
+    "content": {
+      "de": "Tiwut Chat Raum. Treten Sie der Community bei.",
+      "en": "Tiwut Chat Room. Join the community.",
+      "es": "Sala de Chat de Tiwut. Únete a la comunidad."
+    },
+    "tags": ["Chat", "Community", "Tiwut-Chat", "Unterhaltung"]
+  },
+  {
+    "url": "https://tiwut.de/NEWS/",
+    "title": {
+      "de": "NEWS",
+      "en": "NEWS",
+      "es": "NOTICIAS"
+    },
+    "content": {
+      "de": "Alle Neuigkeiten",
+      "en": "All news",
+      "es": "Todas las noticias"
+    },
+    "tags": ["NEWS", "New", "Änderungen", "Changes", "Cambios"]
+  },
+  {
+    "url": "https://tiwut.de/AppStore/",
+    "title": {
+      "de": "App Store",
+      "en": "App Store",
+      "es": "Tienda de Aplicaciones"
+    },
+    "content": {
+      "de": "Viele Apps",
+      "en": "Many apps",
+      "es": "Muchas aplicaciones"
+    },
+    "tags": ["Apps", "App Store", "App Search", "application", "PC", "Phone", "Handy", "Tablet", "Extensions"]
+  },
+  {
+    "url": "https://tiwut.de/Guides/",
+    "title": {
+      "de": "Finde Deinen Guide",
+      "en": "Find Your Guide",
+      "es": "Encuentra tu guía"
+    },
+    "content": {
+      "de": "Finden Sie Ihren Leitfaden auf Tiwut.de.",
+      "en": "Find your guide at Tiwut.de.",
+      "es": "Encuentra tu guía en Tiwut.de."
+    },
+    "tags": ["Leitfaden", "support", "guide", "hilfe", "Finde", "Anleitung"]
+  },
+  {
+    "url": "https://tiwut.de/Learning/",
+    "title": {
+      "de": "Lernzentrum",
+      "en": "Learning Center",
+      "es": "Centro de Aprendizaje"
+    },
+    "content": {
+      "de": "Lernmaterialien und Kurse auf Tiwut.de.",
+      "en": "Learning materials and courses on Tiwut.de.",
+      "es": "Materiales de aprendizaje y cursos en Tiwut.de."
+    },
+    "tags": ["Learning", "Lernen", "Kurse", "Courses", "Education"]
+  },
+  {
+    "url": "https://tiwut.de/Gallery/",
+    "title": {
+      "de": "Meine Galerie",
+      "en": "My Gallery",
+      "es": "Mi Galería"
+    },
+    "content": {
+      "de": "Alle .png .jpg Bilder von dieser Website",
+      "en": "All .png .jpg images from this website",
+      "es": "Todas las imágenes .png .jpg de este sitio web"
+    },
+    "tags": ["jpg", "png", "images", "Bilder", "Gallery", "Galería", "Galerie", "All images"]
+  },
+  {
+    "url": "https://tiwut.de/Search/",
+    "title": {
+      "de": "Suche",
+      "en": "Search",
+      "es": "Buscar"
+    },
+    "content": {
+      "de": "Durchsuchen Sie die Tiwut.de Website.",
+      "en": "Search the Tiwut.de website.",
+      "es": "Busque en el sitio web de Tiwut.de."
+    },
+    "tags": ["Search", "Suche", "Finden", "Finder"]
+  },
+  {
+    "url": "https://tiwut.de/Tiwut-Chat/login.html",
+    "title": {
+      "de": "Chat-Anmeldung",
+      "en": "Chat Login",
+      "es": "Inicio de Sesión del Chat"
+    },
+    "content": {
+      "de": "Melden Sie sich beim Tiwut-Chat an.",
+      "en": "Log in to the Tiwut Chat.",
+      "es": "Inicie sesión en el Chat de Tiwut."
+    },
+    "tags": ["Chat", "Login", "Anmelden", "Account"]
+  },
+  {
+    "url": "https://tiwut.de/Tiwut-Chat/register.html",
+    "title": {
+      "de": "Chat-Registrierung",
+      "en": "Chat Registration",
+      "es": "Registro en el Chat"
+    },
+    "content": {
+      "de": "Erstellen Sie ein neues Konto für den Tiwut-Chat.",
+      "en": "Create a new account for the Tiwut Chat.",
+      "es": "Cree una nueva cuenta para el Chat de Tiwut."
+    },
+    "tags": ["Chat", "Register", "Registrieren", "Sign up", "Konto erstellen"]
+  },
+  {
+    "url": "https://tiwut.de/Tiwut-Chat/terms.html",
+    "title": {
+      "de": "Chat-Nutzungsbedingungen",
+      "en": "Chat Terms of Use",
+      "es": "Términos de Uso del Chat"
+    },
+    "content": {
+      "de": "Nutzungsbedingungen für den Tiwut-Chat.",
+      "en": "Terms of use for the Tiwut Chat.",
+      "es": "Términos de uso para el Chat de Tiwut."
+    },
+    "tags": ["Chat", "Terms", "Legal", "Nutzungsbedingungen", "Rechtliches"]
+  }
+]

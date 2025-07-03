@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n="pageTitle">Browser Performance Test</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container header-container">
+            <h1 class="logo" data-i18n="mainTitle">Browser Benchmark</h1>
+            <div class="controls">
+                <select id="language-switcher" aria-label="Language Selector">
+                    <option value="en">English</option>
+                    <option value="de">Deutsch</option>
+                    <option value="es">Español</option>
+                </select>
+                <label class="theme-switch" for="theme-toggle" data-i18n-title="toggleTheme" title="Toggle theme">
+                    <input type="checkbox" id="theme-toggle">
+                    <span class="slider"></span>
+                </label>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        <div id="browser-info" class="card">
+            <h2 data-i18n="browserInfoTitle">Your Browser Information</h2>
+            <ul>
+                <li><strong data-i18n="userAgentLabel">User Agent:</strong> <span id="user-agent"></span></li>
+                <li><strong data-i18n="vendorLabel">Browser Vendor:</strong> <span id="vendor"></span></li>
+                <li><strong data-i18n="languageLabel">Language:</strong> <span id="language"></span></li>
+                <li><strong data-i18n="platformLabel">Platform/OS:</strong> <span id="platform"></span></li>
+                <li><strong data-i18n="cookiesLabel">Cookies Enabled:</strong> <span id="cookies-enabled"></span></li>
+                <li><strong data-i18n="resolutionLabel">Screen Resolution:</strong> <span id="screen-resolution"></span></li>
+            </ul>
+        </div>
+
+        <div id="benchmarks" class="card">
+            <h2 data-i18n="singleBenchmarksTitle">Single Benchmarks</h2>
+            <div class="benchmark">
+                <h3 data-i18n="cpuTestLabel">CPU / JavaScript Test</h3>
+                <p data-i18n="cpuTestDesc">Measures performance by running millions of math operations.</p>
+                <button id="start-cpu-test" data-i18n="startTest">Start Test</button>
+                <div class="result" id="cpu-result"></div>
+            </div>
+            <div class="benchmark">
+                <h3 data-i18n="domTestLabel">DOM Manipulation Test</h3>
+                <p data-i18n="domTestDesc">Measures performance by adding and removing thousands of elements.</p>
+                <button id="start-dom-test" data-i18n="startTest">Start Test</button>
+                <div class="result" id="dom-result"></div>
+                <div id="dom-test-area" style="display: none;"></div>
+            </div>
+            <div class="benchmark">
+                <h3 data-i18n="graphicsTestLabel">Graphics (2D Canvas) Test</h3>
+                <p data-i18n="graphicsTestDesc">Measures 2D rendering performance by drawing thousands of shapes.</p>
+                <canvas id="graphics-canvas" width="100" height="50"></canvas>
+                <button id="start-graphics-test" data-i18n="startTest">Start Test</button>
+                <div class="result" id="graphics-result"></div>
+            </div>
+        </div>
+
+        <div id="statistics" class="card">
+            <h2 data-i18n="statsTitle">Statistical Analysis</h2>
+            <div class="stat-controls">
+                <label for="run-count" data-i18n="runCountLabel">Number of runs:</label>
+                <input type="number" id="run-count" value="10" min="2" max="100">
+            </div>
+            
+            <div class="benchmark">
+                <h3 data-i18n="cpuStatsLabel">CPU Statistics</h3>
+                <button id="start-cpu-stat-test" data-i18n="startStatTest">Start Analysis</button>
+                <div class="result" id="cpu-stat-result"></div>
+            </div>
+            <div class="benchmark">
+                <h3 data-i18n="domStatsLabel">DOM Statistics</h3>
+                <button id="start-dom-stat-test" data-i18n="startStatTest">Start Analysis</button>
+                <div class="result" id="dom-stat-result"></div>
+            </div>
+            <div class="benchmark">
+                <h3 data-i18n="graphicsStatsLabel">Graphics Statistics</h3>
+                <button id="start-graphics-stat-test" data-i18n="startStatTest">Start Analysis</button>
+                <div class="result" id="graphics-stat-result"></div>
+            </div>
+            
+            <hr class="separator">
+            
+            <h3 data-i18n="downloadReportTitle">Download Report</h3>
+            <p data-i18n="downloadReportDesc">Generates a PDF report with browser info and statistical results.</p>
+            <button id="download-pdf-btn" data-i18n="downloadPdfBtn" disabled>Download PDF</button>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+</body>
+</html>

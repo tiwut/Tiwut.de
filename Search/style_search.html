@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-key="siteTitle">Website Suche</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style_search.css">
+</head>
+<body>
+    <div id="cursor-dot"></div>
+    <div id="cursor-circle"></div>
+
+    <div class="background-wrapper">
+        <video autoplay loop muted playsinline class="background-video">
+            <source src="https://tiwut.de/main.webm" type="video/webm">
+            <source src="https://tiwut.de/main.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+
+    <div class="top-ui-container">
+        <a href="https://tiwut.de/" rel="noopener noreferrer" class="top-link main-page-link">
+            <i class="fa-solid fa-house-user"></i> <span data-key="mainPage">Main Page</span>
+        </a>
+        
+        <div id="lang-switcher" class="top-controls">
+            <button data-lang="de">DE</button>
+            <button data-lang="en">EN</button>
+            <button data-lang="es">ES</button>
+        </div>
+    </div>
+
+
+    <div id="content-layout">
+        <div class="hud-panel search-panel">
+            <h1 data-key="title">Durchsuche die Website</h1>
+            <div class="input-wrapper">
+                <input type="text" id="searchInput" data-key-placeholder="placeholder">
+            </div>
+            <div id="results">
+            </div>
+        </div>
+    </div>
+
+    <script src="search.js"></script>
+</body>
+</html>

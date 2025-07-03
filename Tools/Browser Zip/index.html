@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modern Client-Side ZIP Tool</title>
+    <style>
+        :root {
+            --primary-color: #007bff;
+            --primary-color-hover: #0056b3;
+            --secondary-color: #6c757d;
+            --success-color: #28a745;
+            --danger-color: #dc3545;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --page-fallback-background-color: #eef2f7;
+            --card-background: #ffffff;
+            --text-color: #495057;
+            --border-color: #dee2e6;
+            --border-radius: 0.3rem;
+            --box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.05);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('main.avif');
+            background-color: var(--page-fallback-background-color);
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            filter: blur(0px);
+            z-index: -1;
+        }
+
+        .container {
+            max-width: 700px;
+            width: 100%;
+            background: var(--card-background);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 20px;
+            z-index: 1;
+        }
+
+        h1 {
+            color: var(--dark-color);
+            text-align: center;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+        .subtitle {
+            text-align: center;
+            color: var(--secondary-color);
+            margin-bottom: 30px;
+            font-size: 0.95em;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: var(--light-color);
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        input[type="file"],
+        input[type="text"] {
+            display: block;
+            width: 100%;
+            padding: 10px 12px;
+            margin-bottom: 15px;
+            border: 1px solid var(--border-color);
+            border-radius: var(--border-radius);
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+        }
+        input[type="file"] {
+            padding: 6px 12px;
+        }
+
+        input[type="file"]:focus,
+        input[type="text"]:focus {
+            border-color: var(--primary-color);
+            outline: 0;
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 500;
+            transition: background-color 0.15s ease-in-out;
+            display: inline-block;
+            width: 100%;
+        }
+
+        button:hover {
+            background-color: var(--primary-color-hover);
+        }
+        button:disabled {
+            background-color: var(--secondary-color);
+            cursor: not-allowed;
+        }
+
+        .status-message {
+            margin-top: 15px;
+            padding: 12px 15px;
+            border-radius: var(--border-radius);
+            font-size: 0.95em;
+            text-align: center;
+        }
+
+        .status-message.success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .status-message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .status-message.info {
+            background-color: #cce5ff;
+            color: #004085;
+            border: 1px solid #b8daff;
+        }
+
+
+        .progress-container {
+            margin-top: 15px;
+            display: none;
+        }
+
+        .progress-container progress {
+            width: 100%;
+            height: 10px;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+        .progress-container progress::-webkit-progress-bar {
+            background-color: #e9ecef;
+            border-radius: var(--border-radius);
+        }
+        .progress-container progress::-webkit-progress-value {
+            background-color: var(--success-color);
+            border-radius: var(--border-radius);
+            transition: width 0.1s linear;
+        }
+        .progress-container progress::-moz-progress-bar {
+            background-color: var(--success-color);
+            border-radius: var(--border-radius);
+            transition: width 0.1s linear;
+        }
+
+        .progress-container span {
+            display: block;
+            text-align: center;
+            font-size: 0.9em;
+            color: var(--secondary-color);
+            margin-top: 5px;
+        }
+
+        footer {
+            margin-top: auto;
+            padding: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            color: var(--secondary-color);
+            z-index: 1;
+        }
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+        }
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Modern ZIP Tool</h1>
+        <p class="subtitle">Client-side ZIP creation and extraction. No uploads, 100% in your browser.</p>
+
+        <div class="section">
+            <h2>Create ZIP Archive</h2>
+            <label for="filesToZip">Select files to add to ZIP:</label>
+            <input type="file" id="filesToZip" multiple>
+
+            <label for="zipFileName">Desired ZIP file name (e.g., archive.zip):</label>
+            <input type="text" id="zipFileName" value="archive.zip">
+
+            <button id="createZipButton">Create and Download ZIP</button>
+
+            <div id="zipProgressContainer" class="progress-container">
+                <progress id="zipProgress" value="0" max="100"></progress>
+                <span id="zipProgressText">0%</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Extract ZIP Archive</h2>
+            <label for="zipToExtract">Select a ZIP file to extract:</label>
+            <input type="file" id="zipToExtract" accept=".zip">
+
+            <button id="extractZipButton">Extract & Download Files</button>
+
+            <div id="extractProgressContainer" class="progress-container">
+                <progress id="extractProgress" value="0" max="100"></progress>
+                <span id="extractProgressText">0%</span>
+            </div>
+        </div>
+
+        <div id="status" class="status-message" style="display:none;"></div>
+    </div>
+
+    <footer>
+        Powered by <a href="https://stuk.github.io/jszip/" target="_blank" rel="noopener noreferrer">JSZip</a>.
+        All operations are local.
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

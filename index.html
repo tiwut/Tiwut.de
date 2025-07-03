@@ -1,189 +1,367 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Wartungsarbeiten</title>
-    
-    <!-- Einbindung eines Icon-Sets (Font Awesome) für das Zahnrad-Symbol -->
+    <title>Welcome to Tiwut</title>
+    <link rel="icon" href="icon.ico" type="image/ico">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
-    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-firestore-compat.js"></script>
+
+    <script>
+        if (location.protocol === 'http:') {
+            location.replace(location.href.replace('http://', 'https://'));
+        }
+    </script>
     <style>
-        /* Grundlegende Stile und Schriftart */
+        :root {
+            --primary-neon: #00e5ff;
+            --secondary-neon: #ff00c1;
+            --accent-neon: #faff00;
+            --background-color: #01010c;
+            --text-color: #e0e0e0;
+            --text-color-dark: #a0a0a0;
+            --container-bg: rgba(10, 20, 35, 0.5);
+            --glow-color: rgba(0, 229, 255, 0.5);
+            --mouse-x: 0; --mouse-y: 0;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 15px 5px var(--glow-color), inset 0 0 10px 2px var(--glow-color); } 50% { box-shadow: 0 0 25px 10px var(--glow-color), inset 0 0 15px 4px var(--glow-color); } }
+        @keyframes text-glow { 0%, 100% { text-shadow: 0 0 4px #fff, 0 0 10px var(--primary-neon), 0 0 18px var(--primary-neon); } 50% { text-shadow: 0 0 6px #fff, 0 0 14px var(--primary-neon), 0 0 22px var(--primary-neon); } }
+        @keyframes slideInUp { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes shockwave { 0% { transform: scale(0); opacity: 0.7; } 100% { transform: scale(2.5); opacity: 0; } }
+        
+        @keyframes floatAnimation {
+            0%   { transform: translate(0, 0) rotate(0deg); }
+            25%  { transform: translate(5px, -8px) rotate(1.5deg); }
+            50%  { transform: translate(-4px, 0px) rotate(-1.5deg); }
+            75%  { transform: translate(3px, 5px) rotate(1deg); }
+            100% { transform: translate(0, 0) rotate(0deg); }
+        }
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            background-color: #f4f7f6;
-            color: #333;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            text-align: center;
+            font-family: 'Poppins', 'Segoe UI', sans-serif; margin: 0; padding: 0;
+            display: flex; justify-content: center; align-items: center;
+            min-height: 100vh; text-align: center; position: relative; overflow-x: hidden;
+            background-color: var(--background-color); color: var(--text-color);
         }
 
-        /* Hauptcontainer für den Inhalt */
-        .container {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
-            max-width: 600px;
-            margin: 20px;
-        }
-
-        /* Icon-Styling */
-        .icon {
-            font-size: 5rem; /* 80px */
-            color: #3498db; /* Ein freundliches Blau */
-            margin-bottom: 20px;
-            animation: spin 8s linear infinite; /* Animation für das Icon */
-        }
-
-        /* Animation für das drehende Zahnrad */
-        @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
-        }
-
-        /* Überschrift */
-        h1 {
-            font-size: 2.5rem; /* 40px */
-            margin-bottom: 10px;
-            color: #2c3e50;
-        }
-
-        /* Haupttext */
-        p {
-            font-size: 1.1rem; /* 18px */
-            line-height: 1.6;
-            color: #555;
-        }
-
-        /* Countdown-Timer Bereich */
-        #countdown {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-top: 30px;
-            margin-bottom: 30px;
-        }
-
-        #countdown div {
-            background-color: #ecf0f1;
-            padding: 15px;
-            border-radius: 5px;
-            width: 80px;
-        }
-
-        #countdown span {
-            display: block;
-            font-size: 2rem; /* 32px */
-            font-weight: bold;
-            color: #2c3e50;
-        }
-
-        #countdown small {
-            font-size: 0.8rem; /* 13px */
-            color: #7f8c8d;
-        }
-
-        /* Kontaktinformationen */
-        .contact-info {
-            margin-top: 30px;
-            padding-top: 20px;
-            border-top: 1px solid #e0e0e0;
-        }
-
-        .contact-info a {
-            color: #3498db;
-            text-decoration: none;
-            font-weight: bold;
-        }
-
-        .contact-info a:hover {
-            text-decoration: underline;
+        .background-wrapper {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
         }
         
-        /* Anpassungen für mobile Geräte */
-        @media (max-width: 600px) {
-            h1 {
-                font-size: 2rem;
-            }
-            .container {
-                padding: 25px;
-            }
-            #countdown {
-                flex-wrap: wrap; /* Bricht um, wenn der Platz eng wird */
-            }
+        .background-video {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            transform: translateX(-50%) translateY(-50%);
+            z-index: 1;
+            object-fit: cover;
+        }
+
+        #content-layout {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            width: 100%;
+            padding: 2rem;
+            box-sizing: border-box;
+            transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        
+        .hud-panel {
+            background-color: var(--container-bg);
+            border: 2px solid var(--primary-neon);
+            backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
+            clip-path: polygon(0 25px, 25px 0, 100% 0, 100% calc(100% - 25px), calc(100% - 25px) 100%, 0 100%);
+            box-shadow: 0 0 15px 5px rgba(0,0,0,0.5), 0 0 10px 2px var(--glow-color);
+            padding: 2.5rem;
+            width: 90%;
+            box-sizing: border-box;
+            opacity: 0;
+            animation: slideInUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+        }
+        .hud-panel:hover {
+            box-shadow: 0 0 25px 8px rgba(0,0,0,0.5), 0 0 20px 5px var(--glow-color);
+        }
+        
+        #main-hub {
+            max-width: 600px;
+            animation-delay: 0.2s;
+        }
+        #link-grid {
+            max-width: 700px;
+            animation-delay: 0.4s;
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif; font-size: 3.5rem; font-weight: 800; margin-top:0; margin-bottom: 2.5rem; letter-spacing: 2px;
+            color: #fff;
+            animation: text-glow 2.5s ease-in-out infinite;
+        }
+        
+        #link-grid h2 { 
+            color: var(--text-color); 
+            font-weight: 400; 
+            margin-top: 0;
+            margin-bottom: 2rem;
+        }
+        
+        #visitorCounter {
+            color: var(--text-color-dark); font-size: 1.1rem; 
+            margin-top: 2.5rem;
+            margin-bottom: 0;
+            display: inline-flex; align-items: center; gap: 0.7rem; font-weight: 600;
+        }
+        #visitCount { color: var(--accent-neon); }
+
+        .button-wrapper { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
+        #main-hub .button-wrapper { margin-top: 0; }
+        #link-grid .button-wrapper { margin-top: 0; }
+        
+        .action-button {
+            position: relative; color: var(--text-color); background: transparent;
+            border: 2px solid var(--primary-neon); padding: 1rem 2.2rem; font-size: 1.1rem;
+            cursor: pointer; transition: all 0.3s ease;
+            font-weight: 600; text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 0.7rem;
+            text-shadow: 0 0 5px rgba(0, 229, 255, 0.5);
+            box-shadow: inset 0 0 8px 0 rgba(0, 229, 255, 0.3);
+            clip-path: polygon(0 10px, 10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
+            animation: floatAnimation 10s ease-in-out infinite;
+        }
+        .action-button::after {
+            content: ''; position: absolute; top: 50%; left: 50%; width: 100%; padding-top: 100%;
+            border-radius: 50%; background-color: var(--secondary-neon);
+            transform: translate(-50%, -50%) scale(0); opacity: 0;
+            pointer-events: none;
+        }
+        .action-button:active::after { animation: shockwave 0.5s ease-out; }
+        .action-button:hover, .action-button:focus {
+            background-color: var(--glow-color); color: #fff;
+            border-color: var(--accent-neon);
+            box-shadow: 0 0 20px 5px var(--glow-color), inset 0 0 15px 2px var(--glow-color);
+            text-shadow: 0 0 8px var(--accent-neon);
+            transform: translateY(-5px) scale(1.03);
+            animation-play-state: paused;
+        }
+
+        .button-wrapper .action-button:nth-child(1) { animation-duration: 9s; animation-delay: -2s; }
+        .button-wrapper .action-button:nth-child(2) { animation-duration: 11s; animation-delay: -4s; }
+        .button-wrapper .action-button:nth-child(3) { animation-duration: 10.5s; animation-delay: -1s; }
+        .button-wrapper .action-button:nth-child(4) { animation-duration: 12s; animation-delay: -5s; }
+        .button-wrapper .action-button:nth-child(5) { animation-duration: 9.5s; animation-delay: -3s; }
+        .button-wrapper .action-button:nth-child(6) { animation-duration: 11.5s; animation-delay: -6s; }
+        .button-wrapper .action-button:nth-child(7) { animation-duration: 10s; animation-delay: 0s; }
+        .button-wrapper .action-button:nth-child(8) { animation-duration: 12.5s; animation-delay: -2.5s; }
+        .button-wrapper .action-button:nth-child(9) { animation-duration: 9.8s; animation-delay: -4.5s; }
+        
+        .content-blurred #content-layout, .content-blurred .background-wrapper { filter: blur(8px) brightness(0.5); pointer-events: none; transition: filter 0.5s ease; }
+        .warning-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s; backdrop-filter: blur(5px); }
+        .warning-overlay.active { opacity: 1; visibility: visible; }
+        .warning-modal {
+            color: var(--text-color); padding: 2.5rem 2rem;
+            background-color: var(--container-bg);
+            border: 2px solid var(--secondary-neon);
+            box-shadow: 0 0 25px 5px rgba(255, 0, 193, 0.3);
+            clip-path: polygon(0 25px, 25px 0, 100% 0, 100% calc(100% - 25px), calc(100% - 25px) 100%, 0 100%);
+            text-align: center; max-width: 500px; width: 90%;
+            transform: scale(0.9) translateY(20px); opacity: 0;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), opacity 0.3s ease-out;
+        }
+        .warning-overlay.active .warning-modal { transform: scale(1) translateY(0); opacity: 1; }
+        .warning-modal h2 { font-family: 'Orbitron', sans-serif; color: var(--secondary-neon); text-shadow: 0 0 10px var(--secondary-neon); margin: 0 0 1.5rem 0; font-size: 1.8rem; }
+        .warning-modal p { color: #ddd; margin-bottom: 2.5rem; font-size: 1.1rem; line-height: 1.7; }
+        .warning-modal .action-button { border-color: var(--secondary-neon); text-shadow: 0 0 5px var(--secondary-neon); box-shadow: inset 0 0 8px 0 rgba(255, 0, 193, 0.3); }
+        .warning-modal .action-button:hover { border-color: var(--accent-neon); }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.5rem; letter-spacing: 1px; }
+            #link-grid h2 { font-size: 1.1rem; }
+            .hud-panel { padding: 2rem; }
+            .button-wrapper { gap: 1.2rem; }
+            .action-button { padding: 0.9rem 1.8rem; font-size: 1rem; }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2rem; }
+            #content-layout { gap: 1rem; padding: 1rem; }
+            .hud-panel { padding: 2rem 1rem; }
+            .button-wrapper { flex-direction: column; gap: 1rem; width: 100%; align-items: center; }
+            .action-button { width: 90%; max-width: 400px; box-sizing: border-box; min-width: unset; padding: 1rem; }
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <!-- Das Zahnrad-Icon -->
-        <i class="fas fa-cogs icon"></i>
+    <div class="background-wrapper">
+        <video autoplay loop muted playsinline class="background-video">
+            <source src="main.webm" type="video/webm">
+            <source src="main.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
 
-        <h1>Wartungsarbeiten</h1>
-        
-        <p>
-            Wir führen gerade geplante Wartungsarbeiten durch, um unsere Website für dich zu verbessern.
-            Wir bitten um dein Verständnis und sind in Kürze wieder da!
-        </p>
-
-        <!-- Countdown-Timer -->
-        <div id="countdown">
-            <div><span id="days">00</span><small>Tage</small></div>
-            <div><span id="hours">00</span><small>Stunden</small></div>
-            <div><span id="minutes">00</span><small>Minuten</small></div>
-            <div><span id="seconds">00</span><small>Sekunden</small></div>
+    <div id="content-layout">
+        <div class="hud-panel" id="main-hub">
+            <h1 id="mainTitle"></h1>
+            <div class="button-wrapper">
+                 <a href="#" id="enterButton" class="action-button"></a>
+            </div>
+            <div id="visitorCounter">
+                <i class="fa-solid fa-users"></i>
+                <span id="counterLabel"></span>
+                <span id="visitCount">...</span>
+            </div>
         </div>
+        
+        <div class="hud-panel" id="link-grid">
+            <h2 id="publisherInfo"></h2>
+            <div class="button-wrapper">
+                <a href="/Tools/" class="action-button"><i class="fa-solid fa-screwdriver-wrench"></i>Tools</a>
+                <a href="https://tiwut.de/Tiwut-Chat/" id="chatButton" class="action-button"></a>
+                <a href="/NEWS/" class="action-button"><i class="fa-solid fa-newspaper"></i>NEWS</a>
+                <a href="/AppStore/" class="action-button"><i class="fa-solid fa-store"></i>AppStore</a>
+                <a href="/Guides/" class="action-button"><i class="fa-solid fa-book-open"></i>Guides</a>
+                <a href="https://tiwut.de/Learning/" id="learningButton" class="action-button"></a> 
+                <a href="https://tiwut.de/Gallery/" class="action-button"><i class="fa-solid fa-images"></i>Gallery</a>
+                <a href="https://github.com/tiwut" id="githubButton" class="action-button"></a>
+                <a href="https://tiwut.de/Search/" id="searchButton" class="action-button"></a>
+            </div>
+        </div>
+    </div>
 
-        <!-- Kontaktinformationen -->
-        <div class="contact-info">
-            <p>
-                Bei dringenden Fragen erreichst du uns unter:
-                <a href="mailto:support@tiwut.de">support@tiwut.de</a>
-            </p>
+    <div class="warning-overlay" id="warningOverlay">
+        <div class="warning-modal">
+            <h2 id="warningTitle"></h2>
+            <p id="warningText"></p>
+            <button id="acceptWarningButton" class="action-button"></button> 
         </div>
     </div>
 
     <script>
-        // --- Countdown-Timer Logik ---
-        
-        // Zieldatum und -zeit für den Countdown festlegen
-        // FORMAT: "Monat Tag, Jahr HH:MM:SS" (z.B. "Dec 25, 2024 18:00:00")
-        const countDownDate = new Date("Jul 3, 2025 19:00:00").getTime();
+    document.addEventListener('DOMContentLoaded', function() {
+        const firebaseConfig = {
+            apiKey: "AIzaSyAAggRe6Iq8m10rP1TFAdBy58Ju-A7wjdc",
+            authDomain: "count-tiwut.firebaseapp.com",
+            projectId: "count-tiwut",
+            storageBucket: "count-tiwut.firebasestorage.app",
+            messagingSenderId: "54794946558",
+            appId: "1:54794946558:web:4f663c09d05ff1fa8862af"
+        };
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
 
-        // Den Timer alle 1 Sekunde aktualisieren
-        const x = setInterval(function() {
-
-            // Heutiges Datum und Zeit holen
-            const now = new Date().getTime();
-
-            // Die verbleibende Zeit berechnen
-            const distance = countDownDate - now;
-
-            // Berechnungen für Tage, Stunden, Minuten und Sekunden
-            const days = Math.floor(distance / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            // Die Ergebnisse in die HTML-Elemente schreiben
-            // Fügt eine führende Null hinzu, wenn die Zahl kleiner als 10 ist
-            document.getElementById("days").innerText = String(days).padStart(2, '0');
-            document.getElementById("hours").innerText = String(hours).padStart(2, '0');
-            document.getElementById("minutes").innerText = String(minutes).padStart(2, '0');
-            document.getElementById("seconds").innerText = String(seconds).padStart(2, '0');
-
-            // Wenn der Countdown abgelaufen ist
-            if (distance < 0) {
-                clearInterval(x); // Stoppt den Timer
-                document.getElementById("countdown").innerHTML = "<h2>Wir sind gleich wieder online!</h2>";
+        async function updateVisitorCount() {
+            const visitCountElement = document.getElementById('visitCount');
+            const counterRef = db.collection('counters').doc('mainPage');
+            try {
+                await db.runTransaction(async (transaction) => {
+                    const doc = await transaction.get(counterRef);
+                    if (!doc.exists) {
+                        transaction.set(counterRef, { count: 1 });
+                        return 1;
+                    }
+                    const newCount = doc.data().count + 1;
+                    transaction.update(counterRef, { count: newCount });
+                    return newCount;
+                });
+                const finalDoc = await counterRef.get();
+                if(finalDoc.exists) {
+                    visitCountElement.textContent = finalDoc.data().count.toLocaleString();
+                }
+            } catch (error) {
+                console.error("Firebase Fehler: ", error);
+                visitCountElement.textContent = "N/A";
             }
-        }, 1000);
+        }
+        
+        const body = document.body;
+        const contentLayout = document.getElementById('content-layout');
+        const mainTitle = document.getElementById('mainTitle');
+        const enterButton = document.getElementById('enterButton');
+        const publisherInfo = document.getElementById('publisherInfo');
+        const searchButton = document.getElementById('searchButton');
+        const githubButton = document.getElementById('githubButton');
+        const learningButton = document.getElementById('learningButton'); 
+        const chatButton = document.getElementById('chatButton');
+        const warningOverlay = document.getElementById('warningOverlay');
+        const acceptButton = document.getElementById('acceptWarningButton');
+        const warningTitleElement = document.getElementById('warningTitle');
+        const warningTextElement = document.getElementById('warningText');
+        const counterLabel = document.getElementById('counterLabel');
+
+        const translations = {
+            en: { pageTitle: "Welcome to Tiwut", mainTitle: "Welcome to Tiwut", enterButton: "Tiwut-Advanced", publisherInfo: "Published by Tiwut", modalTitle: "Important Notice", modalText: "This website is intended for private and family purposes only!!!<br>By accepting, you confirm this.", modalButton: "Accept and Continue", searchButton: "Search", githubButton: "GitHub", counterLabel: "Visitors: ", learningButton: "Learning", chatButton: "Chat" }, 
+            de: { pageTitle: "Willkommen bei Tiwut", mainTitle: "Willkommen bei Tiwut", enterButton: "Tiwut-Advanced", publisherInfo: "Veröffentlicht von Tiwut", modalTitle: "Wichtiger Hinweis", modalText: "Diese Webseite ist ausschließlich für private und familiäre Zwecke bestimmt!!!<br>Mit der Annahme bestätigen Sie dies.", modalButton: "Akzeptieren und Fortfahren", searchButton: "Suche", githubButton: "GitHub", counterLabel: "Besucher: ", learningButton: "Lernen", chatButton: "Chat" }, 
+            es: { pageTitle: "Bienvenido a Tiwut", mainTitle: "Bienvenido a Tiwut", enterButton: "Tiwut-Advanced", publisherInfo: "Publicado por Tiwut", modalTitle: "Aviso Importante", modalText: "¡¡¡Este sitio web está destinado exclusivamente a fines privados y familiares!!!<br>Al aceptar, usted confirma esto.", modalButton: "Aceptar y Continuar", searchButton: "Buscar", githubButton: "GitHub", counterLabel: "Visitantes: ", learningButton: "Aprender", chatButton: "Chat" } 
+        };
+        const userLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
+        let langCode = 'en';
+        if (userLang.startsWith('de')) { langCode = 'de'; }
+        else if (userLang.startsWith('es')) { langCode = 'es'; }
+
+        const selectedTexts = translations[langCode];
+        document.title = selectedTexts.pageTitle;
+        mainTitle.textContent = selectedTexts.mainTitle;
+        enterButton.textContent = selectedTexts.enterButton;
+        enterButton.href = 'https://tiwut.de/Tiwut-Advanced/';
+        publisherInfo.textContent = selectedTexts.publisherInfo;
+        searchButton.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> ${selectedTexts.searchButton}`;
+        githubButton.innerHTML = `<i class="fa-brands fa-github"></i> ${selectedTexts.githubButton}`;
+        learningButton.innerHTML = `<i class="fa-solid fa-graduation-cap"></i> ${selectedTexts.learningButton}`; 
+        chatButton.innerHTML = `<i class="fa-solid fa-comments"></i> ${selectedTexts.chatButton}`;
+        warningTitleElement.innerHTML = selectedTexts.modalTitle;
+        warningTextElement.innerHTML = selectedTexts.modalText;
+        acceptButton.textContent = selectedTexts.modalButton;
+        counterLabel.textContent = selectedTexts.counterLabel;
+        
+        const warningAccepted = localStorage.getItem('tiwutWarningAccepted');
+        if (warningAccepted !== 'true') {
+            body.classList.add('content-blurred');
+            warningOverlay.classList.add('active');
+            body.style.overflow = 'hidden';
+        }
+        acceptButton.addEventListener('click', function() {
+            localStorage.setItem('tiwutWarningAccepted', 'true');
+            warningOverlay.classList.remove('active');
+            setTimeout(() => {
+                body.classList.remove('content-blurred');
+                body.style.overflow = 'auto';
+            }, 500);
+        });
+        
+        function initDesktopInteractions() { 
+            if (window.matchMedia("(pointer: fine)").matches) {
+                document.body.style.perspective = '1500px';
+                document.addEventListener('mousemove', e => {
+                    const x = (e.clientX / window.innerWidth) - 0.5;
+                    const y = (e.clientY / window.innerHeight) - 0.5;
+                    
+                    contentLayout.style.transform = `rotateY(calc(${x} * 8deg)) rotateX(calc(${y} * -8deg))`;
+                });
+            }
+        }
+        
+        function init() {
+            initDesktopInteractions();
+            updateVisitorCount(); 
+        }
+        init();
+    });
     </script>
 
 </body>

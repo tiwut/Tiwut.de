@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Roadtrip Vokabeltrainer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #111827;
+            --bg-card: rgba(31, 41, 55, 0.9);
+            --text-primary: #f3f4f6;
+            --text-secondary: #9ca3af;
+            --accent-orange: #f97316;
+            --accent-orange-hover: #fb923c;
+            --border-color: #374151;
+            --btn-inactive-bg: transparent;
+            --btn-inactive-text: #d1d5db;
+            --correct-bg: rgba(74, 222, 128, 0.1);
+            --correct-text: #4ade80;
+            --incorrect-bg: rgba(248, 113, 113, 0.1);
+            --incorrect-text: #f87171;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            color: var(--text-primary);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+
+            background-image: url('main.avif');
+            background-color: var(--bg-main);
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+        }
+
+        main {
+            background-color: var(--bg-card);
+            backdrop-filter: blur(10px);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 650px;
+            text-align: center;
+            border-top: 5px solid var(--accent-orange);
+            border: 1px solid var(--border-color);
+        }
+
+        h1 {
+            color: var(--text-primary);
+            margin-bottom: 0.5rem;
+            font-weight: 700;
+        }
+
+        p {
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+        
+        .selectors-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .selector-group {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .selector-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .btn-group button {
+            padding: 0.6rem 1.2rem;
+            border: 2px solid var(--border-color);
+            background-color: var(--btn-inactive-bg);
+            color: var(--btn-inactive-text);
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: all 0.2s ease-in-out;
+        }
+
+        .btn-group button:hover {
+            border-color: var(--accent-orange);
+            color: var(--text-primary);
+        }
+
+        .btn-group button.active {
+            background-color: var(--accent-orange);
+            color: white;
+            border-color: var(--accent-orange);
+        }
+
+        #score {
+            font-size: 1.1rem;
+            font-weight: bold;
+            background-color: #374151;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            color: var(--text-primary);
+        }
+
+        #quiz-area {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border-color);
+            padding: 1.5rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        #category-display {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            font-style: italic;
+        }
+
+        #question {
+            font-size: 1.6rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            line-height: 1.4;
+        }
+
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 1rem;
+        }
+
+        #answer-input {
+            flex-grow: 1;
+            padding: 0.85rem;
+            font-size: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background-color: #1f2937;
+            color: var(--text-primary);
+            transition: border-color 0.2s ease;
+        }
+
+        #answer-input:focus {
+            outline: none;
+            border-color: var(--accent-orange);
+        }
+
+        #answer-input:disabled {
+            background-color: #2a3546;
+            cursor: not-allowed;
+        }
+        
+        .action-button {
+            padding: 0.85rem 1.5rem;
+            font-size: 1rem;
+            font-weight: bold;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+            background-color: var(--accent-orange);
+        }
+        
+        .action-button:hover {
+             background-color: var(--accent-orange-hover);
+        }
+
+        #feedback-area {
+            min-height: 50px;
+            padding: 1rem;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: bold;
+            visibility: hidden;
+            opacity: 0;
+            transition: opacity 0.3s ease, visibility 0.3s;
+        }
+        
+        #feedback-area.visible {
+            visibility: visible;
+            opacity: 1;
+        }
+        
+        #feedback-area.correct { background-color: var(--correct-bg); color: var(--correct-text); border: 1px solid var(--correct-text);}
+        #feedback-area.incorrect { background-color: var(--incorrect-bg); color: var(--incorrect-text); border: 1px solid var(--incorrect-text);}
+
+        #correct-answer-text {
+            display: block;
+            font-size: 1rem;
+            font-weight: normal;
+            margin-top: 0.5rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+
+    <main>
+        <h1>Roadtrip Vokabeltrainer</h1>
+        <p>Meistere die Vokabeln für dein nächstes Abenteuer auf der Straße!</p>
+
+        <div class="selectors-container">
+            <div class="selector-group">
+                <span class="selector-label">Modus:</span>
+                <div class="btn-group mode-selector">
+                    <button id="mode-de-en" class="active">DE → EN</button>
+                    <button id="mode-en-de">EN → DE</button>
+                </div>
+            </div>
+            <div class="selector-group">
+                <span class="selector-label">Niveau:</span>
+                <div class="btn-group difficulty-selector">
+                    <button id="diff-leicht">Leicht</button>
+                    <button id="diff-mittel">Mittel</button>
+                    <button id="diff-schwer">Schwer</button>
+                    <button id="diff-all" class="active">Alle</button>
+                </div>
+            </div>
+             <div class="selector-group">
+                <span class="selector-label">Fortschritt:</span>
+                <div id="score">Punkte: 0 / 0</div>
+            </div>
+        </div>
+
+        <div id="quiz-area">
+            <div id="category-display">Kategorie</div>
+            <div id="question">Wähle Modus und Niveau zum Starten!</div>
+        </div>
+
+        <div class="input-group">
+            <input type="text" id="answer-input" placeholder="Deine Antwort...">
+            <button id="check-btn" class="action-button">Prüfen</button>
+            <button id="next-word-btn" class="action-button" style="display: none;">Nächstes Wort</button>
+        </div>
+
+        <div id="feedback-area">
+            <span id="feedback-text"></span>
+            <span id="correct-answer-text"></span>
+        </div>
+    </main>
+
+    <script>
+        const vocabList = [
+            { de: 'Hallo', en: 'Hello / Hi', cat: 'Grundlagen', difficulty: 'leicht' },
+            { de: 'Danke', en: 'Thank you / Thanks', cat: 'Grundlagen', difficulty: 'leicht' },
+            { de: 'Bitte', en: 'Please', cat: 'Grundlagen', difficulty: 'leicht' },
+            { de: 'Ja', en: 'Yes', cat: 'Grundlagen', difficulty: 'leicht' },
+            { de: 'Nein', en: 'No', cat: 'Grundlagen', difficulty: 'leicht' },
+            { de: 'Auto', en: 'Car', cat: 'Unterwegs', difficulty: 'leicht' },
+            { de: 'Straße', en: 'Road / Street', cat: 'Unterwegs', difficulty: 'leicht' },
+            { de: 'links', en: 'left', cat: 'Navigation', difficulty: 'leicht' },
+            { de: 'rechts', en: 'right', cat: 'Navigation', difficulty: 'leicht' },
+            { de: 'Hotel', en: 'Hotel', cat: 'Unterkunft', difficulty: 'leicht' },
+            { de: 'Zimmer', en: 'Room', cat: 'Unterkunft', difficulty: 'leicht' },
+            { de: 'Wasser', en: 'Water', cat: 'Essen & Trinken', difficulty: 'leicht' },
+            { de: 'Essen', en: 'Food', cat: 'Essen & Trinken', difficulty: 'leicht' },
+            { de: 'Hilfe!', en: 'Help!', cat: 'Notfall', difficulty: 'leicht' },
+            { de: 'Polizei', en: 'Police', cat: 'Notfall', difficulty: 'leicht' },
+            { de: 'Arzt', en: 'Doctor', cat: 'Notfall', difficulty: 'leicht' },
+            { de: 'offen', en: 'open', cat: 'Einkaufen', difficulty: 'leicht' },
+            { de: 'geschlossen', en: 'closed', cat: 'Einkaufen', difficulty: 'leicht' },
+            { de: 'heute', en: 'today', cat: 'Zeit & Datum', difficulty: 'leicht' },
+            { de: 'morgen', en: 'tomorrow', cat: 'Zeit & Datum', difficulty: 'leicht' },
+            { de: 'eins', en: 'one', cat: 'Zahlen', difficulty: 'leicht' },
+            { de: 'zehn', en: 'ten', cat: 'Zahlen', difficulty: 'leicht' },
+            { de: 'Auf Wiedersehen', en: 'Goodbye / Bye', cat: 'Grundlagen', difficulty: 'leicht' },
+            { de: 'Geld', en: 'Money', cat: 'Einkaufen', difficulty: 'leicht' },
+            { de: 'Gern geschehen', en: "You're welcome", cat: 'Grundlagen', difficulty: 'mittel' },
+            { de: 'Entschuldigung', en: 'Excuse me', cat: 'Grundlagen', difficulty: 'mittel' },
+            { de: 'Ich verstehe nicht', en: "I don't understand", cat: 'Smalltalk', difficulty: 'mittel' },
+            { de: 'Wie viel kostet das?', en: 'How much is it? / How much does it cost?', cat: 'Phrasen', difficulty: 'mittel' },
+            { de: 'Tankstelle', en: 'Gas station / Petrol station', cat: 'Unterwegs', difficulty: 'mittel' },
+            { de: 'Benzin', en: 'Gasoline / Petrol', cat: 'Unterwegs', difficulty: 'mittel' },
+            { de: 'Autobahn', en: 'Highway / Motorway / Freeway', cat: 'Unterwegs', difficulty: 'mittel' },
+            { de: 'Parkplatz', en: 'Parking lot / Car park', cat: 'Unterwegs', difficulty: 'mittel' },
+            { de: 'Verkehr', en: 'Traffic', cat: 'Unterwegs', difficulty: 'mittel' },
+            { de: 'Stau', en: 'Traffic jam / Congestion', cat: 'Unterwegs', difficulty: 'mittel' },
+            { de: 'Führerschein', en: "Driver's license", cat: 'Unterwegs', difficulty: 'mittel' },
+            { de: 'Geschwindigkeitsbegrenzung', en: 'Speed limit', cat: 'Unterwegs', difficulty: 'mittel' },
+            { de: 'geradeaus', en: 'straight ahead', cat: 'Navigation', difficulty: 'mittel' },
+            { de: 'Wo ist...?', en: 'Where is...?', cat: 'Navigation', difficulty: 'mittel' },
+            { de: 'Wie komme ich zu...?', en: 'How do I get to...?', cat: 'Navigation', difficulty: 'mittel' },
+            { de: 'Adresse', en: 'Address', cat: 'Navigation', difficulty: 'mittel' },
+            { de: 'Reservierung', en: 'Reservation / Booking', cat: 'Unterkunft', difficulty: 'mittel' },
+            { de: 'Einchecken', en: 'Check-in', cat: 'Unterkunft', difficulty: 'mittel' },
+            { de: 'Auschecken', en: 'Check-out', cat: 'Unterkunft', difficulty: 'mittel' },
+            { de: 'WLAN-Passwort', en: 'Wi-Fi password', cat: 'Unterkunft', difficulty: 'mittel' },
+            { de: 'Restaurant', en: 'Restaurant', cat: 'Essen & Trinken', difficulty: 'mittel' },
+            { de: 'Speisekarte', en: 'Menu', cat: 'Essen & Trinken', difficulty: 'mittel' },
+            { de: 'Bestellen', en: 'To order', cat: 'Essen & Trinken', difficulty: 'mittel' },
+            { de: 'Die Rechnung, bitte', en: 'The bill, please / The check, please', cat: 'Essen & Trinken', difficulty: 'mittel' },
+            { de: 'Trinkgeld', en: 'Tip', cat: 'Essen & Trinken', difficulty: 'mittel' },
+            { de: 'Zum Mitnehmen', en: 'Takeaway / To go', cat: 'Essen & Trinken', difficulty: 'mittel' },
+            { de: 'Supermarkt', en: 'Supermarket / Grocery store', cat: 'Einkaufen', difficulty: 'mittel' },
+            { de: 'Mit Karte zahlen', en: 'To pay by card', cat: 'Einkaufen', difficulty: 'mittel' },
+            { de: 'Bargeld', en: 'Cash', cat: 'Einkaufen', difficulty: 'mittel' },
+            { de: 'Quittung', en: 'Receipt', cat: 'Einkaufen', difficulty: 'mittel' },
+            { de: 'Sehenswürdigkeit', en: 'Sight / Attraction', cat: 'Sightseeing', difficulty: 'mittel' },
+            { de: 'Eintrittskarte', en: 'Ticket', cat: 'Sightseeing', difficulty: 'mittel' },
+            { de: 'Nationalpark', en: 'National park', cat: 'Sightseeing', difficulty: 'mittel' },
+            { de: 'Notfall', en: 'Emergency', cat: 'Notfall', difficulty: 'mittel' },
+            { de: 'Krankenhaus', en: 'Hospital', cat: 'Notfall', difficulty: 'mittel' },
+            { de: 'Apotheke', en: 'Pharmacy / Drugstore', cat: 'Notfall', difficulty: 'mittel' },
+            { de: 'Ich habe mich verirrt', en: 'I am lost', cat: 'Notfall', difficulty: 'mittel' },
+            { de: 'Wie spät ist es?', en: 'What time is it?', cat: 'Zeit & Datum', difficulty: 'mittel' },
+            { de: 'Können Sie das bitte wiederholen?', en: 'Could you repeat that, please?', cat: 'Phrasen', difficulty: 'schwer' },
+            { de: 'Mietwagen', en: 'Rental car / Hire car', cat: 'Unterwegs', difficulty: 'schwer' },
+            { de: 'Vollkaskoversicherung', en: 'Comprehensive insurance / Full coverage', cat: 'Unterwegs', difficulty: 'schwer' },
+            { de: 'Kreisverkehr', en: 'Roundabout / Traffic circle', cat: 'Unterwegs', difficulty: 'schwer' },
+            { de: 'Panne', en: 'Breakdown', cat: 'Autopannen', difficulty: 'schwer' },
+            { de: 'Reifenpanne', en: 'Flat tire', cat: 'Autopannen', difficulty: 'schwer' },
+            { de: 'Abschleppdienst', en: 'Tow truck / Breakdown service', cat: 'Autopannen', difficulty: 'schwer' },
+            { de: 'Die Batterie ist leer', en: 'The battery is dead', cat: 'Autopannen', difficulty: 'schwer' },
+            { de: 'Starthilfekabel', en: 'Jumper cables', cat: 'Autopannen', difficulty: 'schwer' },
+            { de: 'Ich habe eine Reservierung auf den Namen...', en: 'I have a reservation under the name of...', cat: 'Unterkunft', difficulty: 'schwer' },
+            { de: 'Ist Frühstück inbegriffen?', en: 'Is breakfast included?', cat: 'Unterkunft', difficulty: 'schwer' },
+            { de: 'Können Sie ein lokales Gericht empfehlen?', en: 'Can you recommend a local dish?', cat: 'Essen & Trinken', difficulty: 'schwer' },
+            { de: 'Ich habe eine Nussallergie', en: 'I have a nut allergy', cat: 'Essen & Trinken', difficulty: 'schwer' },
+            { de: 'Getrennte Rechnungen, bitte', en: 'Separate bills, please', cat: 'Essen & Trinken', difficulty: 'schwer' },
+            { de: 'Gibt es einen Rabatt?', en: 'Is there a discount?', cat: 'Einkaufen', difficulty: 'schwer' },
+            { de: 'Kann ich das anprobieren?', en: 'Can I try this on?', cat: 'Einkaufen', difficulty: 'schwer' },
+            { de: 'Was sind die Öffnungszeiten?', en: 'What are the opening hours?', cat: 'Sightseeing', difficulty: 'schwer' },
+            { de: 'Gibt es eine geführte Tour?', en: 'Is there a guided tour?', cat: 'Sightseeing', difficulty: 'schwer' },
+            { de: 'Mein Portemonnaie wurde gestohlen', en: 'My wallet has been stolen', cat: 'Notfall', difficulty: 'schwer' },
+            { de: 'Ich muss eine Anzeige erstatten', en: 'I need to file a report', cat: 'Notfall', difficulty: 'schwer' },
+            { de: 'Lass uns aufbrechen!', en: "Let's hit the road!", cat: 'Slang & Redewendungen', difficulty: 'schwer' },
+            { de: 'Sind wir bald da?', en: 'Are we there yet?', cat: 'Slang & Redewendungen', difficulty: 'schwer' },
+            { de: 'Raststätte', en: 'Rest stop / Service area', cat: 'Unterwegs', difficulty: 'schwer' },
+            { de: 'Zollanmeldung', en: 'Customs declaration', cat: 'Behörden & Grenze', difficulty: 'schwer' },
+            { de: 'Ich habe nichts zu verzollen', en: 'I have nothing to declare', cat: 'Behörden & Grenze', difficulty: 'schwer' },
+            { de: 'Visum', en: 'Visa', cat: 'Behörden & Grenze', difficulty: 'schwer' },
+            { de: 'Reisepass', en: 'Passport', cat: 'Behörden & Grenze', difficulty: 'schwer' }
+        ];
+
+        const questionTemplates = {
+            de_en: ["Wie sagt man '__WORD__' auf Englisch?","Was ist die englische Übersetzung für '__WORD__'?", "Übersetze ins Englische: __WORD__"],
+            en_de: ["Was bedeutet '__WORD__' auf Deutsch?", "Übersetze '__WORD__' ins Deutsche.", "Was ist das deutsche Wort für '__WORD__'?"]
+        };
+
+        const modeButtons = document.querySelectorAll('.mode-selector button');
+        const difficultyButtons = document.querySelectorAll('.difficulty-selector button');
+        const scoreDisplay = document.getElementById('score');
+        const categoryDisplay = document.getElementById('category-display');
+        const questionDisplay = document.getElementById('question');
+        const answerInput = document.getElementById('answer-input');
+        const checkBtn = document.getElementById('check-btn');
+        const nextWordBtn = document.getElementById('next-word-btn');
+        const feedbackArea = document.getElementById('feedback-area');
+        const feedbackText = document.getElementById('feedback-text');
+        const correctAnswerText = document.getElementById('correct-answer-text');
+
+        let state = {
+            currentMode: 'de-en',
+            currentDifficulty: 'alle',
+            currentWord: null,
+            score: 0,
+            total: 0,
+            usedIndices: new Set()
+        };
+
+        function normalizeString(str) {
+            if (!str) return '';
+            return str.toLowerCase().trim().replace(/[.,/#!$%\^&*;:{}=\-_`~()?]/g, "").replace(/\s+/g, ' ');
+        }
+        
+        function getRandomElement(arr) {
+            return arr[Math.floor(Math.random() * arr.length)];
+        }
+
+        function setMode(newMode) {
+            state.currentMode = newMode;
+            modeButtons.forEach(btn => btn.classList.toggle('active', btn.id === `mode-${newMode}`));
+            resetScore();
+            newQuestion();
+        }
+
+        function setDifficulty(newDifficulty) {
+            state.currentDifficulty = newDifficulty;
+            difficultyButtons.forEach(btn => btn.classList.toggle('active', btn.id === `diff-${newDifficulty}`));
+            resetScore();
+            newQuestion();
+        }
+
+        function newQuestion() {
+            feedbackArea.classList.remove('visible');
+            
+            let availableWords = (state.currentDifficulty === 'alle')
+                ? vocabList
+                : vocabList.filter(word => word.difficulty === state.currentDifficulty);
+
+            let wordPool = availableWords.filter(word => !state.usedIndices.has(vocabList.indexOf(word)));
+
+            if (wordPool.length === 0) {
+                if(availableWords.length > 0) {
+                     questionDisplay.innerHTML = `<strong>Super!</strong> Alle Vokabeln in diesem Niveau gelernt. Setze den Zähler zurück oder wähle ein anderes Niveau.`;
+                    categoryDisplay.textContent = "Glückwunsch!";
+                } else {
+                    questionDisplay.innerHTML = "Keine Vokabeln für dieses Niveau gefunden.";
+                    categoryDisplay.textContent = "Bitte wähle ein anderes Niveau.";
+                }
+                checkBtn.style.display = 'none';
+                nextWordBtn.style.display = 'none';
+                answerInput.disabled = true;
+                answerInput.value = '';
+                return;
+            }
+            
+            answerInput.disabled = false;
+            answerInput.value = '';
+            answerInput.focus();
+            checkBtn.style.display = 'inline-block';
+            nextWordBtn.style.display = 'none';
+
+            state.currentWord = getRandomElement(wordPool);
+            state.usedIndices.add(vocabList.indexOf(state.currentWord));
+
+            let questionWord, templateKey;
+            if (state.currentMode === 'de-en') {
+                questionWord = state.currentWord.de;
+                templateKey = 'de_en';
+            } else {
+                questionWord = state.currentWord.en;
+                templateKey = 'en_de';
+            }
+
+            const template = getRandomElement(questionTemplates[templateKey]);
+            const fullQuestion = template.replace('__WORD__', `<strong>${questionWord}</strong>`);
+
+            questionDisplay.innerHTML = fullQuestion;
+            categoryDisplay.textContent = `Kategorie: ${state.currentWord.cat}`;
+        }
+
+        function checkAnswer() {
+            const normalizedUserAnswer = normalizeString(answerInput.value);
+            if (!normalizedUserAnswer) return;
+
+            let correctAnswer, possibleAnswers;
+            if (state.currentMode === 'de-en') {
+                correctAnswer = state.currentWord.en;
+                possibleAnswers = state.currentWord.en.split(' / ');
+            } else {
+                correctAnswer = state.currentWord.de;
+                possibleAnswers = state.currentWord.de.split(' / ');
+            }
+
+            const isCorrect = possibleAnswers.some(ans => normalizeString(ans) === normalizedUserAnswer);
+
+            state.total++;
+            feedbackArea.classList.add('visible');
+            
+            if (isCorrect) {
+                state.score++;
+                feedbackArea.className = 'visible correct';
+                feedbackText.textContent = 'Richtig!';
+                correctAnswerText.innerHTML = `&nbsp;`;
+            } else {
+                feedbackArea.className = 'visible incorrect';
+                feedbackText.textContent = 'Leider falsch.';
+                correctAnswerText.innerHTML = `Die richtige Antwort lautet: <strong>${correctAnswer}</strong>`;
+            }
+
+            updateScore();
+            
+            answerInput.disabled = true;
+            checkBtn.style.display = 'none';
+            nextWordBtn.style.display = 'inline-block';
+        }
+
+        function updateScore() {
+            scoreDisplay.textContent = `Punkte: ${state.score} / ${state.total}`;
+        }
+
+        function resetScore() {
+            state.score = 0;
+            state.total = 0;
+            state.usedIndices.clear();
+            updateScore();
+        }
+
+        modeButtons.forEach(button => {
+            button.addEventListener('click', () => setMode(button.id.replace('mode-', '')));
+        });
+
+        difficultyButtons.forEach(button => {
+            button.addEventListener('click', () => setDifficulty(button.id.replace('diff-', '')));
+        });
+
+        checkBtn.addEventListener('click', checkAnswer);
+        nextWordBtn.addEventListener('click', newQuestion);
+
+        answerInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                if(checkBtn.style.display !== 'none') {
+                    checkBtn.click();
+                } else {
+                    nextWordBtn.click();
+                }
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+             newQuestion();
+        });
+    </script>
+</body>
+</html>

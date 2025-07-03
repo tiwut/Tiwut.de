@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Generator</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Password Generator</h1>
+
+        <div class="result-container">
+            <input type="text" id="passwordOutput" readonly placeholder="Your Password">
+            <button id="copyButton" title="Copy to clipboard">
+                <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyNCIgaGVpZ2h0PSIyNCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJub25lIiBzdHJva2U9ImN1cnJlbnRDb2xvciIgc3Ryb2tlLXdpZHRoPSIyIiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiIGNsYXNzPSJsdWNpZGUgbHVjaWRlLWNvcHkiPjxyZWN0IHdpZHRoPSI4IiBoZWlnaHQ9IjgiIHg9IjgiIHk9IjIiIHJ4PSIyIiByeT0iMiIvPjxwYXRoIGQ9Ik0xNiA0aDIuN2MzLjIgMCA0LjkgMS43IDQuOSAzLjZWMTlMMjAgMTlMMTYgMTlMMTYgNEwxNiA0WiIvPjxwYXRoIGQ9Ik04IDRINFYxOWwyIDJsMiAwVjRWMi4zMUM0IDEuNyA1LjcgMCA3LjQgMEM4LjIgMCA4IDAgOCAwVjRaIi8+PC9zdmc+" alt="Copy">
+            </button>
+        </div>
+
+        <div class="options">
+            <div class="option">
+                <label for="length">Password Length:</label>
+                <input type="number" id="length" value="12" min="8" max="128">
+            </div>
+
+            <div class="option">
+                <input type="checkbox" id="uppercase" checked>
+                <label for="uppercase">Include Uppercase Letters (A-Z)</label>
+            </div>
+
+            <div class="option">
+                <input type="checkbox" id="lowercase" checked>
+                <label for="lowercase">Include Lowercase Letters (a-z)</label>
+            </div>
+
+            <div class="option">
+                <input type="checkbox" id="numbers" checked>
+                <label for="numbers">Include Numbers (0-9)</label>
+            </div>
+
+            <div class="option">
+                <input type="checkbox" id="symbols" checked>
+                <label for="symbols">Include Symbols (!@#$...)</label>
+            </div>
+        </div>
+
+        <button id="generateButton" class="generate-btn">Generate Password</button>
+        <p id="message" class="message"></p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

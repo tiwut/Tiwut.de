@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-lang-key="pageTitle">Client-Side Video Editor</title>
+    <style>
+        :root {
+            --primary-bg: #1e1e1e;
+            --secondary-bg: #2a2a2a;
+            --text-color: #e0e0e0;
+            --accent-color: #007bff;
+            --accent-hover: #0056b3;
+            --border-color: #444;
+            --success-color: #28a745;
+            --error-color: #dc3545;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            line-height: 1.6;
+        }
+        .container { width: 100%; max-width: 1200px; }
+        header { display: flex; justify-content: space-between; align-items: center; width: 100%; border-bottom: 2px solid var(--border-color); padding-bottom: 15px; margin-bottom: 20px; }
+        header h1 { margin: 0; font-size: 1.8em; }
+        header nav { display: flex; align-items: center; gap: 15px; }
+        main { display: none; grid-template-columns: 2fr 1fr; gap: 20px; width: 100%; }
+        .video-player-section, .controls-section { background-color: var(--secondary-bg); border-radius: 8px; padding: 20px; border: 1px solid var(--border-color); }
+        #video-preview { width: 100%; border-radius: 4px; background-color: #000; }
+        .controls-panel fieldset { border: 1px solid var(--border-color); border-radius: 5px; margin-bottom: 15px; padding: 10px 15px; }
+        .controls-panel legend { padding: 0 10px; font-weight: bold; color: var(--accent-color); }
+        .control-group { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
+        .control-group label { font-size: 0.9em; }
+        .control-group .input-row { display: flex; gap: 10px; align-items: center; }
+        input[type="text"], input[type="number"], select { width: 100%; padding: 8px; background-color: var(--primary-bg); border: 1px solid var(--border-color); color: var(--text-color); border-radius: 4px; }
+        button, a.button { padding: 10px 15px; border: none; border-radius: 4px; background-color: var(--accent-color); color: white; font-weight: bold; cursor: pointer; transition: background-color 0.2s ease; text-align: center; text-decoration: none; }
+        button:hover, a.button:hover { background-color: var(--accent-hover); }
+        button:disabled { background-color: #555; cursor: not-allowed; }
+        #export-button { background-color: var(--success-color); width: 100%; font-size: 1.2em; margin-top: 10px; }
+        #export-button:hover { background-color: #218838; }
+        #initial-upload-area { text-align: center; padding: 50px; border: 2px dashed var(--border-color); border-radius: 8px; background-color: var(--secondary-bg); }
+        #video-input-label { display: inline-block; padding: 12px 25px; font-size: 1.1em; background-color: var(--accent-color); color: white; border-radius: 5px; cursor: pointer; transition: background-color 0.2s; }
+        #video-input-label:hover { background-color: var(--accent-hover); }
+        #video-input { display: none; }
+        #progress-indicator { margin-top: 15px; display: none; width: 100%; text-align: center; }
+        #progress-bar-container { width: 100%; background-color: var(--border-color); border-radius: 5px; overflow: hidden; height: 20px; margin-top: 5px; }
+        #progress-bar { width: 0%; height: 100%; background-color: var(--success-color); transition: width 0.1s linear; }
+        #export-notice { font-size: 0.9em; color: #aaa; margin-top: 5px; display: none; }
+        @media (max-width: 900px) {
+            main { grid-template-columns: 1fr; }
+            header { flex-direction: column; gap: 15px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 data-lang-key="title">Video Editor</h1>
+            <nav>
+                <select id="language-switcher" title="Change Language"><option value="en">English</option><option value="de">Deutsch</option><option value="es">Español</option></select>
+                <a href="https://tiwut.de" target="_blank" class="button" data-lang-key="mainPageButton">Main Page</a>
+            </nav>
+        </header>
+
+        <div id="initial-upload-area">
+            <h2 data-lang-key="uploadTitle">Load a Video to Start</h2>
+            <p data-lang-key="uploadDesc">Your video is processed entirely in your browser. Nothing is uploaded to a server.</p>
+            <input type="file" id="video-input" accept="video/*"><label for="video-input" id="video-input-label" data-lang-key="uploadButton">Select Video File</label>
+        </div>
+
+        <main id="editor-main-area">
+            <section class="video-player-section">
+                <video id="video-preview" controls></video>
+                <div id="progress-indicator">
+                    <span id="progress-text" data-lang-key="exporting">Exporting...</span>
+                    <div id="progress-bar-container"><div id="progress-bar"></div></div>
+                    <p id="export-notice" data-lang-key="exportNotice">This process can be slow. Please be patient.</p>
+                </div>
+            </section>
+            <section class="controls-section">
+                <div class="controls-panel">
+                    <fieldset><legend data-lang-key="trimLegend">Trim Video</legend><div class="control-group"><div class="input-row"><label for="trim-start" data-lang-key="start">Start:</label><input type="number" id="trim-start" value="0" min="0" step="0.1"></div><div class="input-row"><label for="trim-end" data-lang-key="end">End:</label><input type="number" id="trim-end" value="0" min="0" step="0.1"></div></div></fieldset>
+                    <fieldset><legend data-lang-key="textOverlayLegend">Text Overlay</legend><div class="control-group"><label for="text-overlay-input" data-lang-key="text">Text:</label><input type="text" id="text-overlay-input" placeholder="Your text here..."><label for="text-size-input" data-lang-key="fontSize">Font Size:</label><input type="number" id="text-size-input" value="48" min="10"></div></fieldset>
+                    <fieldset><legend data-lang-key="filtersLegend">Filters</legend><div class="control-group"><label for="filter-select" data-lang-key="applyFilter">Apply a filter:</label><select id="filter-select"><option value="none" data-lang-key="filterNone">None</option><option value="grayscale(100%)" data-lang-key="filterGrayscale">Grayscale</option><option value="sepia(100%)" data-lang-key="filterSepia">Sepia</option><option value="invert(100%)" data-lang-key="filterInvert">Invert</option><option value="blur(5px)" data-lang-key="filterBlur">Blur</option><option value="saturate(2)" data-lang-key="filterSaturate">Saturate</option></select></div></fieldset>
+                    <fieldset><legend data-lang-key="speedLegend">Playback Speed (Preview)</legend><div class="control-group"><input type="range" id="speed-control" min="0.25" max="2" step="0.25" value="1"><span id="speed-value">1.0x</span><small data-lang-key="speedNote">Note: This only affects the preview. Export will be at normal speed.</small></div></fieldset>
+                    <button id="export-button" data-lang-key="exportButton" disabled>Export Video</button>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const translations = {
+            en: { pageTitle: "Client-Side Video Editor", title: "Video Editor", mainPageButton: "Main Page", uploadTitle: "Load a Video to Start", uploadDesc: "Your video is processed entirely in your browser. Nothing is uploaded to a server.", uploadButton: "Select Video File", trimLegend: "Trim Video", start: "Start", end: "End", textOverlayLegend: "Text Overlay", text: "Text", fontSize: "Font Size", filtersLegend: "Filters", applyFilter: "Apply a filter:", filterNone: "None", filterGrayscale: "Grayscale", filterSepia: "Sepia", filterInvert: "Invert", filterBlur: "Blur", filterSaturate: "Saturate", speedLegend: "Playback Speed (Preview)", speedNote: "Note: This only affects the preview. Export will be at normal speed.", exportButton: "Export Video", exporting: "Exporting...", exportNotice: "This process can be slow as it renders frame-by-frame. Please be patient.", exportSuccess: "Export finished! Downloading...", exportError: "An error occurred during export.", timeError: "Start time must be less than end time.", dimensionError: "Could not get video dimensions. The video file might be corrupted or in an unsupported format." },
+            de: { pageTitle: "Client-Side Video-Editor", title: "Video-Editor", mainPageButton: "Hauptseite", uploadTitle: "Lade ein Video zum Starten", uploadDesc: "Dein Video wird vollständig in deinem Browser verarbeitet. Nichts wird auf einen Server hochgeladen.", uploadButton: "Videodatei auswählen", trimLegend: "Video schneiden", start: "Start", end: "Ende", textOverlayLegend: "Textüberlagerung", text: "Text", fontSize: "Schriftgröße", filtersLegend: "Filter", applyFilter: "Einen Filter anwenden:", filterNone: "Kein", filterGrayscale: "Graustufen", filterSepia: "Sepia", filterInvert: "Invertieren", filterBlur: "Weichzeichnen", filterSaturate: "Sättigung", speedLegend: "Wiedergabegeschwindigkeit (Vorschau)", speedNote: "Hinweis: Dies beeinflusst nur die Vorschau. Der Export erfolgt mit normaler Geschwindigkeit.", exportButton: "Video exportieren", exporting: "Exportiere...", exportNotice: "Dieser Prozess kann langsam sein, da er Bild für Bild rendert. Bitte habe Geduld.", exportSuccess: "Export abgeschlossen! Download startet...", exportError: "Ein Fehler ist beim Export aufgetreten.", timeError: "Die Startzeit muss vor der Endzeit liegen.", dimensionError: "Videodimensionen konnten nicht geladen werden. Die Datei ist möglicherweise beschädigt oder hat ein nicht unterstütztes Format." },
+            es: { pageTitle: "Editor de Video Client-Side", title: "Editor de Video", mainPageButton: "Página Principal", uploadTitle: "Carga un video para empezar", uploadDesc: "Tu video se procesa completamente en tu navegador. No se sube nada a ningún servidor.", uploadButton: "Seleccionar archivo de video", trimLegend: "Recortar Video", start: "Inicio", end: "Fin", textOverlayLegend: "Superposición de Texto", text: "Texto", fontSize: "Tamaño de fuente", filtersLegend: "Filtros", applyFilter: "Aplicar un filtro:", filterNone: "Ninguno", filterGrayscale: "Escala de grises", filterSepia: "Sepia", filterInvert: "Invertir", filterBlur: "Desenfoque", filterSaturate: "Saturar", speedLegend: "Velocidad de Reproducción (Vista previa)", speedNote: "Nota: Esto solo afecta la vista previa. La exportación será a velocidad normal.", exportButton: "Exportar Video", exporting: "Exportando...", exportNotice: "Este proceso puede ser lento ya que renderiza cuadro por cuadro. Por favor, sé paciente.", exportSuccess: "¡Exportación finalizada! Descargando...", exportError: "Ocurrió un error durante la exportación.", timeError: "La hora de inicio debe ser anterior a la hora de finalización.", dimensionError: "No se pudieron obtener las dimensiones del video. El archivo puede estar dañado o en un formato no compatible." }
+        };
+        const languageSwitcher = document.getElementById('language-switcher');
+        let currentLang = 'en';
+
+        const setLanguage = (lang) => {
+            if (!translations[lang]) lang = 'en';
+            currentLang = lang;
+            document.documentElement.lang = lang;
+            languageSwitcher.value = lang;
+            localStorage.setItem('video-editor-lang', lang);
+            document.querySelectorAll('[data-lang-key]').forEach(element => {
+                const key = element.getAttribute('data-lang-key');
+                if (translations[lang][key]) { element.textContent = translations[lang][key]; }
+            });
+            const pageTitleKey = document.title.getAttribute('data-lang-key');
+            if(pageTitleKey) { document.title = translations[lang][pageTitleKey]; }
+        };
+
+        const detectLanguage = () => {
+            const savedLang = localStorage.getItem('video-editor-lang');
+            if (savedLang && translations[savedLang]) return savedLang;
+            const browserLang = navigator.language.split('-')[0];
+            return translations[browserLang] ? browserLang : 'en';
+        };
+
+        languageSwitcher.addEventListener('change', (e) => setLanguage(e.target.value));
+        
+        const videoInput = document.getElementById('video-input');
+        const videoPreview = document.getElementById('video-preview');
+        const initialUploadArea = document.getElementById('initial-upload-area');
+        const editorMainArea = document.getElementById('editor-main-area');
+        const trimStartInput = document.getElementById('trim-start');
+        const trimEndInput = document.getElementById('trim-end');
+        const textOverlayInput = document.getElementById('text-overlay-input');
+        const textSizeInput = document.getElementById('text-size-input');
+        const filterSelect = document.getElementById('filter-select');
+        const speedControl = document.getElementById('speed-control');
+        const speedValue = document.getElementById('speed-value');
+        const exportButton = document.getElementById('export-button');
+        const progressIndicator = document.getElementById('progress-indicator');
+        const progressText = document.getElementById('progress-text');
+        const progressBar = document.getElementById('progress-bar');
+        const exportNotice = document.getElementById('export-notice');
+        
+        let sourceVideo = document.createElement('video');
+        sourceVideo.preload = 'auto';
+        sourceVideo.muted = true;
+        
+        videoInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const url = URL.createObjectURL(file);
+                videoPreview.src = url;
+                sourceVideo.src = url;
+            }
+        });
+        
+        videoPreview.addEventListener('loadedmetadata', () => {
+            const duration = videoPreview.duration;
+            trimStartInput.value = 0;
+            trimEndInput.value = duration.toFixed(1);
+            trimEndInput.max = duration.toFixed(1);
+            initialUploadArea.style.display = 'none';
+            editorMainArea.style.display = 'grid';
+            exportButton.disabled = false;
+        });
+
+        filterSelect.addEventListener('change', () => { videoPreview.style.filter = filterSelect.value; });
+        speedControl.addEventListener('input', () => {
+            const speed = parseFloat(speedControl.value);
+            videoPreview.playbackRate = speed;
+            speedValue.textContent = `${speed.toFixed(2)}x`;
+        });
+        
+        exportButton.addEventListener('click', async () => {
+            if (!sourceVideo.src) return;
+
+            const cleanup = () => {
+                exportButton.disabled = false;
+                progressIndicator.style.display = 'none';
+                exportNotice.style.display = 'none';
+                progressBar.style.width = '0%';
+            };
+            const fail = (messageKey) => {
+                alert(translations[currentLang][messageKey] || translations.en[messageKey]);
+                cleanup();
+            };
+
+            const startTime = parseFloat(trimStartInput.value);
+            const endTime = parseFloat(trimEndInput.value);
+            if (startTime >= endTime) return fail('timeError');
+
+            exportButton.disabled = true;
+            progressIndicator.style.display = 'block';
+            exportNotice.style.display = 'block';
+            progressText.textContent = translations[currentLang].exporting;
+            progressBar.style.width = '0%';
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = sourceVideo.videoWidth;
+            canvas.height = sourceVideo.videoHeight;
+            if (canvas.width === 0 || canvas.height === 0) return fail('dimensionError');
+
+            const FPS = 30;
+            const frameInterval = 1 / FPS;
+            const totalFrames = (endTime - startTime) * FPS;
+
+            const stream = canvas.captureStream(FPS);
+            const recorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs=vp9' });
+            const chunks = [];
+            recorder.ondataavailable = e => e.data.size > 0 && chunks.push(e.data);
+            recorder.onerror = e => { console.error(e); fail('exportError'); };
+            recorder.onstop = () => {
+                const blob = new Blob(chunks, { type: 'video/webm' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `edited-video-${Date.now()}.webm`;
+                a.click();
+                URL.revokeObjectURL(url);
+                cleanup();
+            };
+            recorder.start();
+
+            const processFrames = async () => {
+                let frameCount = 0;
+                for (let currentTime = startTime; currentTime < endTime; currentTime += frameInterval) {
+                    const seekPromise = new Promise(resolve => {
+                        sourceVideo.onseeked = () => resolve();
+                    });
+                    sourceVideo.currentTime = currentTime;
+                    await seekPromise;
+
+                    ctx.filter = filterSelect.value;
+                    ctx.drawImage(sourceVideo, 0, 0, canvas.width, canvas.height);
+                    ctx.filter = 'none';
+
+                    const text = textOverlayInput.value;
+                    if (text) {
+                        const fontSize = textSizeInput.value;
+                        ctx.font = `bold ${fontSize}px Arial`;
+                        ctx.fillStyle = 'white';
+                        ctx.strokeStyle = 'black';
+                        ctx.lineWidth = Math.max(1, fontSize / 16);
+                        const textMetrics = ctx.measureText(text);
+                        const x = (canvas.width - textMetrics.width) / 2;
+                        const y = canvas.height - fontSize;
+                        ctx.strokeText(text, x, y);
+                        ctx.fillText(text, x, y);
+                    }
+                    
+                    frameCount++;
+                    const progress = (frameCount / totalFrames) * 100;
+                    progressBar.style.width = `${Math.min(100, progress)}%`;
+                }
+            };
+            
+            try {
+                await processFrames();
+                recorder.stop();
+            } catch (error) {
+                console.error("Error during frame processing:", error);
+                fail('exportError');
+            }
+        });
+
+        setLanguage(detectLanguage());
+    });
+    </script>
+</body>
+</html>

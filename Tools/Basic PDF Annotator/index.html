@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Basic PDF Annotator</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            margin: 0;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: url('main.avif');
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            filter: blur(0px);
+            z-index: -1;
+        }
+
+        #controls {
+            margin-bottom: 20px;
+            padding: 10px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0,0,0,0.1);
+            position: relative;
+            z-index: 1;
+        }
+        #controls > * { margin-right: 10px; }
+        #page-container {
+            margin: 20px auto;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+        }
+        .page-wrapper {
+            position: relative;
+            margin-bottom: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.2);
+            background-color: white;
+        }
+        .page-canvas, .annotation-canvas {
+            display: block;
+        }
+        .annotation-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            cursor: crosshair;
+        }
+        #loading-indicator {
+            display: none;
+            margin-top: 20px;
+            color: #333;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 10px;
+            border-radius: 5px;
+            position: relative;
+            z-index: 1;
+        }
+        #page-container p {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 15px;
+            border-radius: 5px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div id="controls">
+        <input type="file" id="pdf-upload" accept="application/pdf">
+        <span>Tool:</span>
+        <button id="tool-draw">Draw</button>
+        <button id="tool-text">Add Text</button>
+        <input type="color" id="color-picker" value="#ff0000">
+        <label for="line-width">Width:</label>
+        <input type="number" id="line-width" value="2" min="1" max="50" style="width: 50px;">
+        <button id="save-pdf">Save Annotated PDF</button>
+    </div>
+
+    <div id="page-container">
+        <p>Upload a PDF to begin.</p>
+    </div>
+    <div id="loading-indicator">Loading PDF...</div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.min.js"></script>
+    <script>pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.10.377/pdf.worker.min.js';</script>
+    <script src="https://cdn.jsdelivr.net/npm/pdf-lib/dist/pdf-lib.min.js"></script>
+
+    <script src="editor.js"></script>
+</body>
+</html>

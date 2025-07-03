@@ -1,0 +1,261 @@
+:root {
+    --color-bg: #0d0d0d;
+    --color-container-bg: #1a1a1a;
+    --color-text: #e0e0e0;
+    --color-text-muted: #888;
+    --color-accent: #ff6700;
+    --color-accent-dark: #cc5200;
+    --glow-color: rgba(255, 103, 0, 0.7);
+}
+
+@keyframes fadeInScaleUp {
+    from {
+        opacity: 0;
+        transform: scale(0.98);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 0 15px -5px var(--glow-color), 0 0 30px -15px var(--glow-color);
+    }
+    50% {
+        box-shadow: 0 0 25px 0px var(--glow-color), 0 0 50px -10px var(--glow-color);
+    }
+}
+
+@keyframes kenburns {
+    0% {
+        transform: scale(1.05) translate(1%, -2%);
+        opacity: 0.8;
+    }
+    100% {
+        transform: scale(1.2) translate(-2%, 1%);
+        opacity: 1;
+    }
+}
+
+
+@keyframes gradientAnimate {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+body {
+    font-family: 'Exo 2', sans-serif;
+    background-color: var(--color-bg);
+    color: var(--color-text);
+    margin: 0;
+    padding: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.news-container {
+    background-color: var(--color-container-bg);
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid #2a2a2a;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.7);
+    width: 100%;
+    height: calc(100vh - 40px);
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    animation: fadeInScaleUp 0.8s ease-out forwards;
+}
+
+.main-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+    border-bottom: 1px solid #333;
+    padding-bottom: 20px;
+}
+
+h1 {
+    font-size: 2.8em;
+    font-weight: 700;
+    margin: 0;
+    background: linear-gradient(90deg, var(--color-accent), #ff9a52, var(--color-accent));
+    background-size: 200% 100%;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: gradientAnimate 6s ease infinite;
+    text-shadow: 0 0 15px rgba(255, 103, 0, 0.3);
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.main-page-button, #langSelector {
+    background-color: #252525;
+    color: var(--color-text);
+    border: 1px solid #444;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    box-shadow: 0 0 0px var(--glow-color);
+}
+
+.main-page-button:hover, #langSelector:hover {
+    background-color: #333;
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3), 0 0 10px var(--glow-color);
+}
+
+#langSelector {
+    cursor: pointer;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 40px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%23ff6700' viewBox='0 0 16 16'%3E%3Cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+}
+
+.media-viewer {
+    position: relative;
+    width: 100%;
+    background-color: #000;
+    border-radius: 10px;
+    overflow: hidden;
+    flex-grow: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 2px solid #222;
+    animation: pulseGlow 5s infinite ease-in-out;
+}
+
+.media-display {
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+
+.media-item {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    transition: transform 0.7s cubic-bezier(0.68, -0.55, 0.27, 1.55), opacity 0.6s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.media-item.active {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+    z-index: 1;
+}
+.media-item.prev {
+    transform: translateX(-100%) scale(0.8);
+    opacity: 0;
+}
+.media-item.next {
+    transform: translateX(100%) scale(0.8);
+    opacity: 0;
+}
+
+.media-item img,
+.media-item video {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    display: block;
+    border-radius: 8px;
+}
+
+.media-item.active img {
+    animation: kenburns 10s ease-in-out infinite alternate;
+}
+
+.loading-message, .empty-message {
+    color: var(--color-text-muted);
+    font-size: 1.5em;
+    padding: 20px;
+    text-align: center;
+    position: absolute;
+    width: 100%;
+}
+
+.nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%) scale(0.9);
+    background-color: rgba(20, 20, 20, 0.5);
+    backdrop-filter: blur(5px);
+    color: #fff;
+    border: 1px solid #555;
+    padding: 10px;
+    width: 60px;
+    height: 60px;
+    font-size: 3em;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: all 0.4s ease;
+    z-index: 10;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+}
+
+.media-viewer:hover .nav-button {
+    opacity: 1;
+    transform: translateY(-50%) scale(1);
+}
+
+.nav-button:hover {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent-dark);
+    color: #fff;
+    transform: translateY(-50%) scale(1.15);
+    box-shadow: 0 0 25px var(--glow-color);
+}
+
+.nav-button.prev {
+    left: 20px;
+    transition-delay: 0.1s;
+}
+
+.nav-button.next {
+    right: 20px;
+}
+
+.current-item-info {
+    margin-top: 15px;
+    font-size: 1em;
+    color: var(--color-text-muted);
+    text-align: center;
+    flex-shrink: 0;
+    height: 1.5em;
+    transition: opacity 0.5s ease;
+}
+
+.single-item .nav-button {
+    display: none !important;
+}
