@@ -343,35 +343,52 @@ dom.fileInput.addEventListener('change', () => {
             dom.fileSender.appendChild(sendBtn);
         }
         sendBtn.textContent = `Send ${file.name}`;
+
         sendBtn.onclick = () => {
             sendBtn.disabled = true;
             dom.progressContainer.classList.remove('hidden');
             
             dataChannel.send(JSON.stringify({ name: file.name, type: file.type, size: file.size }));
-            const chunkSize = 16384;
+
+            const chunkSize = 16384; 
+            const highWaterMark = 1024 * 1024; // 1MB
             let offset = 0;
 
             const readSlice = () => {
+                if (offset >= file.size) return;
+                
                 const slice = file.slice(offset, offset + chunkSize);
                 const reader = new FileReader();
+                
                 reader.onload = e => {
-                    if (dataChannel.readyState === 'open') {
+                    if (dataChannel.readyState !== 'open') return;
+
+                    try {
                         dataChannel.send(e.target.result);
                         offset += e.target.result.byteLength;
-                        
                         const progress = Math.round((offset / file.size) * 100);
                         dom.progressBar.style.width = `${progress}%`;
                         dom.progressText.textContent = getStatusText('sendingFile', { filename: file.name, progress: progress });
-
-                        if (offset < file.size) {
+                    } catch (error) {
+                        console.error('Send error:', error);
+                        return; 
+                    }
+                    
+                    if (offset < file.size) {
+                        if (dataChannel.bufferedAmount < highWaterMark) {
                             readSlice();
                         } else {
-                            dom.status.textContent = getStatusText('fileSent');
-                            dom.fileNameDisplay.textContent = '';
-                            dom.fileInput.value = '';
-                            sendBtn.remove();
-                            setTimeout(() => dom.progressContainer.classList.add('hidden'), 2000);
+                            dataChannel.onbufferedamountlow = () => {
+                                dataChannel.onbufferedamountlow = null;
+                                readSlice();
+                            };
                         }
+                    } else {
+                        dom.status.textContent = getStatusText('fileSent');
+                        dom.fileNameDisplay.textContent = '';
+                        dom.fileInput.value = '';
+                        sendBtn.remove();
+                        setTimeout(() => dom.progressContainer.classList.add('hidden'), 2000);
                     }
                 };
                 reader.readAsArrayBuffer(slice);
