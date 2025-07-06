@@ -1,43 +1,77 @@
 <!DOCTYPE html>
-<html lang="de">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>P2P Dateiübertragung (WebRTC v9)</title>
+    <title>P2P File Transfer</title>
     <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
-<body>
+<body class="dark-mode">
 
-    <div class="container">
-        <h1>P2P Dateiübertragung</h1>
-        <p class="subtitle">Direkt von Browser zu Browser mit WebRTC</p>
-
-        <div id="room-selection">
-            <input type="text" id="roomIdInput" placeholder="Gib eine Raum-ID ein...">
-            <button id="createRoomBtn">Raum erstellen</button>
-            <button id="joinRoomBtn">Raum beitreten</button>
-        </div>
-
-        <div id="transfer-area" class="hidden">
-            <h2>Raum: <span id="roomIdDisplay"></span></h2>
-            <div id="status">Warte auf Verbindung zum Partner...</div>
-
-            <div id="file-sender" class="hidden">
-                <input type="file" id="fileInput">
-                <button id="sendBtn">Datei senden</button>
-            </div>
-            
-            <progress id="progress-bar" value="0" max="100" class="hidden"></progress>
-
-            <div id="downloads">
-                <h3>Empfangene Dateien:</h3>
-                <ul id="download-list"></ul>
-            </div>
+    <div id="privacy-modal" class="modal-overlay">
+        <div class="modal-content">
+            <h2 data-lang="privacyTitle">Privacy Notice</h2>
+            <p data-lang="privacyText1">This is a peer-to-peer (P2P) file transfer service. When you use this service, you establish a direct, encrypted connection to the other user's browser.</p>
+            <p data-lang="privacyText2">Your files are **not** uploaded to a central server. They are sent directly from your device to the other device. For the connection to be established, temporary and anonymous connection data is exchanged via a signaling server (Firebase). This data is deleted once the connection is closed.</p>
+            <p data-lang="privacyText3">By clicking "Accept", you agree to this process.</p>
+            <button id="accept-privacy-btn" data-lang="accept">Accept</button>
         </div>
     </div>
-    
-    <!-- Unsere WebRTC-Logik als Modul laden -->
-    <script type="module" src="app.js"></script>
 
+    <div id="app-container" class="hidden">
+        <header>
+            <h1 data-lang="mainTitle">P2P File Transfer</h1>
+            <div class="settings">
+                <div class="language-switcher">
+                    <button data-lang-code="en" class="active">EN</button>
+                    <button data-lang-code="de">DE</button>
+                    <button data-lang-code="es">ES</button>
+                </div>
+                <div class="theme-switcher">
+                    <input type="checkbox" id="theme-toggle" class="theme-toggle-checkbox">
+                    <label for="theme-toggle" class="theme-toggle-label">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="sun"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="moon"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </label>
+                </div>
+            </div>
+        </header>
+
+        <main class="container">
+            <div id="room-selection">
+                <input type="text" id="roomIdInput" data-placeholder="roomPlaceholder">
+                <button id="createRoomBtn" data-lang="createRoom">Create Room</button>
+                <button id="joinRoomBtn" data-lang="joinRoom">Join Room</button>
+            </div>
+
+            <div id="transfer-area" class="hidden">
+                <h2 data-lang="room">Room: <span id="roomIdDisplay"></span></h2>
+                <div id="status" data-lang="waiting">Waiting for partner...</div>
+
+                <div id="file-sender" class="hidden">
+                    <label for="fileInput" class="file-input-label" data-lang="selectFile">Select a file</label>
+                    <input type="file" id="fileInput">
+                    <span id="file-name-display"></span>
+                </div>
+                
+                <div id="progress-container" class="hidden">
+                    <div class="progress-bar-wrapper">
+                        <div id="progress-bar"></div>
+                    </div>
+                    <span id="progress-text"></span>
+                </div>
+
+                <div id="downloads">
+                    <h3 data-lang="receivedFiles">Received Files:</h3>
+                    <ul id="download-list"></ul>
+                </div>
+            </div>
+        </main>
+    </div>
+    
+    <script type="module" src="app.js"></script>
 </body>
 </html>

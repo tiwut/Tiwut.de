@@ -1,15 +1,286 @@
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; background-color: #f4f7f9; color: #333; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; padding: 1rem; box-sizing: border-box; }
-.container { background-color: white; padding: 2rem 3rem; border-radius: 10px; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1); width: 100%; max-width: 600px; text-align: center; }
-.subtitle { color: #7f8c8d; }
-.hidden { display: none; }
-input[type="text"], input[type="file"] { width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-button { background-color: #27ae60; color: white; border: none; padding: 12px 20px; border-radius: 5px; cursor: pointer; font-size: 16px; transition: background-color 0.3s; width: 100%; margin-top: 5px; }
-button:hover { background-color: #229954; }
-#joinRoomBtn { background-color: #3498db; }
-#joinRoomBtn:hover { background-color: #2980b9; }
-#status { margin: 20px 0; font-weight: bold; font-size: 1.1em; color: #e67e22; }
-#progress-bar { width: 100%; margin-top: 15px; }
-#downloads { margin-top: 2rem; text-align: left; }
-#download-list { list-style-type: none; padding: 0; }
-#download-list li { background-color: #ecf0f1; margin-bottom: 8px; padding: 12px; border-radius: 5px; }
-#download-list a { text-decoration: none; color: #2980b9; font-weight: bold; }
+:root {
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+.dark-mode {
+    --bg-color: #121212;
+    --surface-color: #1e1e1e;
+    --primary-color: #4dabf7;
+    --primary-hover-color: #74c0fc;
+    --secondary-color: #38d9a9;
+    --secondary-hover-color: #63e6be;
+    --text-color: #e0e0e0;
+    --text-muted-color: #868e96;
+    --border-color: #343a40;
+    --shadow-color: rgba(0, 0, 0, 0.4);
+}
+
+.light-mode {
+    --bg-color: #f8f9fa;
+    --surface-color: #ffffff;
+    --primary-color: #1971c2;
+    --primary-hover-color: #1864ab;
+    --secondary-color: #0ca678;
+    --secondary-hover-color: #099268;
+    --text-color: #212529;
+    --text-muted-color: #868e96;
+    --border-color: #dee2e6;
+    --shadow-color: rgba(0, 0, 0, 0.1);
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+    line-height: 1.6;
+}
+
+.hidden { display: none !important; }
+
+#app-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: 2rem 1.5rem;
+}
+
+header {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto 2rem auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+header h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.settings {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.language-switcher button {
+    background: none;
+    border: 1px solid var(--border-color);
+    color: var(--text-muted-color);
+    padding: 0.3rem 0.6rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.language-switcher button:first-child { border-radius: 5px 0 0 5px; }
+.language-switcher button:last-child { border-radius: 0 5px 5px 0; border-left: none; }
+.language-switcher button.active {
+    background-color: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.theme-toggle-checkbox { display: none; }
+.theme-toggle-label {
+    cursor: pointer;
+    background-color: var(--surface-color);
+    border: 1px solid var(--border-color);
+    width: 50px;
+    height: 26px;
+    border-radius: 50px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+}
+.theme-toggle-label::after {
+    content: '';
+    position: absolute;
+    top: 1px;
+    left: 1px;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background-color: var(--text-muted-color);
+    transition: transform 0.3s;
+}
+.theme-toggle-checkbox:checked + .theme-toggle-label::after {
+    transform: translateX(24px);
+}
+.theme-toggle-label .sun { color: #fcc419; }
+.theme-toggle-label .moon { color: #4dabf7; }
+
+.container {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+    background-color: var(--surface-color);
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px var(--shadow-color);
+    transition: background-color 0.3s;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    transition: all 0.3s;
+}
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 25%, transparent);
+}
+
+button {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+#createRoomBtn {
+    background-color: var(--primary-color);
+    color: white;
+    margin-bottom: 0.75rem;
+}
+#createRoomBtn:hover { background-color: var(--primary-hover-color); }
+#joinRoomBtn {
+    background-color: var(--secondary-color);
+    color: white;
+}
+#joinRoomBtn:hover { background-color: var(--secondary-hover-color); }
+
+#status {
+    margin: 1.5rem 0;
+    font-weight: 500;
+    color: var(--text-muted-color);
+    text-align: center;
+}
+
+input[type="file"] { display: none; }
+.file-input-label {
+    display: block;
+    padding: 2rem;
+    text-align: center;
+    border: 2px dashed var(--border-color);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: var(--text-muted-color);
+}
+.file-input-label:hover {
+    border-color: var(--primary-color);
+    color: var(--primary-color);
+}
+#file-name-display {
+    text-align: center;
+    display: block;
+    margin-top: 1rem;
+    color: var(--text-muted-color);
+    font-style: italic;
+}
+
+#progress-container { margin: 1.5rem 0; }
+.progress-bar-wrapper {
+    width: 100%;
+    height: 10px;
+    background-color: var(--border-color);
+    border-radius: 5px;
+    overflow: hidden;
+}
+#progress-bar {
+    height: 100%;
+    width: 0%;
+    background-color: var(--primary-color);
+    border-radius: 5px;
+    transition: width 0.1s linear;
+}
+#progress-text {
+    display: block;
+    text-align: center;
+    margin-top: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-muted-color);
+}
+
+#downloads h3 {
+    margin-top: 2rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.5rem;
+}
+#download-list {
+    list-style-type: none;
+    padding: 0;
+}
+#download-list li a {
+    display: block;
+    padding: 0.75rem 1rem;
+    background-color: var(--bg-color);
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--primary-color);
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+    transition: all 0.2s;
+}
+#download-list li a:hover {
+    background-color: var(--border-color);
+    color: var(--primary-hover-color);
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+}
+.modal-content {
+    background-color: var(--surface-color);
+    padding: 2rem;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 8px 30px var(--shadow-color);
+}
+.modal-content h2 { margin-bottom: 1rem; }
+.modal-content p {
+    color: var(--text-muted-color);
+    margin-bottom: 1rem;
+}
+.modal-content button {
+    background-color: var(--primary-color);
+    color: white;
+    margin-top: 1rem;
+}
+.modal-content button:hover { background-color: var(--primary-hover-color); }
+
+@media (max-width: 600px) {
+    #app-container { padding: 1rem; }
+    header { flex-direction: column; gap: 1rem; }
+    .container { padding: 1.5rem; }
+}
