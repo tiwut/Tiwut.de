@@ -231,20 +231,16 @@ input[type="file"] { display: none; }
     list-style-type: none;
     padding: 0;
 }
-#download-list li a {
+#download-list li {
     display: block;
     padding: 0.75rem 1rem;
     background-color: var(--bg-color);
     border-radius: 8px;
     text-decoration: none;
-    color: var(--primary-color);
+    color: var(--text-color);
     font-weight: 500;
     margin-bottom: 0.5rem;
     transition: all 0.2s;
-}
-#download-list li a:hover {
-    background-color: var(--border-color);
-    color: var(--primary-hover-color);
 }
 
 .modal-overlay {

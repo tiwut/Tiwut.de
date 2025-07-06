@@ -220,34 +220,43 @@ const setupDataChannelEvents = (channel) => {
         setTimeout(resetUI, 3000);
     };
 
-    let receiveBuffer = [], receivedSize = 0, fileToReceive = null;
-    channel.onmessage = event => {
+    let fileWriter, receivedSize = 0, fileToReceive = null;
+    channel.onmessage = async event => {
         const { data } = event;
         try {
             const metadata = JSON.parse(data);
             fileToReceive = metadata;
-            receiveBuffer = [];
             receivedSize = 0;
+            const fileStream = streamSaver.createWriteStream(fileToReceive.name, {
+                size: fileToReceive.size
+            });
+            fileWriter = fileStream.getWriter();
             dom.progressContainer.classList.remove('hidden');
         } catch (err) {
-            receiveBuffer.push(data);
+            if (!fileWriter) {
+                console.error("Received file chunk before metadata.");
+                return;
+            }
+            await fileWriter.write(new Uint8Array(data));
             receivedSize += data.byteLength;
             const progress = Math.round((receivedSize / fileToReceive.size) * 100);
             dom.progressBar.style.width = `${progress}%`;
             dom.progressText.textContent = getStatusText('receivingFile', { filename: fileToReceive.name, progress: progress });
 
             if (receivedSize === fileToReceive.size) {
-                const receivedFile = new Blob(receiveBuffer);
-                const downloadLink = document.createElement('a');
-                downloadLink.href = URL.createObjectURL(receivedFile);
-                downloadLink.download = fileToReceive.name;
-                downloadLink.textContent = `${fileToReceive.name} (${(fileToReceive.size / 1024 / 1024).toFixed(2)} MB)`;
-                const li = document.createElement('li');
-                li.appendChild(downloadLink);
-                dom.downloadList.prepend(li);
+                await fileWriter.close();
                 dom.progressContainer.classList.add('hidden');
                 dom.status.textContent = getStatusText('fileReceived');
+                const li = document.createElement('li');
+                li.textContent = `${fileToReceive.name} (${(fileToReceive.size / 1024 / 1024).toFixed(2)} MB) - Saved.`;
+                dom.downloadList.prepend(li);
             }
+        }
+    };
+    
+    window.onbeforeunload = () => {
+        if (fileWriter) {
+            fileWriter.abort();
         }
     };
 };
@@ -281,7 +290,7 @@ dom.createRoomBtn.onclick = async () => {
     if (!roomId) { alert(getStatusText('enterRoomId')); return; }
     
     initializePeerConnection();
-    dataChannel = pc.createDataChannel('fileTransfer');
+    dataChannel = pc.createDataChannel('fileTransfer', { ordered: true });
     setupDataChannelEvents(dataChannel);
     
     const roomRef = ref(db, `rooms/${roomId}`);
@@ -351,7 +360,7 @@ dom.fileInput.addEventListener('change', () => {
             dataChannel.send(JSON.stringify({ name: file.name, type: file.type, size: file.size }));
 
             const chunkSize = 16384; 
-            const highWaterMark = 1024 * 1024; // 1MB
+            const highWaterMark = 1024 * 1024;
             let offset = 0;
 
             const readSlice = () => {
