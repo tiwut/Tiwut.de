@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P2P Dateiübertragung (WebRTC v9)</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>P2P Dateiübertragung</h1>
+        <p class="subtitle">Direkt von Browser zu Browser mit WebRTC</p>
+
+        <div id="room-selection">
+            <input type="text" id="roomIdInput" placeholder="Gib eine Raum-ID ein...">
+            <button id="createRoomBtn">Raum erstellen</button>
+            <button id="joinRoomBtn">Raum beitreten</button>
+        </div>
+
+        <div id="transfer-area" class="hidden">
+            <h2>Raum: <span id="roomIdDisplay"></span></h2>
+            <div id="status">Warte auf Verbindung zum Partner...</div>
+
+            <div id="file-sender" class="hidden">
+                <input type="file" id="fileInput">
+                <button id="sendBtn">Datei senden</button>
+            </div>
+            
+            <progress id="progress-bar" value="0" max="100" class="hidden"></progress>
+
+            <div id="downloads">
+                <h3>Empfangene Dateien:</h3>
+                <ul id="download-list"></ul>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Unsere WebRTC-Logik als Modul laden -->
+    <script type="module" src="app.js"></script>
+
+</body>
+</html>
