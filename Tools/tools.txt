@@ -25,4 +25,4 @@ GPU Specifications
 Memory (RAM) Specifications
 Roadtrip Goals
 P2P File Transfer
-Video Call
+WebRTC Video Call
