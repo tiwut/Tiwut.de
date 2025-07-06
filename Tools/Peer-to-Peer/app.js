@@ -381,7 +381,7 @@ dom.fileInput.addEventListener('change', () => {
     }
 });
 
-const initializeApp = () => {
+const startApp = () => {
     dom.privacyModal.classList.add('hidden');
     dom.appContainer.classList.remove('hidden');
 };
@@ -392,11 +392,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     dom.acceptPrivacyBtn.addEventListener('click', () => {
         localStorage.setItem('privacyAccepted', 'true');
-        initializeApp();
+        startApp();
     });
 
     if (localStorage.getItem('privacyAccepted') === 'true') {
-        initializeApp();
+        startApp();
     } else {
         dom.privacyModal.classList.remove('hidden');
     }
