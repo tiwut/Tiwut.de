@@ -2,10 +2,9 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
 import { getDatabase, ref, set, get, onValue, push, remove, onChildAdded, update } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
 
-// DOM-Elemente
+// DOM-Elemente holen
 const roomSelection = document.getElementById('room-selection');
 const transferArea = document.getElementById('transfer-area');
-// ... (alle anderen DOM-Elemente wie zuvor) ...
 const roomIdInput = document.getElementById('roomIdInput');
 const createRoomBtn = document.getElementById('createRoomBtn');
 const joinRoomBtn = document.getElementById('joinRoomBtn');
@@ -22,6 +21,8 @@ const firebaseConfig = {
     apiKey: "AIzaSyC0KcQwXCp8-QsYQdNqX_NBOhpLT17x1A0", // BITTE NACH DEM TEST NEU GENERIEREN!
     authDomain: "peer-to-peer-a9775.firebaseapp.com",
     projectId: "peer-to-peer-a9775",
+    // KORRIGIERTE UND WICHTIGSTE ZEILE:
+    databaseURL: "https://peer-to-peer-a9775-default-rtdb.europe-west1.firebasedatabase.app",
     storageBucket: "peer-to-peer-a9775.appspot.com",
     messagingSenderId: "627503120696",
     appId: "1:627503120696:web:f00b2de669d0f8fa8641cd"
@@ -29,7 +30,7 @@ const firebaseConfig = {
 
 // Firebase initialisieren
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app); // Die Datenbank-Instanz holen
+const db = getDatabase(app);
 
 // WebRTC-Variablen
 let pc;
@@ -43,9 +44,7 @@ const configuration = {
     ]
 };
 
-
-// --- Verbindungslogik (jetzt mit v9 Syntax) ---
-
+// --- Verbindungslogik ---
 createRoomBtn.onclick = async () => {
     roomId = roomIdInput.value.trim();
     if (!roomId) { alert('Bitte eine Raum-ID eingeben'); return; }
@@ -54,21 +53,21 @@ createRoomBtn.onclick = async () => {
     dataChannel = pc.createDataChannel('fileTransfer');
     setupDataChannelEvents(dataChannel);
 
-    const roomRef = ref(db, `rooms/${roomId}`); // v9 Syntax: ref(db, path)
+    const roomRef = ref(db, `rooms/${roomId}`);
     const iceCandidatesRef = ref(db, `rooms/${roomId}/iceCandidates`);
 
     pc.onicecandidate = event => {
         if (event.candidate) {
-            push(iceCandidatesRef, event.candidate.toJSON()); // v9 Syntax: push(ref, data)
+            push(iceCandidatesRef, event.candidate.toJSON());
         }
     };
 
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
     
-    await set(roomRef, { offer: { type: offer.type, sdp: offer.sdp } }); // v9 Syntax: set(ref, data)
+    await set(roomRef, { offer: { type: offer.type, sdp: offer.sdp } });
 
-    onValue(roomRef, snapshot => { // v9 Syntax: onValue(ref, callback)
+    onValue(roomRef, snapshot => {
         const data = snapshot.val();
         if (data?.answer && !pc.currentRemoteDescription) {
             pc.setRemoteDescription(new RTCSessionDescription(data.answer));
@@ -85,7 +84,7 @@ joinRoomBtn.onclick = async () => {
     
     const roomRef = ref(db, `rooms/${roomId}`);
     const iceCandidatesRef = ref(db, `rooms/${roomId}/iceCandidates`);
-    const roomSnapshot = await get(roomRef); // v9 Syntax: get(ref) für einmaliges Lesen
+    const roomSnapshot = await get(roomRef);
     if (!roomSnapshot.exists()) {
         alert('Raum nicht gefunden!');
         return;
@@ -108,25 +107,21 @@ joinRoomBtn.onclick = async () => {
 
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(answer);
-    await update(roomRef, { answer: { type: answer.type, sdp: answer.sdp } }); // v9 Syntax: update(ref, data)
+    await update(roomRef, { answer: { type: answer.type, sdp: answer.sdp } });
 
     listenForIceCandidates(iceCandidatesRef);
     showTransferArea();
 };
 
 function listenForIceCandidates(iceCandidatesRef) {
-    onChildAdded(iceCandidatesRef, snapshot => { // v9 Syntax: onChildAdded(ref, callback)
+    onChildAdded(iceCandidatesRef, snapshot => {
         if (snapshot.exists()) {
             pc.addIceCandidate(new RTCIceCandidate(snapshot.val()));
         }
     });
 }
 
-
-// --- Datenübertragungslogik (unverändert, da sie reines WebRTC ist) ---
-// (Hier wird der exakt gleiche Code wie in der vorherigen Antwort eingefügt,
-// da dieser Teil nichts mit Firebase zu tun hat. Ich kopiere ihn hier zur Vollständigkeit.)
-
+// --- Datenübertragungslogik ---
 let receiveBuffer = [];
 let receivedSize = 0;
 let fileToReceive = null;
@@ -141,8 +136,7 @@ function setupDataChannelEvents(channel) {
     channel.onclose = () => {
         statusDiv.textContent = 'Verbindung geschlossen.';
         statusDiv.style.color = '#c0392b';
-        // Raum in Firebase aufräumen
-        remove(ref(db, `rooms/${roomId}`)); // v9 Syntax: remove(ref)
+        remove(ref(db, `rooms/${roomId}`));
     };
 
     channel.onmessage = event => {
@@ -152,7 +146,6 @@ function setupDataChannelEvents(channel) {
             fileToReceive = metadata;
             receiveBuffer = [];
             receivedSize = 0;
-            console.log('Empfange Datei:', metadata.name);
             return;
         } catch (err) {
             receiveBuffer.push(data);
@@ -176,7 +169,6 @@ function setupDataChannelEvents(channel) {
     };
 }
 
-
 sendBtn.onclick = () => {
     const file = fileInput.files[0];
     if (!file) return;
@@ -197,7 +189,6 @@ sendBtn.onclick = () => {
             if (offset < file.size) {
                 readSlice(offset);
             } else {
-                console.log('Datei komplett gesendet');
                 progressBar.classList.add('hidden');
                 progressBar.value = 0;
             }
