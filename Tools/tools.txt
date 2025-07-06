@@ -24,4 +24,4 @@ x86 CPU Specifications
 GPU Specifications
 Memory (RAM) Specifications
 Roadtrip Goals
-Peer-to-Peer
+P2P File Transfer
