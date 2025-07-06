@@ -2,11 +2,11 @@ import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/fireba
 import { getDatabase, ref, set, get, onValue, push, remove, onChildAdded, update } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
 
 const firebaseConfig = {
-    // FÜGEN SIE HIER IHRE NEUE FIREBASE-KONFIGURATION EIN
     apiKey: "AIzaSyCuZhLP_pFgmM4w4W3vThPqHro9vGaehiw",
     authDomain: "video-call-app-3d298.firebaseapp.com",
     projectId: "video-call-app-3d298",
-    databaseURL: "video-call-app-3d298.firebaseapp.com", // Passen Sie diese URL ggf. an die Region an!
+    // KORREKTUR 1: Die spezifische Datenbank-URL wurde hinzugefügt
+    databaseURL: "https://video-call-app-3d298-default-rtdb.europe-west1.firebasedatabase.app",
     storageBucket: "video-call-app-3d298.firebasestorage.app",
     messagingSenderId: "116865723028",
     appId: "1:116865723028:web:cba97e2fc7569c52d42281"
@@ -29,6 +29,7 @@ const dom = {
 
 const configuration = { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }] };
 let pc, localStream, remoteStream, roomId;
+let iceCandidateQueue = []; // KORREKTUR 2: Warteschlange für ICE-Kandidaten
 
 const showCallArea = () => {
     dom.roomSelection.classList.add('hidden');
@@ -49,9 +50,10 @@ const resetCall = () => {
     
     dom.callArea.classList.add('hidden');
     dom.roomSelection.classList.remove('hidden');
+    iceCandidateQueue = [];
 };
 
-const setupPeerConnection = async (roomRef) => {
+const setupPeerConnection = async () => {
     pc = new RTCPeerConnection(configuration);
 
     localStream.getTracks().forEach(track => {
@@ -70,10 +72,15 @@ const setupPeerConnection = async (roomRef) => {
         dom.remoteVideo.srcObject = remoteStream;
     };
     
+    // KORREKTUR 2: Logik zum Hinzufügen von Kandidaten zur Warteschlange
     onChildAdded(iceCandidatesRef, snapshot => {
         if (snapshot.exists()) {
             const candidate = new RTCIceCandidate(snapshot.val());
-            pc.addIceCandidate(candidate);
+            if (pc.remoteDescription) {
+                pc.addIceCandidate(candidate);
+            } else {
+                iceCandidateQueue.push(candidate);
+            }
         }
     });
 };
@@ -81,15 +88,16 @@ const setupPeerConnection = async (roomRef) => {
 dom.createRoomBtn.onclick = async () => {
     roomId = dom.roomIdInput.value.trim();
     if (!roomId) { alert("Please enter a room ID"); return; }
+    iceCandidateQueue = []; // Warteschlange zurücksetzen
 
     localStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
     dom.localVideo.srcObject = localStream;
 
     showCallArea();
 
-    const roomRef = ref(db, `rooms/${roomId}`);
-    await setupPeerConnection(roomRef);
+    await setupPeerConnection();
     
+    const roomRef = ref(db, `rooms/${roomId}`);
     const offer = await pc.createOffer();
     await pc.setLocalDescription(offer);
     await set(roomRef, { offer: { type: offer.type, sdp: offer.sdp } });
@@ -98,6 +106,10 @@ dom.createRoomBtn.onclick = async () => {
         const data = snapshot.val();
         if (data?.answer && !pc.currentRemoteDescription) {
             await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
+            
+            // KORREKTUR 2: Warteschlange abarbeiten, nachdem die Antwort gesetzt wurde
+            iceCandidateQueue.forEach(candidate => pc.addIceCandidate(candidate));
+            iceCandidateQueue = [];
         }
     }, { onlyOnce: false });
 };
@@ -105,6 +117,7 @@ dom.createRoomBtn.onclick = async () => {
 dom.joinRoomBtn.onclick = async () => {
     roomId = dom.roomIdInput.value.trim();
     if (!roomId) { alert("Please enter a room ID"); return; }
+    iceCandidateQueue = []; // Warteschlange zurücksetzen
     
     const roomRef = ref(db, `rooms/${roomId}`);
     const roomSnapshot = await get(roomRef);
@@ -118,10 +131,14 @@ dom.joinRoomBtn.onclick = async () => {
     
     showCallArea();
 
-    await setupPeerConnection(roomRef);
+    await setupPeerConnection();
     
     await pc.setRemoteDescription(new RTCSessionDescription(roomSnapshot.val().offer));
-    
+
+    // KORREKTUR 2: Warteschlange abarbeiten, nachdem das Angebot gesetzt wurde
+    iceCandidateQueue.forEach(candidate => pc.addIceCandidate(candidate));
+    iceCandidateQueue = [];
+
     const answer = await pc.createAnswer();
     await pc.setLocalDescription(answer);
     await update(roomRef, { answer: { type: answer.type, sdp: answer.sdp } });
