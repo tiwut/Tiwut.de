@@ -218,6 +218,10 @@
         .warning-modal p { color: #ddd; margin-bottom: 2.5rem; font-size: 1.1rem; line-height: 1.7; }
         .warning-modal .action-button { border-color: var(--secondary-neon); text-shadow: 0 0 5px var(--secondary-neon); box-shadow: inset 0 0 8px 0 rgba(255, 0, 193, 0.3); }
         .warning-modal .action-button:hover { border-color: var(--accent-neon); }
+        #privacyOverlay .warning-modal { border-color: var(--primary-neon); box-shadow: 0 0 25px 5px var(--glow-color); }
+        #privacyOverlay .warning-modal h2 { color: var(--primary-neon); text-shadow: 0 0 10px var(--primary-neon); }
+        #privacyOverlay .warning-modal .action-button { border-color: var(--primary-neon); text-shadow: 0 0 5px var(--primary-neon); box-shadow: inset 0 0 8px 0 rgba(0, 229, 255, 0.3); }
+
 
         @media (max-width: 768px) {
             h1 { font-size: 2.5rem; letter-spacing: 1px; }
@@ -282,6 +286,15 @@
             <button id="acceptWarningButton" class="action-button"></button> 
         </div>
     </div>
+    
+    <div class="warning-overlay" id="privacyOverlay">
+        <div class="warning-modal">
+            <h2 id="privacyTitle"></h2>
+            <p id="privacyText"></p>
+            <button id="acceptPrivacyButton" class="action-button"></button> 
+        </div>
+    </div>
+
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
@@ -296,7 +309,11 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
+        let visitorCountUpdated = false;
         async function updateVisitorCount() {
+            if (visitorCountUpdated) return;
+            visitorCountUpdated = true;
+
             const visitCountElement = document.getElementById('visitCount');
             const counterRef = db.collection('counters').doc('mainPage');
             try {
@@ -329,16 +346,41 @@
         const githubButton = document.getElementById('githubButton');
         const learningButton = document.getElementById('learningButton'); 
         const chatButton = document.getElementById('chatButton');
-        const warningOverlay = document.getElementById('warningOverlay');
-        const acceptButton = document.getElementById('acceptWarningButton');
-        const warningTitleElement = document.getElementById('warningTitle');
-        const warningTextElement = document.getElementById('warningText');
         const counterLabel = document.getElementById('counterLabel');
 
+        const warningOverlay = document.getElementById('warningOverlay');
+        const acceptWarningButton = document.getElementById('acceptWarningButton');
+        const warningTitleElement = document.getElementById('warningTitle');
+        const warningTextElement = document.getElementById('warningText');
+
+        const privacyOverlay = document.getElementById('privacyOverlay');
+        const acceptPrivacyButton = document.getElementById('acceptPrivacyButton');
+        const privacyTitleElement = document.getElementById('privacyTitle');
+        const privacyTextElement = document.getElementById('privacyText');
+
+
         const translations = {
-            en: { pageTitle: "Welcome to Tiwut", mainTitle: "Welcome to Tiwut", enterButton: "Tiwut-Advanced", publisherInfo: "Published by Tiwut", modalTitle: "Important Notice", modalText: "This website is intended for private and family purposes only!!!<br>By accepting, you confirm this.", modalButton: "Accept and Continue", searchButton: "Search", githubButton: "GitHub", counterLabel: "Visitors: ", learningButton: "Learning", chatButton: "Chat" }, 
-            de: { pageTitle: "Willkommen bei Tiwut", mainTitle: "Willkommen bei Tiwut", enterButton: "Tiwut-Advanced", publisherInfo: "Veröffentlicht von Tiwut", modalTitle: "Wichtiger Hinweis", modalText: "Diese Webseite ist ausschließlich für private und familiäre Zwecke bestimmt!!!<br>Mit der Annahme bestätigen Sie dies.", modalButton: "Akzeptieren und Fortfahren", searchButton: "Suche", githubButton: "GitHub", counterLabel: "Besucher: ", learningButton: "Lernen", chatButton: "Chat" }, 
-            es: { pageTitle: "Bienvenido a Tiwut", mainTitle: "Bienvenido a Tiwut", enterButton: "Tiwut-Advanced", publisherInfo: "Publicado por Tiwut", modalTitle: "Aviso Importante", modalText: "¡¡¡Este sitio web está destinado exclusivamente a fines privados y familiares!!!<br>Al aceptar, usted confirma esto.", modalButton: "Aceptar y Continuar", searchButton: "Buscar", githubButton: "GitHub", counterLabel: "Visitantes: ", learningButton: "Aprender", chatButton: "Chat" } 
+            en: { 
+                pageTitle: "Welcome to Tiwut", mainTitle: "Welcome to Tiwut", enterButton: "Tiwut-Advanced", 
+                publisherInfo: "Published by Tiwut", counterLabel: "Visitors: ",
+                modalTitle: "Important Notice", modalText: "This website is intended for private and family purposes only!!!<br>By accepting, you confirm this.", modalButton: "Accept and Continue", 
+                privacyTitle: "Privacy & Data Notice", privacyText: "This site uses external services (Google Fonts, Google Firebase) which may process your IP address for functional purposes, like our anonymous visitor counter. We also use local storage to save your consent. By accepting, you agree to this necessary data processing.", privacyButton: "I Understand and Accept",
+                searchButton: "Search", githubButton: "GitHub", learningButton: "Learning", chatButton: "Chat" 
+            }, 
+            de: { 
+                pageTitle: "Willkommen bei Tiwut", mainTitle: "Willkommen bei Tiwut", enterButton: "Tiwut-Advanced", 
+                publisherInfo: "Veröffentlicht von Tiwut", counterLabel: "Besucher: ",
+                modalTitle: "Wichtiger Hinweis", modalText: "Diese Webseite ist ausschließlich für private und familiäre Zwecke bestimmt!!!<br>Mit der Annahme bestätigen Sie dies.", modalButton: "Akzeptieren und Fortfahren", 
+                privacyTitle: "Datenschutzhinweis", privacyText: "Diese Seite nutzt externe Dienste (Google Fonts, Google Firebase), die Ihre IP-Adresse für funktionale Zwecke, wie unseren anonymen Besucherzähler, verarbeiten können. Wir nutzen auch den lokalen Speicher, um Ihre Zustimmung zu speichern. Mit der Annahme stimmen Sie dieser notwendigen Datenverarbeitung zu.", privacyButton: "Ich verstehe und akzeptiere",
+                searchButton: "Suche", githubButton: "GitHub", learningButton: "Lernen", chatButton: "Chat"
+            }, 
+            es: { 
+                pageTitle: "Bienvenido a Tiwut", mainTitle: "Bienvenido a Tiwut", enterButton: "Tiwut-Advanced", 
+                publisherInfo: "Publicado por Tiwut", counterLabel: "Visitantes: ",
+                modalTitle: "Aviso Importante", modalText: "¡¡¡Este sitio web está destinado exclusivamente a fines privados y familiares!!!<br>Al aceptar, usted confirma esto.", modalButton: "Aceptar y Continuar", 
+                privacyTitle: "Aviso de Privacidad y Datos", privacyText: "Este sitio utiliza servicios externos (Google Fonts, Google Firebase) que pueden procesar su dirección IP para fines funcionales, como nuestro contador de visitas anónimo. También utilizamos el almacenamiento local para guardar su consentimiento. Al aceptar, usted aprueba este tratamiento de datos necesario.", privacyButton: "Entiendo y Acepto",
+                searchButton: "Buscar", githubButton: "GitHub", learningButton: "Aprender", chatButton: "Chat" 
+            } 
         };
         const userLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
         let langCode = 'en';
@@ -355,24 +397,53 @@
         githubButton.innerHTML = `<i class="fa-brands fa-github"></i> ${selectedTexts.githubButton}`;
         learningButton.innerHTML = `<i class="fa-solid fa-graduation-cap"></i> ${selectedTexts.learningButton}`; 
         chatButton.innerHTML = `<i class="fa-solid fa-comments"></i> ${selectedTexts.chatButton}`;
-        warningTitleElement.innerHTML = selectedTexts.modalTitle;
-        warningTextElement.innerHTML = selectedTexts.modalText;
-        acceptButton.textContent = selectedTexts.modalButton;
         counterLabel.textContent = selectedTexts.counterLabel;
         
-        const warningAccepted = localStorage.getItem('tiwutWarningAccepted');
-        if (warningAccepted !== 'true') {
+        warningTitleElement.innerHTML = selectedTexts.modalTitle;
+        warningTextElement.innerHTML = selectedTexts.modalText;
+        acceptWarningButton.textContent = selectedTexts.modalButton;
+        
+        privacyTitleElement.innerHTML = selectedTexts.privacyTitle;
+        privacyTextElement.innerHTML = selectedTexts.privacyText;
+        acceptPrivacyButton.textContent = selectedTexts.privacyButton;
+        
+        
+        function showWarning(overlay) {
             body.classList.add('content-blurred');
-            warningOverlay.classList.add('active');
+            overlay.classList.add('active');
             body.style.overflow = 'hidden';
         }
-        acceptButton.addEventListener('click', function() {
-            localStorage.setItem('tiwutWarningAccepted', 'true');
+
+        function hideAllWarnings() {
+            privacyOverlay.classList.remove('active');
             warningOverlay.classList.remove('active');
-            setTimeout(() => {
+             setTimeout(() => {
                 body.classList.remove('content-blurred');
                 body.style.overflow = 'auto';
-            }, 500);
+            }, 400);
+        }
+
+        const warningAccepted = localStorage.getItem('tiwutWarningAccepted');
+        const privacyAccepted = localStorage.getItem('tiwutPrivacyAccepted');
+
+        if (warningAccepted !== 'true') {
+            showWarning(warningOverlay);
+        } else if (privacyAccepted !== 'true') {
+            showWarning(privacyOverlay);
+        } else {
+             updateVisitorCount();
+        }
+
+        acceptWarningButton.addEventListener('click', function() {
+            localStorage.setItem('tiwutWarningAccepted', 'true');
+            warningOverlay.classList.remove('active');
+            setTimeout(() => showWarning(privacyOverlay), 100); 
+        });
+
+        acceptPrivacyButton.addEventListener('click', function() {
+            localStorage.setItem('tiwutPrivacyAccepted', 'true');
+            hideAllWarnings();
+            updateVisitorCount();
         });
         
         function initDesktopInteractions() { 
@@ -412,7 +483,6 @@
 
         function init() {
             initDesktopInteractions();
-            updateVisitorCount();
             initPageExitAnimation();
         }
         init();
