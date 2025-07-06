@@ -78,25 +78,29 @@ const updateUIText = (lang) => {
     });
     document.querySelectorAll('[data-tooltip-lang]').forEach(el => {
         const key = el.getAttribute('data-tooltip-lang');
-        if (translations[lang][key]) el.setAttribute('data-tooltip-lang', translations[lang][key]);
+        const originalKey = Array.from(el.attributes).find(attr => attr.name === 'data-tooltip-lang').ownerElement.dataset.tooltipLang;
+        if(translations[lang][originalKey]) {
+            el.setAttribute('data-tooltip-lang', translations[lang][originalKey]);
+        }
     });
 };
 
 const setupLanguage = () => {
+    const languageSwitcher = document.querySelector('.language-switcher');
     const savedLang = localStorage.getItem('language');
     const browserLang = navigator.language.split('-')[0];
     let initialLang = 'en';
     if (savedLang && translations[savedLang]) initialLang = savedLang;
     else if (translations[browserLang]) initialLang = browserLang;
     updateUIText(initialLang);
-    dom.languageSwitcher.querySelector(`[data-lang-code="${initialLang}"]`).classList.add('active');
-    dom.languageSwitcher.addEventListener('click', e => {
+    languageSwitcher.querySelector(`[data-lang-code="${initialLang}"]`).classList.add('active');
+    languageSwitcher.addEventListener('click', e => {
         if (e.target.tagName === 'BUTTON') {
             const langCode = e.target.getAttribute('data-lang-code');
             if (langCode) {
                 updateUIText(langCode);
                 localStorage.setItem('language', langCode);
-                dom.languageSwitcher.querySelector('.active').classList.remove('active');
+                languageSwitcher.querySelector('.active').classList.remove('active');
                 e.target.classList.add('active');
             }
         }
@@ -168,37 +172,43 @@ const handleCallLogic = async (isCreator) => {
     if (!roomId) { alert(translations[currentLang].enterRoomId); return; }
     iceCandidateQueue = [];
     
-    if (isCreator) {
-        await startLocalStream();
-        showCallArea();
-        await setupPeerConnection();
-        const roomRef = ref(db, `rooms/${roomId}`);
-        const offer = await pc.createOffer();
-        await pc.setLocalDescription(offer);
-        await set(roomRef, { offer: { type: offer.type, sdp: offer.sdp } });
-        onValue(roomRef, async snapshot => {
-            const data = snapshot.val();
-            if (data?.answer && !pc.currentRemoteDescription) {
-                await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
-                iceCandidateQueue.forEach(c => pc.addIceCandidate(c));
-                iceCandidateQueue = [];
+    try {
+        if (isCreator) {
+            await startLocalStream();
+            showCallArea();
+            await setupPeerConnection();
+            const roomRef = ref(db, `rooms/${roomId}`);
+            const offer = await pc.createOffer();
+            await pc.setLocalDescription(offer);
+            await set(roomRef, { offer: { type: offer.type, sdp: offer.sdp } });
+            onValue(roomRef, async snapshot => {
+                const data = snapshot.val();
+                if (data?.answer && !pc.currentRemoteDescription) {
+                    await pc.setRemoteDescription(new RTCSessionDescription(data.answer));
+                    iceCandidateQueue.forEach(c => pc.addIceCandidate(c));
+                    iceCandidateQueue = [];
+                }
+            });
+        } else {
+            const roomRef = ref(db, `rooms/${roomId}`);
+            const roomSnapshot = await get(roomRef);
+            if (!roomSnapshot.exists() || !roomSnapshot.val().offer) {
+                alert(translations[currentLang].roomNotFound); return;
             }
-        });
-    } else {
-        const roomRef = ref(db, `rooms/${roomId}`);
-        const roomSnapshot = await get(roomRef);
-        if (!roomSnapshot.exists() || !roomSnapshot.val().offer) {
-            alert(translations[currentLang].roomNotFound); return;
+            await startLocalStream();
+            showCallArea();
+            await setupPeerConnection();
+            await pc.setRemoteDescription(new RTCSessionDescription(roomSnapshot.val().offer));
+            iceCandidateQueue.forEach(c => pc.addIceCandidate(c));
+            iceCandidateQueue = [];
+            const answer = await pc.createAnswer();
+            await pc.setLocalDescription(answer);
+            await update(roomRef, { answer: { type: answer.type, sdp: answer.sdp } });
         }
-        await startLocalStream();
-        showCallArea();
-        await setupPeerConnection();
-        await pc.setRemoteDescription(new RTCSessionDescription(roomSnapshot.val().offer));
-        iceCandidateQueue.forEach(c => pc.addIceCandidate(c));
-        iceCandidateQueue = [];
-        const answer = await pc.createAnswer();
-        await pc.setLocalDescription(answer);
-        await update(roomRef, { answer: { type: answer.type, sdp: answer.sdp } });
+    } catch (err) {
+        console.error("Failed to start call:", err);
+        alert("Could not start video. Please make sure you have a camera and grant permission.");
+        resetCall();
     }
 };
 
@@ -228,7 +238,7 @@ dom.shareScreenBtn.onclick = async () => {
         dom.remoteVideo.classList.remove('screen-share-active');
     } else {
         try {
-            const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true });
+            const screenStream = await navigator.mediaDevices.getDisplayMedia({ video: true, audio: true });
             const screenTrack = screenStream.getVideoTracks()[0];
             await replaceVideoTrack(screenTrack);
             dom.localVideo.srcObject = screenStream;
@@ -271,11 +281,12 @@ const checkDeviceSupport = async () => {
 const startApp = () => {
     dom.privacyModal.classList.add('hidden');
     dom.appContainer.classList.remove('hidden');
+    setupLanguage();
     checkDeviceSupport();
 };
 
 document.addEventListener('DOMContentLoaded', () => {
-    setupLanguage();
+    updateUIText(currentLang);
     dom.acceptPrivacyBtn.addEventListener('click', () => {
         localStorage.setItem('privacyAccepted', 'true');
         startApp();
