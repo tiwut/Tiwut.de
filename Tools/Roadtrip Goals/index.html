@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title data-i18n-key="pageTitle">Roadtrip Ziele - Dein Planer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js" integrity="sha512-GsLlZN/3F2ErC5ifS5QtgpiJtWd43JWSuIgh7mbzZ8zBps+dvLusV+eNQATqgA/HdeKFVgA5v3S/cIrLF7QnIg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+    <style>
+        :root {
+            --primary-color: #00f2fe;
+            --secondary-color: #4facfe;
+            --background-start: #0c0c1e;
+            --background-end: #1c1c3c;
+            --card-background: rgba(255, 255, 255, 0.05);
+            --card-border: rgba(255, 255, 255, 0.2);
+            --text-color: #f0f0f0;
+            --text-muted: #a0a0a0;
+            --star-color: #ffd700;
+            --star-color-inactive: #555;
+            --success-color: #28a745;
+            --danger-color: #ff4d4d;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-start);
+            color: var(--text-color);
+            overflow-x: hidden;
+        }
+        .background-animation {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1;
+            background: linear-gradient(135deg, var(--background-start), var(--background-end));
+            animation: background-pan 15s ease-in-out infinite alternate;
+        }
+        @keyframes background-pan {
+            0% { background-position: 0% 50%; } 100% { background-position: 100% 50%; }
+        }
+        .container { max-width: 900px; margin: 0 auto; padding: 2rem; animation: fadeIn 1s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        header {
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 2rem; flex-wrap: wrap; gap: 1rem;
+        }
+        .logo h1 {
+            font-size: 2.5rem; font-weight: 700;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        @keyframes glow {
+            from { text-shadow: 0 0 5px var(--primary-color), 0 0 10px var(--primary-color); }
+            to { text-shadow: 0 0 20px var(--secondary-color), 0 0 30px var(--secondary-color); }
+        }
+        .header-controls { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
+        .file-operations { display: flex; gap: 1rem; }
+        .language-switcher { display: flex; background: var(--card-background); border-radius: 8px; padding: 4px; }
+        .lang-btn {
+            background: transparent; border: none; color: var(--text-muted); padding: 0.3rem 0.8rem;
+            cursor: pointer; transition: all 0.3s ease; border-radius: 6px; font-weight: 600;
+        }
+        .lang-btn.active { color: var(--background-start); background: var(--primary-color); }
+        .card {
+            background: var(--card-background); backdrop-filter: blur(15px);
+            border-radius: 15px; border: 1px solid var(--card-border);
+            padding: 1.5rem; margin-bottom: 2rem;
+            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card:hover { transform: translateY(-5px); box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5); }
+        h2, h3 { margin-bottom: 1rem; font-weight: 600; border-left: 3px solid var(--primary-color); padding-left: 0.75rem; }
+        input[type="text"], textarea {
+            width: 100%; padding: 0.8rem; background: rgba(0,0,0,0.2);
+            border: 1px solid var(--card-border); border-radius: 8px;
+            color: var(--text-color); font-family: 'Poppins', sans-serif;
+            font-size: 1rem; margin-bottom: 1rem; transition: all 0.3s ease;
+        }
+        input[type="text"]:focus, textarea:focus { outline: none; border-color: var(--primary-color); box-shadow: 0 0 15px rgba(0, 242, 254, 0.3); }
+        textarea { resize: vertical; min-height: 100px; }
+        .btn {
+            padding: 0.7rem 1.2rem; border: 1px solid var(--card-border); background: transparent;
+            color: var(--text-color); border-radius: 8px; cursor: pointer; font-weight: 600;
+            transition: all 0.3s ease; display: flex; align-items: center; gap: 0.5rem;
+        }
+        .btn:hover { background: var(--card-background); border-color: var(--primary-color); color: var(--primary-color); }
+        .btn.btn-primary {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: var(--background-start); border: none; font-weight: 700;
+        }
+        .btn.btn-primary:hover { transform: scale(1.05); box-shadow: 0 0 20px rgba(0, 242, 254, 0.5); }
+        label.btn { cursor: pointer; }
+        .importance-selector { display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem; }
+        .stars { display: flex; cursor: pointer; }
+        .stars span { font-size: 1.5rem; color: var(--star-color-inactive); transition: all 0.2s ease; }
+        .stars span:hover, .stars span.active { color: var(--star-color); transform: scale(1.2); text-shadow: 0 0 10px var(--star-color); }
+        #steps-list { display: grid; gap: 1rem; }
+        .step-item {
+            display: flex; flex-direction: column; gap: 0.5rem; background: var(--card-background);
+            border: 1px solid var(--card-border); border-left: 5px solid var(--secondary-color);
+            border-radius: 8px; padding: 1rem; animation: slideIn 0.5s ease-out; transition: all 0.3s ease;
+        }
+        @keyframes slideIn { from { opacity: 0; transform: translateX(-30px); } to { opacity: 1; transform: translateX(0); } }
+        .step-item.completed { opacity: 0.6; border-left-color: var(--success-color); }
+        .step-item.completed .step-header h4 { text-decoration: line-through; color: var(--text-muted); }
+        .step-header { display: flex; justify-content: space-between; align-items: center; }
+        .step-header h4 { font-size: 1.2rem; font-weight: 600; }
+        .step-actions { display: flex; align-items: center; gap: 1rem; }
+        .step-importance .star-display { color: var(--star-color); }
+        .step-description { color: var(--text-muted); font-weight: 300; padding-left: 0.5rem; border-left: 2px solid rgba(255, 255, 255, 0.1); }
+        .action-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; transition: transform 0.2s ease; padding: 0.2rem;}
+        .action-btn:hover { transform: scale(1.2); }
+        .delete-btn { color: var(--danger-color); }
+        .edit-btn { color: var(--secondary-color); }
+        .complete-checkbox { width: 20px; height: 20px; cursor: pointer; }
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(5px);
+            display: none; align-items: center; justify-content: center; z-index: 1000;
+            animation: fadeIn 0.3s ease;
+        }
+        .modal-overlay.visible { display: flex; }
+        .modal-content { width: 90%; max-width: 500px; margin: 0; animation: slideIn 0.3s ease-out; }
+        .modal-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem; }
+        #pdf-content { display: none; }
+        .pdf-container {
+            width: 210mm;
+            min-height: 297mm;
+            padding: 15mm;
+            background-color: #1a1a2e;
+            color: #f0f0f0;
+            font-family: 'Poppins', sans-serif;
+        }
+        .pdf-header {
+            padding: 20px;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+        .pdf-header h1 {
+            color: #1a1a2e;
+            font-size: 28px;
+            margin: 0;
+            font-weight: 700;
+        }
+        .pdf-section h2 {
+            font-size: 22px;
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .pdf-main-goal p {
+            font-size: 14px;
+            line-height: 1.6;
+            background: rgba(0,0,0,0.2);
+            padding: 15px;
+            border-radius: 8px;
+        }
+        .pdf-step-item {
+            background: rgba(0,0,0,0.2);
+            border-left: 4px solid var(--secondary-color);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            page-break-inside: avoid;
+        }
+        .pdf-step-item.completed {
+            border-left-color: var(--success-color);
+            opacity: 0.7;
+        }
+        .pdf-step-item h3 {
+            font-size: 16px;
+            margin: 0 0 5px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .pdf-step-item .stars {
+            font-size: 16px;
+            color: var(--star-color);
+        }
+        .pdf-step-item p {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin: 0;
+            padding-left: 10px;
+            border-left: 2px solid rgba(255,255,255,0.1);
+        }
+        .pdf-footer {
+            text-align: center;
+            margin-top: 30px;
+            font-size: 10px;
+            color: var(--text-muted);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="background-animation"></div>
+
+    <div id="edit-modal-overlay" class="modal-overlay">
+        <div id="edit-modal" class="card modal-content">
+            <h3 data-i18n-key="editStepTitle">Schritt bearbeiten</h3>
+            <input type="text" id="edit-step-title" data-i18n-key="placeholderStepTitle">
+            <textarea id="edit-step-desc" data-i18n-key="placeholderStepDesc"></textarea>
+            <div class="importance-selector">
+                <label data-i18n-key="importanceLabel">Wichtigkeit:</label>
+                <div id="edit-stars" class="stars">
+                    <span data-value="1">★</span><span data-value="2">★</span><span data-value="3">★</span><span data-value="4">★</span><span data-value="5">★</span>
+                </div>
+                <input type="hidden" id="edit-step-importance">
+            </div>
+            <div class="modal-actions">
+                <button id="cancel-edit-button" class="btn" data-i18n-key="cancelButton">Abbrechen</button>
+                <button id="save-edit-button" class="btn btn-primary" data-i18n-key="saveButton">Speichern</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <header>
+            <div class="logo">
+                <h1 data-i18n-key="mainHeader">Roadtrip Ziele</h1>
+            </div>
+            <div class="header-controls">
+                <div id="language-switcher" class="language-switcher">
+                    <button data-lang="de" class="lang-btn active">DE</button>
+                    <button data-lang="en" class="lang-btn">EN</button>
+                    <button data-lang="es" class="lang-btn">ES</button>
+                </div>
+                <div class="file-operations">
+                    <button id="export-pdf-button" class="btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg>
+                        <span data-i18n-key="exportPdfButton">PDF Exportieren</span>
+                    </button>
+                    <button id="save-button" class="btn btn-primary">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 11.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 10.293V1.5a.5.5 0 0 0-1 0v8.793L5.354 8.146a.5.5 0 1 0-.708.708l3 3z"/></svg>
+                        <span data-i18n-key="savePlanButton">Plan speichern (.tiwut)</span>
+                    </button>
+                    <label for="file-loader" class="btn">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="M.5 9.9a.5.5 0 0 1 .5.5v2.5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1v-2.5a.5.5 0 0 1 1 0v2.5a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2v-2.5a.5.5 0 0 1 .5-.5z"/><path d="M7.646 1.146a.5.5 0 0 1 .708 0l3 3a.5.5 0 0 1-.708.708L8.5 2.707V11.5a.5.5 0 0 1-1 0V2.707L5.354 4.854a.5.5 0 1 1-.708-.708l3-3z"/></svg>
+                        <span data-i18n-key="loadPlanButton">Plan laden</span>
+                    </label>
+                    <input type="file" id="file-loader" accept=".tiwut" hidden>
+                </div>
+            </div>
+        </header>
+
+        <main>
+            <section class="card main-destination-card">
+                <h2 data-i18n-key="mainGoalHeader">Dein Hauptziel</h2>
+                <input type="text" id="main-destination-title" data-i18n-key="placeholderMainGoalTitle">
+                <textarea id="main-destination-desc" data-i18n-key="placeholderMainGoalDesc"></textarea>
+            </section>
+            <section class="steps-section">
+                <h2 data-i18n-key="plannedStepsHeader">Geplante Schritte & Ziele</h2>
+                <div id="steps-list"></div>
+            </section>
+            <section class="card add-step-form">
+                <h3 data-i18n-key="addStepHeader">Neuen Schritt hinzufügen</h3>
+                <input type="text" id="new-step-title" data-i18n-key="placeholderStepTitle">
+                <textarea id="new-step-desc" data-i18n-key="placeholderStepDesc"></textarea>
+                <div class="importance-selector">
+                    <label data-i18n-key="importanceLabel">Wichtigkeit:</label>
+                    <div id="new-stars" class="stars">
+                        <span data-value="1">★</span><span data-value="2">★</span><span data-value="3">★</span><span data-value="4">★</span><span data-value="5">★</span>
+                    </div>
+                    <input type="hidden" id="new-step-importance" value="3">
+                </div>
+                <button id="add-step-button" class="btn btn-primary" data-i18n-key="addButton">Hinzufügen</button>
+            </section>
+        </main>
+    </div>
+
+    <div id="pdf-content">
+        <div class="pdf-container">
+            <div class="pdf-header">
+                <h1 id="pdf-main-title">Roadtrip Plan</h1>
+            </div>
+            <div class="pdf-section pdf-main-goal">
+                <h2 data-i18n-key="mainGoalHeader">Hauptziel</h2>
+                <p id="pdf-main-desc">Beschreibung des Ziels...</p>
+            </div>
+            <div class="pdf-section pdf-steps-section">
+                <h2 data-i18n-key="plannedStepsHeader">Geplante Schritte</h2>
+                <div id="pdf-steps-list"></div>
+            </div>
+            <div class="pdf-footer">
+                <p>Generated by Roadtrip Goals Planner</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const translations = {
+                de: {
+                    pageTitle: "Roadtrip Ziele - Dein Planer", mainHeader: "Roadtrip Ziele", savePlanButton: "Plan speichern (.tiwut)",
+                    loadPlanButton: "Plan laden", mainGoalHeader: "Dein Hauptziel", placeholderMainGoalTitle: "Titel des Roadtrips (z.B. Küstentour Italien)",
+                    placeholderMainGoalDesc: "Beschreibe hier dein großes Abenteuer...", plannedStepsHeader: "Geplante Schritte & Ziele",
+                    addStepHeader: "Neuen Schritt hinzufügen", placeholderStepTitle: "Titel des Schritts (z.B. Unterkunft finden)",
+                    placeholderStepDesc: "Details zum Schritt...", importanceLabel: "Wichtigkeit:", addButton: "Hinzufügen",
+                    emptyState: "Noch keine Schritte geplant. Füge deinen ersten Schritt hinzu!", editStepTitle: "Schritt bearbeiten",
+                    cancelButton: "Abbrechen", saveButton: "Speichern", alertStepTitle: "Bitte gib einen Titel für den Schritt ein.",
+                    alertInvalidFile: "Die Datei hat ein ungültiges Format.", alertReadFileError: "Fehler beim Lesen der Datei. Ist es eine gültige .tiwut Datei?",
+                    stepCompleted: "Erledigt", stepDelete: "Löschen", stepEdit: "Bearbeiten", exportPdfButton: "PDF Exportieren",
+                },
+                en: {
+                    pageTitle: "Roadtrip Goals - Your Planner", mainHeader: "Roadtrip Goals", savePlanButton: "Save Plan (.tiwut)",
+                    loadPlanButton: "Load Plan", mainGoalHeader: "Your Main Destination", placeholderMainGoalTitle: "Title of the roadtrip (e.g., Italy Coast Tour)",
+                    placeholderMainGoalDesc: "Describe your great adventure here...", plannedStepsHeader: "Planned Steps & Goals",
+                    addStepHeader: "Add a New Step", placeholderStepTitle: "Title of the step (e.g., Find accommodation)",
+                    placeholderStepDesc: "Details about the step...", importanceLabel: "Importance:", addButton: "Add",
+                    emptyState: "No steps planned yet. Add your first step!", editStepTitle: "Edit Step",
+                    cancelButton: "Cancel", saveButton: "Save", alertStepTitle: "Please enter a title for the step.",
+                    alertInvalidFile: "The file has an invalid format.", alertReadFileError: "Error reading the file. Is it a valid .tiwut file?",
+                    stepCompleted: "Completed", stepDelete: "Delete", stepEdit: "Edit", exportPdfButton: "Export PDF",
+                },
+                es: {
+                    pageTitle: "Metas del Roadtrip - Tu Planificador", mainHeader: "Metas del Roadtrip", savePlanButton: "Guardar Plan (.tiwut)",
+                    loadPlanButton: "Cargar Plan", mainGoalHeader: "Tu Destino Principal", placeholderMainGoalTitle: "Título del roadtrip (ej. Tour por la costa de Italia)",
+                    placeholderMainGoalDesc: "Describe tu gran aventura aquí...", plannedStepsHeader: "Pasos y Metas Planificados",
+                    addStepHeader: "Añadir Nuevo Paso", placeholderStepTitle: "Título del paso (ej. Encontrar alojamiento)",
+                    placeholderStepDesc: "Detalles sobre el paso...", importanceLabel: "Importancia:", addButton: "Añadir",
+                    emptyState: "Aún no hay pasos planeados. ¡Añade tu primer paso!", editStepTitle: "Editar Paso",
+                    cancelButton: "Cancelar", saveButton: "Guardar", alertStepTitle: "Por favor, introduce un título para el paso.",
+                    alertInvalidFile: "El archivo tiene un formato no válido.", alertReadFileError: "Error al leer el archivo. ¿Es un archivo .tiwut válido?",
+                    stepCompleted: "Completado", stepDelete: "Eliminar", stepEdit: "Editar", exportPdfButton: "Exportar PDF",
+                },
+            };
+            let currentLang = 'de';
+            const applyTranslations = (lang) => {
+                currentLang = lang;
+                document.documentElement.lang = lang;
+                document.querySelectorAll('[data-i18n-key]').forEach(el => {
+                    const key = el.getAttribute('data-i18n-key');
+                    const translation = translations[lang][key];
+                    if (translation) {
+                        if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                            el.placeholder = translation;
+                        } else {
+                            el.innerText = translation;
+                        }
+                    }
+                });
+                document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.toggle('active', btn.dataset.lang === lang));
+                localStorage.setItem('preferredLanguage', lang);
+                renderSteps();
+            };
+            const detectAndSetLanguage = () => {
+                const preferredLang = localStorage.getItem('preferredLanguage');
+                const browserLang = navigator.language.split('-')[0];
+                const lang = preferredLang || (translations[browserLang] ? browserLang : 'en');
+                applyTranslations(lang);
+            };
+            const mainTitleInput = document.getElementById('main-destination-title');
+            const mainDescInput = document.getElementById('main-destination-desc');
+            const stepsList = document.getElementById('steps-list');
+            const newStepTitleInput = document.getElementById('new-step-title');
+            const newStepDescInput = document.getElementById('new-step-desc');
+            const newStepImportanceInput = document.getElementById('new-step-importance');
+            const addStepButton = document.getElementById('add-step-button');
+            const saveButton = document.getElementById('save-button');
+            const fileLoader = document.getElementById('file-loader');
+            const newStarsContainer = document.getElementById('new-stars');
+            const languageSwitcher = document.getElementById('language-switcher');
+            const editModalOverlay = document.getElementById('edit-modal-overlay');
+            const editStepTitleInput = document.getElementById('edit-step-title');
+            const editStepDescInput = document.getElementById('edit-step-desc');
+            const editStepImportanceInput = document.getElementById('edit-step-importance');
+            const editStarsContainer = document.getElementById('edit-stars');
+            const saveEditButton = document.getElementById('save-edit-button');
+            const cancelEditButton = document.getElementById('cancel-edit-button');
+            const exportPdfButton = document.getElementById('export-pdf-button');
+            let editingStepIndex = null;
+            let tripData = {
+                mainDestination: { title: '', description: '' },
+                steps: []
+            };
+            const renderSteps = () => {
+                stepsList.innerHTML = '';
+                if (tripData.steps.length === 0) {
+                    stepsList.innerHTML = `<p class="empty-state">${translations[currentLang].emptyState}</p>`;
+                }
+                tripData.steps.forEach((step, index) => {
+                    const stepElement = document.createElement('div');
+                    stepElement.className = `step-item ${step.completed ? 'completed' : ''}`;
+                    stepElement.dataset.index = index;
+                    const importanceStars = '★'.repeat(step.importance) + '☆'.repeat(5 - step.importance);
+                    stepElement.innerHTML = `
+                        <div class="step-header">
+                            <h4>${step.title}</h4>
+                            <div class="step-actions">
+                                <span class="step-importance" title="${translations[currentLang].importanceLabel} ${step.importance}/5">${importanceStars}</span>
+                                <label class="complete-label" title="${translations[currentLang].stepCompleted}">
+                                    <input type="checkbox" class="complete-checkbox" ${step.completed ? 'checked' : ''}>
+                                </label>
+                                <button class="action-btn edit-btn" title="${translations[currentLang].stepEdit}">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16"><path d="m13.498.795.149-.149a1.207 1.207 0 1 1 1.707 1.708l-.149.148a1.5 1.5 0 0 1-2.086.27l-7.5 7.5a.5.5 0 0 1-.354.146H.5a.5.5 0 0 1-.5-.5v-2.793a.5.5 0 0 1 .146-.353l7.5-7.5a1.5 1.5 0 0 1 2.086-.272zM12.207 2.5 13.5 3.793 14.793 2.5 13.5 1.207 12.207 2.5zm1.586 3L10.5 3.207 4 9.707V12h2.293l6.5-6.5-1.293-1.293z"/></svg>
+                                </button>
+                                <button class="action-btn delete-btn" title="${translations[currentLang].stepDelete}">✖</button>
+                            </div>
+                        </div>
+                        <p class="step-description">${step.description}</p>`;
+                    stepsList.appendChild(stepElement);
+                });
+            };
+            const updateStars = (container, hiddenInput, value) => {
+                const stars = container.querySelectorAll('span');
+                stars.forEach(star => star.classList.toggle('active', star.dataset.value <= value));
+                hiddenInput.value = value;
+            };
+            const addStep = () => {
+                const title = newStepTitleInput.value.trim();
+                if (!title) { alert(translations[currentLang].alertStepTitle); return; }
+                tripData.steps.push({ title: title, description: newStepDescInput.value.trim(), importance: parseInt(newStepImportanceInput.value), completed: false });
+                newStepTitleInput.value = ''; newStepDescInput.value = '';
+                updateStars(newStarsContainer, newStepImportanceInput, 3);
+                renderSteps();
+            };
+            const openEditModal = (index) => {
+                editingStepIndex = index;
+                const step = tripData.steps[index];
+                editStepTitleInput.value = step.title;
+                editStepDescInput.value = step.description;
+                updateStars(editStarsContainer, editStepImportanceInput, step.importance);
+                editModalOverlay.classList.add('visible');
+            };
+            const closeEditModal = () => {
+                editModalOverlay.classList.remove('visible');
+                editingStepIndex = null;
+            };
+            const saveEditedStep = () => {
+                if (editingStepIndex === null) return;
+                const title = editStepTitleInput.value.trim();
+                if (!title) { alert(translations[currentLang].alertStepTitle); return; }
+                tripData.steps[editingStepIndex] = { ...tripData.steps[editingStepIndex], title: title, description: editStepDescInput.value.trim(), importance: parseInt(editStepImportanceInput.value) };
+                renderSteps();
+                closeEditModal();
+            };
+            const saveTrip = () => {
+                tripData.mainDestination.title = mainTitleInput.value;
+                tripData.mainDestination.description = mainDescInput.value;
+                const dataStr = JSON.stringify(tripData, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                const fileName = tripData.mainDestination.title.replace(/[^a-z0-9]/gi, '_').toLowerCase() || 'mein_roadtrip';
+                a.download = `${fileName}.tiwut`;
+                a.click();
+                URL.revokeObjectURL(url);
+                a.remove();
+            };
+            const loadTrip = (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    try {
+                        const loadedData = JSON.parse(e.target.result);
+                        if (loadedData.mainDestination && Array.isArray(loadedData.steps)) {
+                            tripData = loadedData;
+                            mainTitleInput.value = tripData.mainDestination.title;
+                            mainDescInput.value = tripData.mainDestination.description;
+                            renderSteps();
+                        } else { alert(translations[currentLang].alertInvalidFile); }
+                    } catch (error) { alert(translations[currentLang].alertReadFileError); console.error(error); }
+                };
+                reader.readAsText(file);
+            };
+            const exportToPdf = () => {
+                const element = document.getElementById('pdf-content');
+                const pdfTitle = mainTitleInput.value || "Roadtrip Plan";
+                document.getElementById('pdf-main-title').innerText = pdfTitle;
+                document.getElementById('pdf-main-desc').innerText = mainDescInput.value || "Keine Beschreibung.";
+                const pdfStepsList = document.getElementById('pdf-steps-list');
+                pdfStepsList.innerHTML = '';
+                tripData.steps.forEach(step => {
+                    const stars = '★'.repeat(step.importance);
+                    const stepDiv = document.createElement('div');
+                    stepDiv.className = `pdf-step-item ${step.completed ? 'completed' : ''}`;
+                    stepDiv.innerHTML = `
+                        <h3>
+                            <span>${step.title}</span>
+                            <span class="stars">${stars}</span>
+                        </h3>
+                        <p>${step.description || 'Keine Details.'}</p>`;
+                    pdfStepsList.appendChild(stepDiv);
+                });
+                const opt = {
+                    margin: 0,
+                    filename: `${pdfTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`,
+                    image: { type: 'jpeg', quality: 0.98 },
+                    html2canvas: { scale: 2, backgroundColor: null, useCORS: true },
+                    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+                };
+                html2pdf().from(element).set(opt).save();
+            };
+            addStepButton.addEventListener('click', addStep);
+            saveButton.addEventListener('click', saveTrip);
+            exportPdfButton.addEventListener('click', exportToPdf);
+            fileLoader.addEventListener('change', loadTrip);
+            languageSwitcher.addEventListener('click', (e) => e.target.tagName === 'BUTTON' && applyTranslations(e.target.dataset.lang));
+            stepsList.addEventListener('click', (e) => {
+                const target = e.target;
+                const stepItem = target.closest('.step-item');
+                if (!stepItem) return;
+                const index = parseInt(stepItem.dataset.index);
+                if (target.closest('.delete-btn')) { tripData.steps.splice(index, 1); renderSteps(); } 
+                else if (target.closest('.edit-btn')) { openEditModal(index); } 
+                else if (target.classList.contains('complete-checkbox')) { tripData.steps[index].completed = target.checked; stepItem.classList.toggle('completed', target.checked); }
+            });
+            newStarsContainer.addEventListener('click', (e) => e.target.tagName === 'SPAN' && updateStars(newStarsContainer, newStepImportanceInput, e.target.dataset.value));
+            editStarsContainer.addEventListener('click', (e) => e.target.tagName === 'SPAN' && updateStars(editStarsContainer, editStepImportanceInput, e.target.dataset.value));
+            saveEditButton.addEventListener('click', saveEditedStep);
+            cancelEditButton.addEventListener('click', closeEditModal);
+            editModalOverlay.addEventListener('click', (e) => e.target === editModalOverlay && closeEditModal());
+            detectAndSetLanguage();
+            updateStars(newStarsContainer, newStepImportanceInput, 3);
+        });
+    </script>
+</body>
+</html>

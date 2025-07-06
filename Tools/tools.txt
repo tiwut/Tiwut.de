@@ -23,3 +23,4 @@ USA Roadtrip Planner
 x86 CPU Specifications
 GPU Specifications
 Memory (RAM) Specifications
+Roadtrip Goals
