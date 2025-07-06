@@ -15,7 +15,7 @@ const translations = {
     en: {
         privacyTitle: "Privacy Notice",
         privacyText1: "This is a peer-to-peer (P2P) file transfer service. When you use this service, you establish a direct, encrypted connection to the other user's browser.",
-        privacyText2: "Your files are **not** uploaded to a central server. They are sent directly from your device to the other device. For the connection to be established, temporary and anonymous connection data is exchanged via a signaling server (Firebase). This data is deleted once the connection is closed.",
+        privacyText2: "Your files are <strong>not</strong> uploaded to a central server. They are sent directly from your device to the other device. For the connection to be established, temporary and anonymous connection data is exchanged via a signaling server (Firebase). This data is deleted once the connection is closed.",
         privacyText3: "By clicking \"Accept\", you agree to this process.",
         accept: "Accept",
         mainTitle: "P2P File Transfer",
@@ -38,7 +38,7 @@ const translations = {
     de: {
         privacyTitle: "Datenschutzhinweis",
         privacyText1: "Dies ist ein Peer-to-Peer (P2P) Dateiübertragungsdienst. Bei der Nutzung wird eine direkte, verschlüsselte Verbindung zum Browser des anderen Benutzers hergestellt.",
-        privacyText2: "Ihre Dateien werden **nicht** auf einen zentralen Server hochgeladen. Sie werden direkt von Ihrem Gerät zum anderen Gerät gesendet. Um die Verbindung herzustellen, werden temporäre und anonyme Verbindungsdaten über einen Signalisierungsserver (Firebase) ausgetauscht. Diese Daten werden nach Beendigung der Verbindung gelöscht.",
+        privacyText2: "Ihre Dateien werden <strong>nicht</strong> auf einen zentralen Server hochgeladen. Sie werden direkt von Ihrem Gerät zum anderen Gerät gesendet. Um die Verbindung herzustellen, werden temporäre und anonyme Verbindungsdaten über einen Signalisierungsserver (Firebase) ausgetauscht. Diese Daten werden nach Beendigung der Verbindung gelöscht.",
         privacyText3: "Indem Sie auf \"Akzeptieren\" klicken, stimmen Sie diesem Prozess zu.",
         accept: "Akzeptieren",
         mainTitle: "P2P Dateiübertragung",
@@ -61,7 +61,7 @@ const translations = {
     es: {
         privacyTitle: "Aviso de Privacidad",
         privacyText1: "Este es un servicio de transferencia de archivos peer-to-peer (P2P). Al usar este servicio, estableces una conexión directa y encriptada con el navegador del otro usuario.",
-        privacyText2: "Tus archivos **no** se suben a un servidor central. Se envían directamente desde tu dispositivo al otro. Para establecer la conexión, se intercambian datos de conexión temporales y anónimos a través de un servidor de señalización (Firebase). Estos datos se eliminan una vez que se cierra la conexión.",
+        privacyText2: "Tus archivos <strong>no</strong> se suben a un servidor central. Se envían directamente desde tu dispositivo al otro. Para establecer la conexión, se intercambian datos de conexión temporales y anónimos a través de un servidor de señalización (Firebase). Estos datos se eliminan una vez que se cierra la conexión.",
         privacyText3: "Al hacer clic en \"Aceptar\", aceptas este proceso.",
         accept: "Aceptar",
         mainTitle: "Transferencia de Archivos P2P",
@@ -152,7 +152,7 @@ const setupTheme = () => {
             document.body.classList.remove('dark-mode');
             localStorage.setItem('theme', 'light');
         } else {
-            document.body.add('dark-mode');
+            document.body.classList.add('dark-mode');
             document.body.classList.remove('light-mode');
             localStorage.setItem('theme', 'dark');
         }
@@ -332,17 +332,17 @@ dom.fileInput.addEventListener('change', () => {
     const file = dom.fileInput.files[0];
     if (file) {
         dom.fileNameDisplay.textContent = file.name;
-        const sendBtn = document.createElement('button');
+        
+        let sendBtn = dom.fileSender.querySelector('#send-file-btn');
+        if (!sendBtn) {
+            sendBtn = document.createElement('button');
+            sendBtn.id = 'send-file-btn';
+            sendBtn.style.marginTop = '1rem';
+            sendBtn.style.backgroundColor = 'var(--primary-color)';
+            sendBtn.style.color = 'white';
+            dom.fileSender.appendChild(sendBtn);
+        }
         sendBtn.textContent = `Send ${file.name}`;
-        sendBtn.id = 'send-file-btn';
-        sendBtn.style.marginTop = '1rem';
-        sendBtn.style.backgroundColor = 'var(--primary-color)';
-        sendBtn.style.color = 'white';
-
-        const existingBtn = dom.fileSender.querySelector('#send-file-btn');
-        if (existingBtn) existingBtn.remove();
-        dom.fileSender.appendChild(sendBtn);
-
         sendBtn.onclick = () => {
             sendBtn.disabled = true;
             dom.progressContainer.classList.remove('hidden');
@@ -390,14 +390,14 @@ document.addEventListener('DOMContentLoaded', () => {
     setupTheme();
     setupLanguage();
 
+    dom.acceptPrivacyBtn.addEventListener('click', () => {
+        localStorage.setItem('privacyAccepted', 'true');
+        initializeApp();
+    });
+
     if (localStorage.getItem('privacyAccepted') === 'true') {
         initializeApp();
     } else {
         dom.privacyModal.classList.remove('hidden');
     }
-
-    dom.acceptPrivacyBtn.addEventListener('click', () => {
-        localStorage.setItem('privacyAccepted', 'true');
-        initializeApp();
-    });
 });
