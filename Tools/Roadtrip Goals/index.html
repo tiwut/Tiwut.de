@@ -55,7 +55,7 @@
             to { text-shadow: 0 0 20px var(--secondary-color), 0 0 30px var(--secondary-color); }
         }
         .header-controls { display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; }
-        .file-operations { display: flex; gap: 1rem; }
+        .file-operations { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: flex-end;}
         .language-switcher { display: flex; background: var(--card-background); border-radius: 8px; padding: 4px; }
         .lang-btn {
             background: transparent; border: none; color: var(--text-muted); padding: 0.3rem 0.8rem;
@@ -108,7 +108,7 @@
         .step-header h4 { font-size: 1.2rem; font-weight: 600; }
         .step-actions { display: flex; align-items: center; gap: 1rem; }
         .step-importance .star-display { color: var(--star-color); }
-        .step-description { color: var(--text-muted); font-weight: 300; padding-left: 0.5rem; border-left: 2px solid rgba(255, 255, 255, 0.1); }
+        .step-description { color: var(--text-muted); font-weight: 300; padding-left: 0.5rem; border-left: 2px solid rgba(255, 255, 255, 0.1); word-break: break-word; }
         .action-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; transition: transform 0.2s ease; padding: 0.2rem;}
         .action-btn:hover { transform: scale(1.2); }
         .delete-btn { color: var(--danger-color); }
@@ -123,77 +123,41 @@
         .modal-overlay.visible { display: flex; }
         .modal-content { width: 90%; max-width: 500px; margin: 0; animation: slideIn 0.3s ease-out; }
         .modal-actions { display: flex; justify-content: flex-end; gap: 1rem; margin-top: 1rem; }
-        #pdf-content { display: none; }
+        #pdf-content-wrapper { position: absolute; left: -9999px; top: 0; display: none; }
         .pdf-container {
-            width: 210mm;
-            min-height: 297mm;
-            padding: 15mm;
-            background-color: #1a1a2e;
-            color: #f0f0f0;
-            font-family: 'Poppins', sans-serif;
+            width: 210mm; padding: 15mm; background-color: #1a1a2e;
+            color: #f0f0f0; font-family: 'Poppins', sans-serif;
         }
         .pdf-header {
-            padding: 20px;
-            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
-            border-radius: 10px;
-            text-align: center;
-            margin-bottom: 25px;
+            padding: 20px; background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 10px; text-align: center; margin-bottom: 25px;
         }
-        .pdf-header h1 {
-            color: #1a1a2e;
-            font-size: 28px;
-            margin: 0;
-            font-weight: 700;
-        }
+        .pdf-header h1 { color: #1a1a2e; font-size: 28px; margin: 0; font-weight: 700; word-break: break-word; }
         .pdf-section h2 {
-            font-size: 22px;
-            color: var(--primary-color);
-            border-bottom: 2px solid var(--secondary-color);
-            padding-bottom: 10px;
-            margin-bottom: 15px;
+            font-size: 22px; color: var(--primary-color); border-bottom: 2px solid var(--secondary-color);
+            padding-bottom: 10px; margin-bottom: 15px;
         }
         .pdf-main-goal p {
-            font-size: 14px;
-            line-height: 1.6;
-            background: rgba(0,0,0,0.2);
-            padding: 15px;
-            border-radius: 8px;
+            font-size: 14px; line-height: 1.6; background: rgba(0,0,0,0.2);
+            padding: 15px; border-radius: 8px; color: #f0f0f0; white-space: pre-wrap; word-break: break-word;
         }
         .pdf-step-item {
-            background: rgba(0,0,0,0.2);
-            border-left: 4px solid var(--secondary-color);
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-            page-break-inside: avoid;
+            background: rgba(0,0,0,0.2); border-left: 4px solid var(--secondary-color);
+            padding: 15px; border-radius: 8px; margin-bottom: 15px; page-break-inside: avoid;
         }
-        .pdf-step-item.completed {
-            border-left-color: var(--success-color);
-            opacity: 0.7;
-        }
+        .pdf-step-item.completed { border-left-color: var(--success-color); opacity: 0.7; }
         .pdf-step-item h3 {
-            font-size: 16px;
-            margin: 0 0 5px 0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
+            font-size: 16px; margin: 0 0 5px 0; display: flex;
+            justify-content: space-between; align-items: center; color: #f0f0f0; word-break: break-word;
         }
-        .pdf-step-item .stars {
-            font-size: 16px;
-            color: var(--star-color);
-        }
+        .pdf-step-item .stars { font-size: 16px; color: var(--star-color); flex-shrink: 0; margin-left: 10px;}
         .pdf-step-item p {
-            font-size: 12px;
-            color: var(--text-muted);
-            margin: 0;
-            padding-left: 10px;
-            border-left: 2px solid rgba(255,255,255,0.1);
+            font-size: 12px; color: var(--text-muted); margin: 0; padding-left: 10px;
+            border-left: 2px solid rgba(255,255,255,0.1); white-space: pre-wrap; word-break: break-word;
         }
         .pdf-footer {
-            text-align: center;
-            margin-top: 30px;
-            font-size: 10px;
-            color: var(--text-muted);
+            text-align: center; margin-top: 30px; padding-top: 15px;
+            font-size: 10px; color: var(--text-muted); border-top: 1px solid var(--card-border);
         }
     </style>
 </head>
@@ -275,17 +239,17 @@
         </main>
     </div>
 
-    <div id="pdf-content">
+    <div id="pdf-content-wrapper">
         <div class="pdf-container">
             <div class="pdf-header">
-                <h1 id="pdf-main-title">Roadtrip Plan</h1>
+                <h1 id="pdf-main-title"></h1>
             </div>
             <div class="pdf-section pdf-main-goal">
-                <h2 data-i18n-key="mainGoalHeader">Hauptziel</h2>
-                <p id="pdf-main-desc">Beschreibung des Ziels...</p>
+                <h2 id="pdf-main-goal-header"></h2>
+                <p id="pdf-main-desc"></p>
             </div>
             <div class="pdf-section pdf-steps-section">
-                <h2 data-i18n-key="plannedStepsHeader">Geplante Schritte</h2>
+                <h2 id="pdf-steps-header"></h2>
                 <div id="pdf-steps-list"></div>
             </div>
             <div class="pdf-footer">
@@ -299,8 +263,8 @@
             const translations = {
                 de: {
                     pageTitle: "Roadtrip Ziele - Dein Planer", mainHeader: "Roadtrip Ziele", savePlanButton: "Plan speichern (.tiwut)",
-                    loadPlanButton: "Plan laden", mainGoalHeader: "Dein Hauptziel", placeholderMainGoalTitle: "Titel des Roadtrips (z.B. Küstentour Italien)",
-                    placeholderMainGoalDesc: "Beschreibe hier dein großes Abenteuer...", plannedStepsHeader: "Geplante Schritte & Ziele",
+                    loadPlanButton: "Plan laden", mainGoalHeader: "Dein Hauptziel", plannedStepsHeader: "Geplante Schritte & Ziele",
+                    placeholderMainGoalTitle: "Titel des Roadtrips (z.B. Küstentour Italien)", placeholderMainGoalDesc: "Beschreibe hier dein großes Abenteuer...",
                     addStepHeader: "Neuen Schritt hinzufügen", placeholderStepTitle: "Titel des Schritts (z.B. Unterkunft finden)",
                     placeholderStepDesc: "Details zum Schritt...", importanceLabel: "Wichtigkeit:", addButton: "Hinzufügen",
                     emptyState: "Noch keine Schritte geplant. Füge deinen ersten Schritt hinzu!", editStepTitle: "Schritt bearbeiten",
@@ -310,8 +274,8 @@
                 },
                 en: {
                     pageTitle: "Roadtrip Goals - Your Planner", mainHeader: "Roadtrip Goals", savePlanButton: "Save Plan (.tiwut)",
-                    loadPlanButton: "Load Plan", mainGoalHeader: "Your Main Destination", placeholderMainGoalTitle: "Title of the roadtrip (e.g., Italy Coast Tour)",
-                    placeholderMainGoalDesc: "Describe your great adventure here...", plannedStepsHeader: "Planned Steps & Goals",
+                    loadPlanButton: "Load Plan", mainGoalHeader: "Your Main Destination", plannedStepsHeader: "Planned Steps & Goals",
+                    placeholderMainGoalTitle: "Title of the roadtrip (e.g., Italy Coast Tour)", placeholderMainGoalDesc: "Describe your great adventure here...",
                     addStepHeader: "Add a New Step", placeholderStepTitle: "Title of the step (e.g., Find accommodation)",
                     placeholderStepDesc: "Details about the step...", importanceLabel: "Importance:", addButton: "Add",
                     emptyState: "No steps planned yet. Add your first step!", editStepTitle: "Edit Step",
@@ -321,8 +285,8 @@
                 },
                 es: {
                     pageTitle: "Metas del Roadtrip - Tu Planificador", mainHeader: "Metas del Roadtrip", savePlanButton: "Guardar Plan (.tiwut)",
-                    loadPlanButton: "Cargar Plan", mainGoalHeader: "Tu Destino Principal", placeholderMainGoalTitle: "Título del roadtrip (ej. Tour por la costa de Italia)",
-                    placeholderMainGoalDesc: "Describe tu gran aventura aquí...", plannedStepsHeader: "Pasos y Metas Planificados",
+                    loadPlanButton: "Cargar Plan", mainGoalHeader: "Tu Destino Principal", plannedStepsHeader: "Pasos y Metas Planificados",
+                    placeholderMainGoalTitle: "Título del roadtrip (ej. Tour por la costa de Italia)", placeholderMainGoalDesc: "Describe tu gran aventura aquí...",
                     addStepHeader: "Añadir Nuevo Paso", placeholderStepTitle: "Título del paso (ej. Encontrar alojamiento)",
                     placeholderStepDesc: "Detalles sobre el paso...", importanceLabel: "Importancia:", addButton: "Añadir",
                     emptyState: "Aún no hay pasos planeados. ¡Añade tu primer paso!", editStepTitle: "Editar Paso",
@@ -473,32 +437,37 @@
                 reader.readAsText(file);
             };
             const exportToPdf = () => {
-                const element = document.getElementById('pdf-content');
+                const wrapper = document.getElementById('pdf-content-wrapper');
+                const elementToPrint = wrapper.querySelector('.pdf-container');
                 const pdfTitle = mainTitleInput.value || "Roadtrip Plan";
+                
                 document.getElementById('pdf-main-title').innerText = pdfTitle;
-                document.getElementById('pdf-main-desc').innerText = mainDescInput.value || "Keine Beschreibung.";
+                document.getElementById('pdf-main-goal-header').innerText = translations[currentLang].mainGoalHeader;
+                document.getElementById('pdf-steps-header').innerText = translations[currentLang].plannedStepsHeader;
+                document.getElementById('pdf-main-desc').innerText = mainDescInput.value || " ";
                 const pdfStepsList = document.getElementById('pdf-steps-list');
                 pdfStepsList.innerHTML = '';
                 tripData.steps.forEach(step => {
                     const stars = '★'.repeat(step.importance);
                     const stepDiv = document.createElement('div');
                     stepDiv.className = `pdf-step-item ${step.completed ? 'completed' : ''}`;
-                    stepDiv.innerHTML = `
-                        <h3>
-                            <span>${step.title}</span>
-                            <span class="stars">${stars}</span>
-                        </h3>
-                        <p>${step.description || 'Keine Details.'}</p>`;
+                    stepDiv.innerHTML = `<h3><span>${step.title}</span><span class="stars">${stars}</span></h3><p>${step.description || ' '}</p>`;
                     pdfStepsList.appendChild(stepDiv);
                 });
+                
+                wrapper.style.display = 'block';
+
                 const opt = {
                     margin: 0,
                     filename: `${pdfTitle.replace(/[^a-z0-9]/gi, '_').toLowerCase()}.pdf`,
                     image: { type: 'jpeg', quality: 0.98 },
-                    html2canvas: { scale: 2, backgroundColor: null, useCORS: true },
+                    html2canvas: { scale: 2, useCORS: true },
                     jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
                 };
-                html2pdf().from(element).set(opt).save();
+                
+                html2pdf().from(elementToPrint).set(opt).save().then(() => {
+                    wrapper.style.display = 'none';
+                });
             };
             addStepButton.addEventListener('click', addStep);
             saveButton.addEventListener('click', saveTrip);
