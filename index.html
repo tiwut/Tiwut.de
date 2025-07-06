@@ -41,32 +41,49 @@
             --text-color-dark: #a0a0a0;
             --container-bg: rgba(10, 20, 35, 0.5);
             --glow-color: rgba(0, 229, 255, 0.5);
-            --mouse-x: 0; --mouse-y: 0;
         }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 15px 5px var(--glow-color), inset 0 0 10px 2px var(--glow-color); } 50% { box-shadow: 0 0 25px 10px var(--glow-color), inset 0 0 15px 4px var(--glow-color); } }
         @keyframes text-glow { 0%, 100% { text-shadow: 0 0 4px #fff, 0 0 10px var(--primary-neon), 0 0 18px var(--primary-neon); } 50% { text-shadow: 0 0 6px #fff, 0 0 14px var(--primary-neon), 0 0 22px var(--primary-neon); } }
-        @keyframes slideInUp { from { opacity: 0; transform: translateY(60px); } to { opacity: 1; transform: translateY(0); } }
         @keyframes shockwave { 0% { transform: scale(0); opacity: 0.7; } 100% { transform: scale(2.5); opacity: 0; } }
         
         @keyframes floatAnimation {
             0%   { transform: translate(0, 0) rotate(0deg); }
-            25%  { transform: translate(5px, -8px) rotate(1.5deg); }
-            50%  { transform: translate(-4px, 0px) rotate(-1.5deg); }
-            75%  { transform: translate(3px, 5px) rotate(1deg); }
+            25%  { transform: translate(4px, -6px) rotate(1deg); }
+            50%  { transform: translate(-3px, 0px) rotate(-1deg); }
+            75%  { transform: translate(2px, 4px) rotate(0.5deg); }
             100% { transform: translate(0, 0) rotate(0deg); }
         }
 
+        @keyframes pageEntryAnimation {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @keyframes pageExitAnimation {
+            to {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+        }
+        
         body {
             font-family: 'Poppins', 'Segoe UI', sans-serif; margin: 0; padding: 0;
             display: flex; justify-content: center; align-items: center;
-            min-height: 100vh; text-align: center; position: relative; overflow-x: hidden;
+            min-height: 100vh; text-align: center; position: relative; overflow: hidden;
             background-color: var(--background-color); color: var(--text-color);
         }
 
         .background-wrapper {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
+            transition: filter 0.5s ease;
         }
         
         .background-video {
@@ -93,7 +110,12 @@
             width: 100%;
             padding: 2rem;
             box-sizing: border-box;
-            transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+            transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), filter 0.5s ease;
+            animation: pageEntryAnimation 0.6s cubic-bezier(0.390, 0.575, 0.565, 1.000) forwards;
+        }
+
+        #content-layout.page-exit {
+            animation: pageExitAnimation 0.5s cubic-bezier(0.470, 0.000, 0.745, 0.715) forwards;
         }
         
         .hud-panel {
@@ -105,8 +127,6 @@
             padding: 2.5rem;
             width: 90%;
             box-sizing: border-box;
-            opacity: 0;
-            animation: slideInUp 0.8s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
         }
         .hud-panel:hover {
             box-shadow: 0 0 25px 8px rgba(0,0,0,0.5), 0 0 20px 5px var(--glow-color);
@@ -114,11 +134,9 @@
         
         #main-hub {
             max-width: 600px;
-            animation-delay: 0.2s;
         }
         #link-grid {
             max-width: 700px;
-            animation-delay: 0.4s;
         }
 
         h1 {
@@ -154,7 +172,7 @@
             text-shadow: 0 0 5px rgba(0, 229, 255, 0.5);
             box-shadow: inset 0 0 8px 0 rgba(0, 229, 255, 0.3);
             clip-path: polygon(0 10px, 10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%);
-            animation: floatAnimation 10s ease-in-out infinite;
+            animation: floatAnimation 12s ease-in-out infinite;
         }
         .action-button::after {
             content: ''; position: absolute; top: 50%; left: 50%; width: 100%; padding-top: 100%;
@@ -172,15 +190,15 @@
             animation-play-state: paused;
         }
 
-        .button-wrapper .action-button:nth-child(1) { animation-duration: 9s; animation-delay: -2s; }
-        .button-wrapper .action-button:nth-child(2) { animation-duration: 11s; animation-delay: -4s; }
-        .button-wrapper .action-button:nth-child(3) { animation-duration: 10.5s; animation-delay: -1s; }
-        .button-wrapper .action-button:nth-child(4) { animation-duration: 12s; animation-delay: -5s; }
-        .button-wrapper .action-button:nth-child(5) { animation-duration: 9.5s; animation-delay: -3s; }
-        .button-wrapper .action-button:nth-child(6) { animation-duration: 11.5s; animation-delay: -6s; }
-        .button-wrapper .action-button:nth-child(7) { animation-duration: 10s; animation-delay: 0s; }
-        .button-wrapper .action-button:nth-child(8) { animation-duration: 12.5s; animation-delay: -2.5s; }
-        .button-wrapper .action-button:nth-child(9) { animation-duration: 9.8s; animation-delay: -4.5s; }
+        .button-wrapper .action-button:nth-child(1) { animation-duration: 11s; animation-delay: -2s; }
+        .button-wrapper .action-button:nth-child(2) { animation-duration: 13s; animation-delay: -4s; }
+        .button-wrapper .action-button:nth-child(3) { animation-duration: 12.5s; animation-delay: -1s; }
+        .button-wrapper .action-button:nth-child(4) { animation-duration: 14s; animation-delay: -5s; }
+        .button-wrapper .action-button:nth-child(5) { animation-duration: 11.5s; animation-delay: -3s; }
+        .button-wrapper .action-button:nth-child(6) { animation-duration: 13.5s; animation-delay: -6s; }
+        .button-wrapper .action-button:nth-child(7) { animation-duration: 12s; animation-delay: 0s; }
+        .button-wrapper .action-button:nth-child(8) { animation-duration: 14.5s; animation-delay: -2.5s; }
+        .button-wrapper .action-button:nth-child(9) { animation-duration: 11.8s; animation-delay: -4.5s; }
         
         .content-blurred #content-layout, .content-blurred .background-wrapper { filter: blur(8px) brightness(0.5); pointer-events: none; transition: filter 0.5s ease; }
         .warning-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s; backdrop-filter: blur(5px); }
@@ -361,17 +379,41 @@
             if (window.matchMedia("(pointer: fine)").matches) {
                 document.body.style.perspective = '1500px';
                 document.addEventListener('mousemove', e => {
-                    const x = (e.clientX / window.innerWidth) - 0.5;
-                    const y = (e.clientY / window.innerHeight) - 0.5;
-                    
-                    contentLayout.style.transform = `rotateY(calc(${x} * 8deg)) rotateX(calc(${y} * -8deg))`;
+                    if (!contentLayout.classList.contains('page-exit')) {
+                        const x = (e.clientX / window.innerWidth) - 0.5;
+                        const y = (e.clientY / window.innerHeight) - 0.5;
+                        contentLayout.style.transform = `rotateY(calc(${x} * 8deg)) rotateX(calc(${y} * -8deg))`;
+                    }
                 });
             }
         }
         
+        function initPageExitAnimation() {
+            const actionButtons = document.querySelectorAll('#content-layout .action-button');
+            actionButtons.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    const destination = this.href;
+                    if (destination && destination !== window.location.href + "#") {
+                        event.preventDefault();
+                        contentLayout.classList.add('page-exit');
+                        setTimeout(() => {
+                            window.location.href = destination;
+                        }, 500);
+                    }
+                });
+            });
+        }
+
+        window.addEventListener('pageshow', function(event) {
+            if (event.persisted) {
+                contentLayout.classList.remove('page-exit');
+            }
+        });
+
         function init() {
             initDesktopInteractions();
-            updateVisitorCount(); 
+            updateVisitorCount();
+            initPageExitAnimation();
         }
         init();
     });
