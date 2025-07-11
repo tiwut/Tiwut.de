@@ -47,32 +47,9 @@
         @keyframes pulse-glow { 0%, 100% { box-shadow: 0 0 15px 5px var(--glow-color), inset 0 0 10px 2px var(--glow-color); } 50% { box-shadow: 0 0 25px 10px var(--glow-color), inset 0 0 15px 4px var(--glow-color); } }
         @keyframes text-glow { 0%, 100% { text-shadow: 0 0 4px #fff, 0 0 10px var(--primary-neon), 0 0 18px var(--primary-neon); } 50% { text-shadow: 0 0 6px #fff, 0 0 14px var(--primary-neon), 0 0 22px var(--primary-neon); } }
         @keyframes shockwave { 0% { transform: scale(0); opacity: 0.7; } 100% { transform: scale(2.5); opacity: 0; } }
-        
-        @keyframes floatAnimation {
-            0%   { transform: translate(0, 0) rotate(0deg); }
-            25%  { transform: translate(4px, -6px) rotate(1deg); }
-            50%  { transform: translate(-3px, 0px) rotate(-1deg); }
-            75%  { transform: translate(2px, 4px) rotate(0.5deg); }
-            100% { transform: translate(0, 0) rotate(0deg); }
-        }
-
-        @keyframes pageEntryAnimation {
-            from {
-                transform: scale(0.9);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1);
-                opacity: 1;
-            }
-        }
-
-        @keyframes pageExitAnimation {
-            to {
-                transform: scale(0.9);
-                opacity: 0;
-            }
-        }
+        @keyframes floatAnimation { 0% { transform: translate(0, 0) rotate(0deg); } 25% { transform: translate(4px, -6px) rotate(1deg); } 50% { transform: translate(-3px, 0px) rotate(-1deg); } 75% { transform: translate(2px, 4px) rotate(0.5deg); } 100% { transform: translate(0, 0) rotate(0deg); } }
+        @keyframes pageEntryAnimation { from { transform: scale(0.9); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+        @keyframes pageExitAnimation { to { transform: scale(0.9); opacity: 0; } }
         
         body {
             font-family: 'Poppins', 'Segoe UI', sans-serif; margin: 0; padding: 0;
@@ -81,88 +58,35 @@
             background-color: var(--background-color); color: var(--text-color);
         }
 
-        .background-wrapper {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1;
-            transition: filter 0.5s ease;
-        }
+        .background-wrapper { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; transition: filter 0.5s ease; }
+        .background-video { position: absolute; top: 50%; left: 50%; min-width: 100%; min-height: 100%; width: auto; height: auto; transform: translateX(-50%) translateY(-50%); z-index: 1; object-fit: cover; }
         
-        .background-video {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            min-width: 100%;
-            min-height: 100%;
-            width: auto;
-            height: auto;
-            transform: translateX(-50%) translateY(-50%);
-            z-index: 1;
-            object-fit: cover;
-        }
-
         #content-layout {
-            position: relative;
-            z-index: 10;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            gap: 2rem;
-            width: 100%;
-            padding: 2rem;
-            box-sizing: border-box;
+            position: relative; z-index: 10; display: flex; flex-direction: column; align-items: center; justify-content: center;
+            gap: 2rem; width: 100%; padding: 2rem; box-sizing: border-box;
             transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1), filter 0.5s ease;
             animation: pageEntryAnimation 0.6s cubic-bezier(0.390, 0.575, 0.565, 1.000) forwards;
         }
-
-        #content-layout.page-exit {
-            animation: pageExitAnimation 0.5s cubic-bezier(0.470, 0.000, 0.745, 0.715) forwards;
-        }
+        #content-layout.page-exit { animation: pageExitAnimation 0.5s cubic-bezier(0.470, 0.000, 0.745, 0.715) forwards; }
         
         .hud-panel {
-            background-color: var(--container-bg);
-            border: 2px solid var(--primary-neon);
+            background-color: var(--container-bg); border: 2px solid var(--primary-neon);
             backdrop-filter: blur(5px); -webkit-backdrop-filter: blur(5px);
             clip-path: polygon(0 25px, 25px 0, 100% 0, 100% calc(100% - 25px), calc(100% - 25px) 100%, 0 100%);
             box-shadow: 0 0 15px 5px rgba(0,0,0,0.5), 0 0 10px 2px var(--glow-color);
-            padding: 2.5rem;
-            width: 90%;
-            box-sizing: border-box;
+            padding: 2.5rem; width: 90%; box-sizing: border-box;
         }
-        .hud-panel:hover {
-            box-shadow: 0 0 25px 8px rgba(0,0,0,0.5), 0 0 20px 5px var(--glow-color);
-        }
+        .hud-panel:hover { box-shadow: 0 0 25px 8px rgba(0,0,0,0.5), 0 0 20px 5px var(--glow-color); }
         
-        #main-hub {
-            max-width: 600px;
-        }
-        #link-grid {
-            max-width: 700px;
-        }
+        #main-hub { max-width: 600px; }
+        #link-grid { max-width: 700px; }
 
-        h1 {
-            font-family: 'Orbitron', sans-serif; font-size: 3.5rem; font-weight: 800; margin-top:0; margin-bottom: 2.5rem; letter-spacing: 2px;
-            color: #fff;
-            animation: text-glow 2.5s ease-in-out infinite;
-        }
-        
-        #link-grid h2 { 
-            color: var(--text-color); 
-            font-weight: 400; 
-            margin-top: 0;
-            margin-bottom: 2rem;
-        }
-        
-        #visitorCounter {
-            color: var(--text-color-dark); font-size: 1.1rem; 
-            margin-top: 2.5rem;
-            margin-bottom: 0;
-            display: inline-flex; align-items: center; gap: 0.7rem; font-weight: 600;
-        }
+        h1 { font-family: 'Orbitron', sans-serif; font-size: 3.5rem; font-weight: 800; margin: 0 0 2.5rem 0; letter-spacing: 2px; color: #fff; animation: text-glow 2.5s ease-in-out infinite; }
+        #link-grid h2 { color: var(--text-color); font-weight: 400; margin: 0 0 2rem 0; }
+        #visitorCounter { color: var(--text-color-dark); font-size: 1.1rem; margin-top: 2.5rem; margin-bottom: 0; display: inline-flex; align-items: center; gap: 0.7rem; font-weight: 600; }
         #visitCount { color: var(--accent-neon); }
 
-        .button-wrapper { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; }
-        #main-hub .button-wrapper { margin-top: 0; }
-        #link-grid .button-wrapper { margin-top: 0; }
+        .button-wrapper { display: flex; justify-content: center; gap: 1.5rem; flex-wrap: wrap; margin-top: 0; }
         
         .action-button {
             position: relative; color: var(--text-color); background: transparent;
@@ -182,8 +106,7 @@
         }
         .action-button:active::after { animation: shockwave 0.5s ease-out; }
         .action-button:hover, .action-button:focus {
-            background-color: var(--glow-color); color: #fff;
-            border-color: var(--accent-neon);
+            background-color: var(--glow-color); color: #fff; border-color: var(--accent-neon);
             box-shadow: 0 0 20px 5px var(--glow-color), inset 0 0 15px 2px var(--glow-color);
             text-shadow: 0 0 8px var(--accent-neon);
             transform: translateY(-5px) scale(1.03);
@@ -200,14 +123,12 @@
         .button-wrapper .action-button:nth-child(8) { animation-duration: 14.5s; animation-delay: -2.5s; }
         .button-wrapper .action-button:nth-child(9) { animation-duration: 11.8s; animation-delay: -4.5s; }
         
-        .content-blurred #content-layout, .content-blurred .background-wrapper { filter: blur(8px) brightness(0.5); pointer-events: none; transition: filter 0.5s ease; }
+        .content-blurred #content-layout, .content-blurred .background-wrapper { filter: blur(8px) brightness(0.5); pointer-events: none; }
         .warning-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); display: flex; justify-content: center; align-items: center; z-index: 1000; opacity: 0; visibility: hidden; transition: opacity 0.4s ease, visibility 0.4s; backdrop-filter: blur(5px); }
         .warning-overlay.active { opacity: 1; visibility: visible; }
         .warning-modal {
-            color: var(--text-color); padding: 2.5rem 2rem;
-            background-color: var(--container-bg);
-            border: 2px solid var(--secondary-neon);
-            box-shadow: 0 0 25px 5px rgba(255, 0, 193, 0.3);
+            color: var(--text-color); padding: 2.5rem 2rem; background-color: var(--container-bg);
+            border: 2px solid var(--secondary-neon); box-shadow: 0 0 25px 5px rgba(255, 0, 193, 0.3);
             clip-path: polygon(0 25px, 25px 0, 100% 0, 100% calc(100% - 25px), calc(100% - 25px) 100%, 0 100%);
             text-align: center; max-width: 500px; width: 90%;
             transform: scale(0.9) translateY(20px); opacity: 0;
@@ -222,6 +143,16 @@
         #privacyOverlay .warning-modal h2 { color: var(--primary-neon); text-shadow: 0 0 10px var(--primary-neon); }
         #privacyOverlay .warning-modal .action-button { border-color: var(--primary-neon); text-shadow: 0 0 5px var(--primary-neon); box-shadow: inset 0 0 8px 0 rgba(0, 229, 255, 0.3); }
 
+        #reopenWarningsButton {
+            position: fixed; bottom: 15px; right: 15px; z-index: 999;
+            background-color: var(--container-bg); color: var(--text-color-dark);
+            border: 1px solid var(--primary-neon); width: 40px; height: 40px; border-radius: 50%;
+            font-size: 1.2rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+            transition: all 0.3s ease; box-shadow: 0 0 10px 2px rgba(0,0,0,0.5), inset 0 0 5px 1px rgba(0, 229, 255, 0.2);
+            opacity: 1;
+        }
+        #reopenWarningsButton:hover { color: var(--primary-neon); transform: scale(1.1); box-shadow: 0 0 15px 3px var(--glow-color); }
+        body.content-blurred ~ #reopenWarningsButton { opacity: 0; pointer-events: none; }
 
         @media (max-width: 768px) {
             h1 { font-size: 2.5rem; letter-spacing: 1px; }
@@ -230,23 +161,20 @@
             .button-wrapper { gap: 1.2rem; }
             .action-button { padding: 0.9rem 1.8rem; font-size: 1rem; }
         }
-
         @media (max-width: 480px) {
             h1 { font-size: 2rem; }
             #content-layout { gap: 1rem; padding: 1rem; }
             .hud-panel { padding: 2rem 1rem; }
             .button-wrapper { flex-direction: column; gap: 1rem; width: 100%; align-items: center; }
-            .action-button { width: 90%; max-width: 400px; box-sizing: border-box; min-width: unset; padding: 1rem; }
+            .action-button { width: 90%; max-width: 400px; box-sizing: border-box; padding: 1rem; }
         }
     </style>
 </head>
 <body>
-
     <div class="background-wrapper">
         <video autoplay loop muted playsinline class="background-video">
             <source src="main.webm" type="video/webm">
             <source src="main.mp4" type="video/mp4">
-            Your browser does not support the video tag.
         </video>
     </div>
 
@@ -295,9 +223,33 @@
         </div>
     </div>
 
+    <button id="reopenWarningsButton"><i class="fa-solid fa-circle-info"></i></button>
 
     <script>
     document.addEventListener('DOMContentLoaded', function() {
+        const body = document.body;
+        const contentLayout = document.getElementById('content-layout');
+        const elements = {
+            mainTitle: document.getElementById('mainTitle'),
+            enterButton: document.getElementById('enterButton'),
+            publisherInfo: document.getElementById('publisherInfo'),
+            searchButton: document.getElementById('searchButton'),
+            githubButton: document.getElementById('githubButton'),
+            learningButton: document.getElementById('learningButton'),
+            chatButton: document.getElementById('chatButton'),
+            counterLabel: document.getElementById('counterLabel'),
+            visitCount: document.getElementById('visitCount'),
+            warningOverlay: document.getElementById('warningOverlay'),
+            acceptWarningButton: document.getElementById('acceptWarningButton'),
+            warningTitle: document.getElementById('warningTitle'),
+            warningText: document.getElementById('warningText'),
+            privacyOverlay: document.getElementById('privacyOverlay'),
+            acceptPrivacyButton: document.getElementById('acceptPrivacyButton'),
+            privacyTitle: document.getElementById('privacyTitle'),
+            privacyText: document.getElementById('privacyText'),
+            reopenWarningsButton: document.getElementById('reopenWarningsButton')
+        };
+        
         const firebaseConfig = {
             apiKey: "AIzaSyAAggRe6Iq8m10rP1TFAdBy58Ju-A7wjdc",
             authDomain: "count-tiwut.firebaseapp.com",
@@ -306,108 +258,35 @@
             messagingSenderId: "54794946558",
             appId: "1:54794946558:web:4f663c09d05ff1fa8862af"
         };
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
 
+        const translations = {
+            en: { pageTitle: "Welcome to Tiwut", mainTitle: "Welcome to Tiwut", enterButton: "Tiwut-Advanced", publisherInfo: "Published by Tiwut", counterLabel: "Visitors: ", modalTitle: "Important Notice", modalText: "This website is intended for private and family purposes only!!!<br>By accepting, you confirm this.", modalButton: "Accept and Continue", privacyTitle: "Privacy & Data Notice", privacyText: "This site uses external services (Google Fonts, Google Firebase) which may process your IP address for functional purposes, like our anonymous visitor counter. We also use local storage to save your consent. By accepting, you agree to this necessary data processing.", privacyButton: "I Understand and Accept", searchButton: "Search", githubButton: "GitHub", learningButton: "Learning", chatButton: "Chat", reopenButtonTitle: "Review Notices" }, 
+            de: { pageTitle: "Willkommen bei Tiwut", mainTitle: "Willkommen bei Tiwut", enterButton: "Tiwut-Advanced", publisherInfo: "Veröffentlicht von Tiwut", counterLabel: "Besucher: ", modalTitle: "Wichtiger Hinweis", modalText: "Diese Webseite ist ausschließlich für private und familiäre Zwecke bestimmt!!!<br>Mit der Annahme bestätigen Sie dies.", modalButton: "Akzeptieren und Fortfahren", privacyTitle: "Datenschutzhinweis", privacyText: "Diese Seite nutzt externe Dienste (Google Fonts, Google Firebase), die Ihre IP-Adresse für funktionale Zwecke, wie unseren anonymen Besucherzähler, verarbeiten können. Wir nutzen auch den lokalen Speicher, um Ihre Zustimmung zu speichern. Mit der Annahme stimmen Sie dieser notwendigen Datenverarbeitung zu.", privacyButton: "Ich verstehe und akzeptiere", searchButton: "Suche", githubButton: "GitHub", learningButton: "Lernen", chatButton: "Chat", reopenButtonTitle: "Hinweise erneut anzeigen" }, 
+            es: { pageTitle: "Bienvenido a Tiwut", mainTitle: "Bienvenido a Tiwut", enterButton: "Tiwut-Advanced", publisherInfo: "Publicado por Tiwut", counterLabel: "Visitantes: ", modalTitle: "Aviso Importante", modalText: "¡¡¡Este sitio web está destinado exclusivamente a fines privados y familiares!!!<br>Al aceptar, usted confirma esto.", modalButton: "Aceptar y Continuar", privacyTitle: "Aviso de Privacidad y Datos", privacyText: "Este sitio utiliza servicios externos (Google Fonts, Google Firebase) que pueden procesar su dirección IP para fines funcionales, como nuestro contador de visitas anónimo. También utilizamos el almacenamiento local para guardar su consentimiento. Al aceptar, usted aprueba este tratamiento de datos necesario.", privacyButton: "Entiendo y Acepto", searchButton: "Buscar", githubButton: "GitHub", learningButton: "Aprender", chatButton: "Chat", reopenButtonTitle: "Revisar Avisos" } 
+        };
+
+        let db;
         let visitorCountUpdated = false;
         async function updateVisitorCount() {
             if (visitorCountUpdated) return;
             visitorCountUpdated = true;
-
-            const visitCountElement = document.getElementById('visitCount');
-            const counterRef = db.collection('counters').doc('mainPage');
             try {
+                const counterRef = db.collection('counters').doc('mainPage');
                 await db.runTransaction(async (transaction) => {
                     const doc = await transaction.get(counterRef);
-                    if (!doc.exists) {
-                        transaction.set(counterRef, { count: 1 });
-                        return 1;
-                    }
-                    const newCount = doc.data().count + 1;
-                    transaction.update(counterRef, { count: newCount });
-                    return newCount;
+                    const newCount = doc.exists ? doc.data().count + 1 : 1;
+                    transaction.set(counterRef, { count: newCount }, { merge: true });
                 });
                 const finalDoc = await counterRef.get();
-                if(finalDoc.exists) {
-                    visitCountElement.textContent = finalDoc.data().count.toLocaleString();
+                if (finalDoc.exists) {
+                    elements.visitCount.textContent = finalDoc.data().count.toLocaleString();
                 }
             } catch (error) {
                 console.error("Firebase Fehler: ", error);
-                visitCountElement.textContent = "N/A";
+                elements.visitCount.textContent = "N/A";
             }
         }
-        
-        const body = document.body;
-        const contentLayout = document.getElementById('content-layout');
-        const mainTitle = document.getElementById('mainTitle');
-        const enterButton = document.getElementById('enterButton');
-        const publisherInfo = document.getElementById('publisherInfo');
-        const searchButton = document.getElementById('searchButton');
-        const githubButton = document.getElementById('githubButton');
-        const learningButton = document.getElementById('learningButton'); 
-        const chatButton = document.getElementById('chatButton');
-        const counterLabel = document.getElementById('counterLabel');
 
-        const warningOverlay = document.getElementById('warningOverlay');
-        const acceptWarningButton = document.getElementById('acceptWarningButton');
-        const warningTitleElement = document.getElementById('warningTitle');
-        const warningTextElement = document.getElementById('warningText');
-
-        const privacyOverlay = document.getElementById('privacyOverlay');
-        const acceptPrivacyButton = document.getElementById('acceptPrivacyButton');
-        const privacyTitleElement = document.getElementById('privacyTitle');
-        const privacyTextElement = document.getElementById('privacyText');
-
-
-        const translations = {
-            en: { 
-                pageTitle: "Welcome to Tiwut", mainTitle: "Welcome to Tiwut", enterButton: "Tiwut-Advanced", 
-                publisherInfo: "Published by Tiwut", counterLabel: "Visitors: ",
-                modalTitle: "Important Notice", modalText: "This website is intended for private and family purposes only!!!<br>By accepting, you confirm this.", modalButton: "Accept and Continue", 
-                privacyTitle: "Privacy & Data Notice", privacyText: "This site uses external services (Google Fonts, Google Firebase) which may process your IP address for functional purposes, like our anonymous visitor counter. We also use local storage to save your consent. By accepting, you agree to this necessary data processing.", privacyButton: "I Understand and Accept",
-                searchButton: "Search", githubButton: "GitHub", learningButton: "Learning", chatButton: "Chat" 
-            }, 
-            de: { 
-                pageTitle: "Willkommen bei Tiwut", mainTitle: "Willkommen bei Tiwut", enterButton: "Tiwut-Advanced", 
-                publisherInfo: "Veröffentlicht von Tiwut", counterLabel: "Besucher: ",
-                modalTitle: "Wichtiger Hinweis", modalText: "Diese Webseite ist ausschließlich für private und familiäre Zwecke bestimmt!!!<br>Mit der Annahme bestätigen Sie dies.", modalButton: "Akzeptieren und Fortfahren", 
-                privacyTitle: "Datenschutzhinweis", privacyText: "Diese Seite nutzt externe Dienste (Google Fonts, Google Firebase), die Ihre IP-Adresse für funktionale Zwecke, wie unseren anonymen Besucherzähler, verarbeiten können. Wir nutzen auch den lokalen Speicher, um Ihre Zustimmung zu speichern. Mit der Annahme stimmen Sie dieser notwendigen Datenverarbeitung zu.", privacyButton: "Ich verstehe und akzeptiere",
-                searchButton: "Suche", githubButton: "GitHub", learningButton: "Lernen", chatButton: "Chat"
-            }, 
-            es: { 
-                pageTitle: "Bienvenido a Tiwut", mainTitle: "Bienvenido a Tiwut", enterButton: "Tiwut-Advanced", 
-                publisherInfo: "Publicado por Tiwut", counterLabel: "Visitantes: ",
-                modalTitle: "Aviso Importante", modalText: "¡¡¡Este sitio web está destinado exclusivamente a fines privados y familiares!!!<br>Al aceptar, usted confirma esto.", modalButton: "Aceptar y Continuar", 
-                privacyTitle: "Aviso de Privacidad y Datos", privacyText: "Este sitio utiliza servicios externos (Google Fonts, Google Firebase) que pueden procesar su dirección IP para fines funcionales, como nuestro contador de visitas anónimo. También utilizamos el almacenamiento local para guardar su consentimiento. Al aceptar, usted aprueba este tratamiento de datos necesario.", privacyButton: "Entiendo y Acepto",
-                searchButton: "Buscar", githubButton: "GitHub", learningButton: "Aprender", chatButton: "Chat" 
-            } 
-        };
-        const userLang = (navigator.language || navigator.userLanguage || 'en').toLowerCase();
-        let langCode = 'en';
-        if (userLang.startsWith('de')) { langCode = 'de'; }
-        else if (userLang.startsWith('es')) { langCode = 'es'; }
-
-        const selectedTexts = translations[langCode];
-        document.title = selectedTexts.pageTitle;
-        mainTitle.textContent = selectedTexts.mainTitle;
-        enterButton.textContent = selectedTexts.enterButton;
-        enterButton.href = 'https://tiwut.de/Tiwut-Advanced/';
-        publisherInfo.textContent = selectedTexts.publisherInfo;
-        searchButton.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> ${selectedTexts.searchButton}`;
-        githubButton.innerHTML = `<i class="fa-brands fa-github"></i> ${selectedTexts.githubButton}`;
-        learningButton.innerHTML = `<i class="fa-solid fa-graduation-cap"></i> ${selectedTexts.learningButton}`; 
-        chatButton.innerHTML = `<i class="fa-solid fa-comments"></i> ${selectedTexts.chatButton}`;
-        counterLabel.textContent = selectedTexts.counterLabel;
-        
-        warningTitleElement.innerHTML = selectedTexts.modalTitle;
-        warningTextElement.innerHTML = selectedTexts.modalText;
-        acceptWarningButton.textContent = selectedTexts.modalButton;
-        
-        privacyTitleElement.innerHTML = selectedTexts.privacyTitle;
-        privacyTextElement.innerHTML = selectedTexts.privacyText;
-        acceptPrivacyButton.textContent = selectedTexts.privacyButton;
-        
-        
         function showWarning(overlay) {
             body.classList.add('content-blurred');
             overlay.classList.add('active');
@@ -415,40 +294,38 @@
         }
 
         function hideAllWarnings() {
-            privacyOverlay.classList.remove('active');
-            warningOverlay.classList.remove('active');
-             setTimeout(() => {
+            elements.privacyOverlay.classList.remove('active');
+            elements.warningOverlay.classList.remove('active');
+            setTimeout(() => {
                 body.classList.remove('content-blurred');
                 body.style.overflow = 'auto';
             }, 400);
         }
 
-        const warningAccepted = localStorage.getItem('tiwutWarningAccepted');
-        const privacyAccepted = localStorage.getItem('tiwutPrivacyAccepted');
-
-        if (warningAccepted !== 'true') {
-            showWarning(warningOverlay);
-        } else if (privacyAccepted !== 'true') {
-            showWarning(privacyOverlay);
-        } else {
-             updateVisitorCount();
+        function applyTranslations(lang) {
+            const t = translations[lang];
+            document.title = t.pageTitle;
+            elements.mainTitle.textContent = t.mainTitle;
+            elements.enterButton.textContent = t.enterButton;
+            elements.enterButton.href = 'https://tiwut.de/Tiwut-Advanced/';
+            elements.publisherInfo.textContent = t.publisherInfo;
+            elements.searchButton.innerHTML = `<i class="fa-solid fa-magnifying-glass"></i> ${t.searchButton}`;
+            elements.githubButton.innerHTML = `<i class="fa-brands fa-github"></i> ${t.githubButton}`;
+            elements.learningButton.innerHTML = `<i class="fa-solid fa-graduation-cap"></i> ${t.learningButton}`;
+            elements.chatButton.innerHTML = `<i class="fa-solid fa-comments"></i> ${t.chatButton}`;
+            elements.counterLabel.textContent = t.counterLabel;
+            elements.warningTitle.innerHTML = t.modalTitle;
+            elements.warningText.innerHTML = t.modalText;
+            elements.acceptWarningButton.textContent = t.modalButton;
+            elements.privacyTitle.innerHTML = t.privacyTitle;
+            elements.privacyText.innerHTML = t.privacyText;
+            elements.acceptPrivacyButton.textContent = t.privacyButton;
+            elements.reopenWarningsButton.title = t.reopenButtonTitle;
         }
 
-        acceptWarningButton.addEventListener('click', function() {
-            localStorage.setItem('tiwutWarningAccepted', 'true');
-            warningOverlay.classList.remove('active');
-            setTimeout(() => showWarning(privacyOverlay), 100); 
-        });
-
-        acceptPrivacyButton.addEventListener('click', function() {
-            localStorage.setItem('tiwutPrivacyAccepted', 'true');
-            hideAllWarnings();
-            updateVisitorCount();
-        });
-        
-        function initDesktopInteractions() { 
+        function initInteractions() {
             if (window.matchMedia("(pointer: fine)").matches) {
-                document.body.style.perspective = '1500px';
+                body.style.perspective = '1500px';
                 document.addEventListener('mousemove', e => {
                     if (!contentLayout.classList.contains('page-exit')) {
                         const x = (e.clientX / window.innerWidth) - 0.5;
@@ -457,37 +334,61 @@
                     }
                 });
             }
-        }
-        
-        function initPageExitAnimation() {
-            const actionButtons = document.querySelectorAll('#content-layout .action-button');
-            actionButtons.forEach(button => {
+            document.querySelectorAll('#content-layout .action-button').forEach(button => {
                 button.addEventListener('click', function(event) {
                     const destination = this.href;
-                    if (destination && destination !== window.location.href + "#") {
+                    if (destination && !destination.endsWith('#')) {
                         event.preventDefault();
                         contentLayout.classList.add('page-exit');
-                        setTimeout(() => {
-                            window.location.href = destination;
-                        }, 500);
+                        setTimeout(() => window.location.href = destination, 500);
                     }
                 });
             });
+            window.addEventListener('pageshow', event => {
+                if (event.persisted) contentLayout.classList.remove('page-exit');
+            });
         }
-
-        window.addEventListener('pageshow', function(event) {
-            if (event.persisted) {
-                contentLayout.classList.remove('page-exit');
-            }
-        });
 
         function init() {
-            initDesktopInteractions();
-            initPageExitAnimation();
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+
+            const userLang = (navigator.language || navigator.userLanguage || 'en').slice(0, 2);
+            const langCode = translations[userLang] ? userLang : 'en';
+            applyTranslations(langCode);
+            
+            const warningAccepted = localStorage.getItem('tiwutWarningAccepted');
+            const privacyAccepted = localStorage.getItem('tiwutPrivacyAccepted');
+
+            if (warningAccepted !== 'true') {
+                showWarning(elements.warningOverlay);
+            } else if (privacyAccepted !== 'true') {
+                showWarning(elements.privacyOverlay);
+            } else {
+                updateVisitorCount();
+            }
+
+            elements.acceptWarningButton.addEventListener('click', () => {
+                localStorage.setItem('tiwutWarningAccepted', 'true');
+                elements.warningOverlay.classList.remove('active');
+                setTimeout(() => showWarning(elements.privacyOverlay), 100); 
+            });
+
+            elements.acceptPrivacyButton.addEventListener('click', () => {
+                localStorage.setItem('tiwutPrivacyAccepted', 'true');
+                hideAllWarnings();
+                updateVisitorCount();
+            });
+
+            elements.reopenWarningsButton.addEventListener('click', () => {
+                showWarning(elements.warningOverlay);
+            });
+            
+            initInteractions();
         }
+
         init();
     });
     </script>
-
 </body>
 </html>
